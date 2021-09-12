@@ -1,0 +1,192 @@
+<div class="container">
+    <br><br>
+
+    <div *ngIf="GuidIsValid === false" class="form-group">
+        <h4>
+            To upload supporting documentation for a previously
+            submitted grievance application, enter your submission ID.
+        </h4>
+
+        <form (submit)="ValidateGuid()">
+            <label for="input_guid">Previous Submission ID</label>
+            <input appAutofocus [(ngModel)]="Guid" id="input_guid" name="input_guid" type="text" class="form-control"
+                placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+            <small class="form-text text-muted">
+                Input the reference ID from your previous submission. This was emailed to the address you specified.
+                If you have yet to submit a grievance this year, use the 'RP-524' link found in the navbar above.
+            </small>
+
+            <br>
+            <button *ngIf="IsValidatingGuid === false" class="btn btn-info shadow float-right" type="submit">
+                Validate Submission ID
+            </button>
+            <button *ngIf="IsValidatingGuid === true" class="btn btn-info shadow float-right" type="button">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Validating...</span>
+                </div>
+            </button>
+        </form>
+    </div>
+
+    <div *ngIf="GuidIsValid === true">
+        <h2>Upload Supporting Documentation For Previously Submitted Grievance Application</h2>
+
+        <form id="Docs_FileUploadForm" enctype="multipart/form-data" method="POST">
+
+            <div class="alert alert-warning shadow">
+                <label for="avatar">
+                    <b>
+                        Use the 'Browse' button below to select the PDF file(s) you want to upload.
+                        <br>
+                        IMPORTANT: All files you upload MUST be PDF files.
+                    </b>
+                    <br>
+                    <small class="text-muted">
+                        To select multiple files (on Windows), hold the 'Ctrl' key down before clicking on the files you
+                        want to upload
+                        in the File Upload dialog that opens after clicking the 'Browse' button.
+                    </small>
+                </label>
+                <br />
+                <br />
+                <input class="customFileInput" type="file" id="files" name="files" accept=".pdf" multiple required>
+
+                <app-staged-files [IdOfWatchedFileInput]="'files'"></app-staged-files>
+            </div>
+
+            <hr>
+
+            <!-- tax map ID -->
+            <div class="form-group">
+                <label for="input_tax_map_id">Parcel ID</label>
+                <input [ngModel]="TaxMapId" name="inputTaxMapId" type="text" class="form-control" id="input_tax_map_id"
+                    readonly>
+                <small class="form-text text-muted">
+                    The parcel associated with the submission
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="input_email">Email Address</label>
+                <input name="inputEmail" type="text" class="form-control" id="input_email" placeholder="Enter email"
+                    required>
+                <small id="emailHelp" class="form-text text-muted">
+                    We'll send you a submission confirmation at this email
+                </small>
+            </div>
+            <div class="form-group">
+                <label for="input_email_confirm">Confirm Email Address</label>
+                <!-- The server discards this. -->
+                <input name="inputEmailConfirm" type="text" class="form-control" id="input_email_confirm"
+                    placeholder="Enter email again" required>
+                <small id="emailHelpConfirm" class="form-text text-muted">
+                    This should match the email above
+                </small>
+            </div>
+
+            <input [ngModel]="Guid" name="inputGuid" type="hidden" class="form-control" id="input_guid" readonly
+                required>
+
+            <hr class="my-4">
+
+            <div class="form-group form-check">
+                <input name="includesPersonalHearing" type="checkbox" class="form-check-input"
+                    id="Docs_IncludesPersonalHearing" value="true" onchange="this.value=this.checked" />
+                <label class="form-check-label" for="Docs_IncludesPersonalHearing">
+                    This submission includes a 'Request For Personal Hearing' form.
+                </label>
+            </div>
+
+            <!-- This submission includes a 'Conflict of Interest Form' -->
+            <div class="form-group form-check">
+                <input name="includesConflictOfInterest" type="checkbox" class="form-check-input"
+                    id="CreateGrievance_IncludesConflictOfInterest" value="true" onchange="this.value=this.checked"
+                    [checked]="IncludesConflictOfInterest"
+                    (change)="IncludesConflictOfInterest = !IncludesConflictOfInterest" />
+                <label class="form-check-label" for="CreateGrievance_IncludesConflictOfInterest">
+                    This submission includes a 'Conflict of Interest' form.
+                </label>
+            </div>
+            <!-- This submission includes a 'Residential Questionnaire' -->
+            <div class="form-group form-check">
+                <input name="includesResQuestionnaire" type="checkbox" class="form-check-input"
+                    id="CreateGrievance_IncludesResQuestionnaire" value="true" onchange="this.value=this.checked"
+                    [checked]="IncludesResQuestionnaire"
+                    (change)="IncludesResQuestionnaire = !IncludesResQuestionnaire" />
+                <label class="form-check-label" for="CreateGrievance_IncludesResQuestionnaire">
+                    This submission includes a 'Residential Questionnaire' form.
+                </label>
+            </div>
+            <!-- This submission includes a 'Commercial Questionnaire' -->
+            <div class="form-group form-check">
+                <input name="includesComQuestionnaire" type="checkbox" class="form-check-input"
+                    id="CreateGrievance_IncludesComQuestionnaire" value="true" onchange="this.value=this.checked"
+                    [checked]="IncludesComQuestionnaire"
+                    (change)="IncludesComQuestionnaire = !IncludesComQuestionnaire" />
+                <label class="form-check-label" for="CreateGrievance_IncludesComQuestionnaire">
+                    This submission includes a 'Commercial Questionnaire' form.
+                </label>
+            </div>
+
+            <!-- This submission includes a 'Letter of Authorization' -->
+            <div class="form-group form-check">
+                <input name="includesLetterOfAuthorization" type="checkbox" class="form-check-input"
+                    id="CreateGrievance_IncludesLetterOfAuthorization" value="true" onchange="this.value=this.checked"
+                    [checked]="IncludesLetterOfAuthorization"
+                    (change)="IncludesLetterOfAuthorization = !IncludesLetterOfAuthorization" />
+                <label class="form-check-label" for="CreateGrievance_IncludesLetterOfAuthorization">
+                    This submission includes a 'Letter of Authorization' form.
+                </label>
+            </div>
+
+            <!-- This submission includes I&E Form(s) -->
+            <div class="form-group form-check">
+                <input name="includesIncomeExpenseForms" type="checkbox" class="form-check-input"
+                    id="CreateGrievance_IncludesIncomeExpenseForms" value="true" onchange="this.value=this.checked"
+                    [checked]="IncludesIncomeExpenseForms"
+                    (change)="IncludesIncomeExpenseForms = !IncludesIncomeExpenseForms" />
+                <label class="form-check-label" for="CreateGrievance_IncludesIncomeExpenseForms">
+                    This submission includes 'I&E' form(s).
+                </label>
+            </div>
+
+            <!-- This submission includes an I&E Exclusion -->
+            <div class="form-group form-check">
+                <input name="includesIncomeExpenseExclusion" type="checkbox" class="form-check-input"
+                    id="CreateGrievance_IncludesIncomeExpenseExclusion" value="true" onchange="this.value=this.checked"
+                    [checked]="IncludesIncomeExpenseExclusion"
+                    (change)="IncludesIncomeExpenseExclusion = !IncludesIncomeExpenseExclusion" />
+                <label class="form-check-label" for="CreateGrievance_IncludesIncomeExpenseExclusion">
+                    This submission includes an 'I&E' Exclusion.
+                </label>
+            </div>
+
+            <!-- This submission includes Supporting Documentation -->
+            <div class="form-group form-check">
+                <input name="includesSupportingDocumentation" type="checkbox" class="form-check-input"
+                    id="CreateGrievance_IncludesSupportingDocumentation" value="true" onchange="this.value=this.checked"
+                    [checked]="IncludesSupportingDocumentation"
+                    (change)="IncludesSupportingDocumentation = !IncludesSupportingDocumentation" />
+                <label class="form-check-label" for="CreateGrievance_IncludesSupportingDocumentation">
+                    This submission includes 'Supporting Documentation'.
+                </label>
+            </div>
+
+            <br />
+            <button *ngIf="IsUploading == false" (click)="UploadFiles('Docs_FileUploadForm')"
+                class="btn btn-success btn-lg shadow float-right" type="button">
+                Upload
+            </button>
+            <button *ngIf="IsUploading == true" class="btn btn-success btn-lg shadow float-right" type="button">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Uploading...</span>
+                </div>
+            </button>
+        </form>
+
+    </div>
+
+</div>
+
+<br><br>
+<br><br>

@@ -1,0 +1,60 @@
+<div class="container">
+    <br><br>
+
+    <form id="fakeNysRp524Data" action="/api/prefilldata" method="POST">
+
+        <input type="hidden" name="TwoCharAssessmentYear" value='22'>
+        <input type="hidden" name="Muni" value="Somewhere">
+        <input type="hidden" name="OwnerNameLine1" value="Some Person">
+        <input type="hidden" name="OwnerNameLine2" value="Some Otherperson">
+        <input type="hidden" name="OwnerAddressLine1" value="222 Some St.">
+        <input type="hidden" name="OwnerAddressLine2" value="Sometown, ZZ 12345">
+        <input type="hidden" name="LocationStreetAddress" value="222 Some St.">
+        <input type="hidden" name="LocationCityTown" value="Sometown">
+        <input type="hidden" name="LocationVillage" value="Somevillage">
+        <input type="hidden" name="LocationCounty" value="Somecounty">
+        <input type="hidden" name="SchoolDistrict" value="Some District">
+        <input type="hidden" name="TaxMapNum" value="1-2-3.4">
+        <input type="hidden" name="ResidenceCheck" value='true'>
+        <input type="hidden" name="CommercialCheck" value='false'>
+        <input type="hidden" name="FarmCheck" value='false'>
+        <input type="hidden" name="IndustrialCheck" value='false'>
+        <input type="hidden" name="VacantCheck" value='false'>
+        <input type="hidden" name="OtherCheck" value='false'>
+        <input type="hidden" name="PropertyDescription" value="lorem">
+        <input type="hidden" name="LandVal" value="9980">
+        <input type="hidden" name="TotalVal" value="9990">
+
+        <button (click)="TriggerFakeNysRp524Prefill()" class="btn btn-dark w-100">
+            Fake RP-524 Prefill
+        </button>
+    </form>
+
+
+    <br><br>
+
+    <form id="fakeNysRp525Data" action="/api/download" method="POST">
+        <input type="hidden" name="Muni" value='Somewhere'>
+
+        <input type="hidden" name="OwnerNameLine1" value='Some Person'>
+        <input type="hidden" name="OwnerNameLine2" value='Some Otherperson'>
+
+        <input type="hidden" name="OwnerAddressLine1" value='222 Some St.'>
+        <input type="hidden" name="OwnerAddressLine2" value='Sometown, ZZ 12345'>
+        <input type="hidden" name="OwnerAddressLine3" value=''>
+
+        <input type="hidden" name="TaxMapNum" value='1-2-3.4'>
+
+        <input type="hidden" name="LocationStreetAddress" value='222 Some St.'>
+        <input type="hidden" name="LocationVillage" value='Somevillage'>
+        <input type="hidden" name="LocationCityTown" value='Sometown'>
+        <input type="hidden" name="LocationCounty" value='Somecounty'>
+
+        <input type="hidden" name="TotalVal" value='9990'>
+
+        <button (click)="TriggerFakeNysRp525Prefill()" class="btn btn-light w-100">
+            Fake RP-525 Prefill
+        </button>
+    </form>
+
+</div>

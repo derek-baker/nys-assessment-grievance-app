@@ -1,0 +1,18 @@
+<br>
+
+<div *ngIf="Files.length > 0">
+    <small class="text-muted">Selected Files:</small>
+</div>
+<div *ngIf="Files.length === 0">
+    <small class="text-muted">No files selected</small>
+</div>
+
+<ul *ngFor="let file of Files">
+    <li>{{file}}</li>
+</ul>
+
+<div *ngIf="Files.length > 0">
+    <button class="btn btn-sm btn-danger" (click)="ClearFiles()">Clear files</button>
+</div>
+
+

@@ -1,0 +1,51 @@
+<div class="container">
+    <div [formGroup]="ParentForm" id="form" class="container my-4 p-4 shadow">
+
+        <!-- NOTE: Using a template variable here to allow access to a component method from a parent template. -->
+        <app-form-controls #formControls [ParentForm]="ParentForm"></app-form-controls>
+
+        <form autocomplete="off">
+
+            <div id="page1">
+                <form-header [ParentForm]="ParentForm"></form-header>
+
+                <div class="m-5">
+                    <app-part1 [ParentForm]="ParentForm"></app-part1>
+                </div>
+            </div>
+
+            <hr class="darker-hr">
+
+            <div id="page2">
+                <div class="m-5">
+                    <app-part2 [ParentForm]="ParentForm"></app-part2>
+                </div>
+            </div>
+
+            <hr class="darker-hr">
+
+            <div id="page3">
+                <div class="m-5">
+                    <app-part3 [ParentForm]="ParentForm"></app-part3>
+                </div>
+            </div>
+
+            <hr class="darker-hr">
+
+            <div id="page4" class="m-5">
+                <div class="m-5">
+                    <app-part4 [ParentForm]="ParentForm"></app-part4>
+
+                    <app-part5 [ParentForm]="ParentForm"></app-part5>
+
+                    <app-part6 [ParentForm]="ParentForm"></app-part6>
+
+                    <app-board-only (formLoaded)="onFormLoaded()" (completeRp524Event)="formControls.BeginSubmission()"></app-board-only>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>

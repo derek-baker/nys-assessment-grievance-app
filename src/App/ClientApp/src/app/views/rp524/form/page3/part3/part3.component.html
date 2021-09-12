@@ -1,0 +1,695 @@
+<div class="row">
+    <div class="col-sm-6">
+        <small class="float-left">RP-524 (03/09)</small>
+    </div>
+    <div class="col-sm-6">
+        <small class="float-right">3</small>
+    </div>
+</div>
+
+<!-- START-A -->
+<div class="row">
+    <div class="col-sm-12 text-center mt-0">
+        <h6 class="bold">PART THREE: GROUNDS FOR COMPLAINT</h6>
+        <h6 class="bold">
+            A. UNEQUAL ASSESSMENT (Complete items 1-4)
+        </h6>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-1 mr-0 pr-0">
+        <p>1. </p>
+    </div>
+    <div class="col-sm-11 ml-0 pl-0">
+        <small>The assessment is unequal for the following reason: (check a or b)</small>
+    </div>
+
+    <div class="col-sm-12 ml-5">
+        <p class="float-left">a. &nbsp;</p>
+        <div class="float-left">
+            <app-checkbox [Id]="'CheckAssessedValueHigherA'" [ParentForm]="ParentForm"></app-checkbox>
+        </div>
+        <label class="ml-3 inline" for="CheckAssessedValueHigherA">
+            <p class="inline">
+                The assessed value is at a higher percentage of value than the assessed value of
+                other real property on the assessment roll.
+            </p>
+        </label>
+    </div>
+
+    <div class="col-sm-12 ml-5">
+        <p class="float-left inline">b. &nbsp;</p>
+        <div class="float-left inline">
+            <app-checkbox [Id]="'CheckAssessedValueHigherB'" [ParentForm]="ParentForm"></app-checkbox>
+        </div>
+        <label class="ml-3 inline" for="CheckAssessedValueHigherB">
+            <p class="inline">
+                The assessed value of real property improved by a one, two or three family residence is
+                at a higher percentage of full (market) value than the assessed value of other
+                residential property on the assessment roll or at a higher percentage of full (market)
+                value than the assessed value of all real property on the assessment roll.
+            </p>
+        </label>
+    </div>
+</div>
+<hr>
+
+<div class="row">
+    <div class="col-sm-12 ml-5">
+        <small class="inline">
+            The complainant believes this property should be assessed at
+        </small>
+        <app-text-input-nonstyled
+            [Id]="'TextComplainantBelieves'"
+            [ParentForm]="ParentForm"
+            [ngClass]="'width-fifty'">
+        </app-text-input-nonstyled>
+        <small>
+            % of full value based on one or more of the following
+        </small>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-sm-1 mr-0 pr-0">
+        <p>2. </p>
+    </div>
+    <div class="col-sm-11 ml-0 pl-0">
+        <small>(check one or more)</small>
+    </div>
+
+    <div class="col-sm-12 ml-5">
+        <p class="float-left inline">a. &nbsp;</p>
+        <div class="float-left inline">
+            <app-checkbox [Id]="'CheckEqualizationA'" [ParentForm]="ParentForm"></app-checkbox>
+        </div>
+        <label class="ml-3 inline" for="CheckEqualizationA">
+            <p class="inline">
+                The latest State equalization rate for the city, town, or village in which the
+                property is located is
+                <app-text-input-nonstyled
+                    [Id]="'p3_2_a_pct'"
+                    [ParentForm]="ParentForm">
+                </app-text-input-nonstyled> %.
+            </p>
+        </label>
+    </div>
+
+    <div class="col-sm-12 ml-5">
+        <p class="float-left inline">b. &nbsp;</p>
+        <div class="float-left inline">
+            <app-checkbox [Id]="'CheckAssessedValueHigherB'" [ParentForm]="ParentForm"></app-checkbox>
+        </div>
+        <label class="ml-3 inline" for="CheckAssessedValueHigherB">
+            <p class="inline">
+                The latest residential assessment ratio established for the city, town, or village
+                in which the residential property is located. Enter the latest residential assessment
+                only if property is improved by a one, two, or three family residence
+                <app-text-input-nonstyled
+                    [Id]="'p3_2_b_pct'"
+                    [ParentForm]="ParentForm">
+                </app-text-input-nonstyled> %.
+            </p>
+        </label>
+    </div>
+
+    <div class="col-sm-12 ml-5">
+        <p class="float-left inline">c. &nbsp;</p>
+        <div class="float-left inline">
+            <app-checkbox [Id]="'CheckAssessedValueHigherC'" [ParentForm]="ParentForm"></app-checkbox>
+        </div>
+        <label class="ml-3 inline" for="CheckAssessedValueHigherC">
+            <p class="inline">
+                Statement of the assessor or other local official that property has been assessed at
+                <app-text-input-nonstyled
+                    [Id]="'p3_2_c_pct'"
+                    [ParentForm]="ParentForm">
+                </app-text-input-nonstyled> %.
+            </p>
+        </label>
+    </div>
+
+    <div class="col-sm-12 ml-5">
+        <p class="float-left inline">d. &nbsp;</p>
+        <div class="float-left inline">
+            <app-checkbox [Id]="'CheckAssessedValueHigherD'" [ParentForm]="ParentForm"></app-checkbox>
+        </div>
+        <label class="ml-3 inline" for="CheckAssessedValueHigherD">
+            <p class="inline">
+                Other (explain on attached sheet).
+            </p>
+        </label>
+    </div>
+
+</div>
+<hr>
+
+<div class="row">
+    <div class="col-sm-1 mr-0 pr-0 ">
+        <p>3. </p>
+    </div>
+    <div class="col-sm-6 ml-0 pl-0">
+        <p class="">
+            Value of property from Part one #7
+        </p>
+    </div>
+    <div class="col-sm-5">
+        <div class="float-right">
+            <!-- title="To delete, highlight the entire value" -->
+            <app-text-input
+                data-toggle="tooltip" data-placement="top"
+                [Id]="'three_three_text'"
+                [ParentForm]="ParentForm"
+                [IsRequired]="false"
+                [MinLength]="1"
+                [MaxLength]="200"
+                [HasBorder]="true"
+                [Placeholder]="'$'"
+                [IsCurrency]="true">
+            </app-text-input>
+        </div>
+    </div>
+</div>
+<hr>
+
+<div class="row">
+    <div class="col-sm-1 mr-0 pr-0 ">
+        <p>4. </p>
+    </div>
+    <div class="col-sm-6 ml-0 pl-0">
+        <p class="">
+            Complainant believes the assessment should be reduced to
+        </p>
+    </div>
+    <div class="col-sm-5">
+        <div class="float-right">
+            <!-- title="To delete, highlight the entire value" -->
+            <app-text-input
+                data-toggle="tooltip" data-placement="top"
+                [Id]="'three_4_text'"
+                [ParentForm]="ParentForm"
+                [IsRequired]="false"
+                [MinLength]="1"
+                [MaxLength]="200"
+                [HasBorder]="true"
+                [Placeholder]="'$'"
+                [IsCurrency]="true">
+            </app-text-input>
+        </div>
+    </div>
+</div>
+<!-- END-A -->
+
+<!-- <hr> -->
+
+<div class="row">
+    <div class="col-sm-12 text-center mt-4">
+        <h6 class="bold">
+            B. EXCESSIVE ASSESSMENT (Check one or more)
+        </h6>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <small>The assessment is excessive for the following reason(s):</small>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-sm-1 mr-0 pr-0">
+        <p>1. </p>
+    </div>
+    <div class="col-sm-11 ml-0 pl-0">
+        <div class="inline mr-3">
+            <app-checkbox
+                [Id]="'three_b_1_check'"
+                [ParentForm]="ParentForm">
+            </app-checkbox>
+        </div>
+        <label class="inline" for="three_b_1_check">
+            The assessed value exceeds the full value of the property.
+        </label>
+    </div>
+
+    <div class="col-sm-12 ml-5 pl-5 dottedUnderline">
+        <label class="inline" for="three_b_1_a_text">
+            a. Assessed value of property
+        </label>
+        <div class="float-right w-10 pr-4">
+            <!-- title="To delete, highlight the entire value" -->
+            <app-text-input
+                data-toggle="tooltip" data-placement="top"
+                [Id]="'three_b_1_a_text'"
+                [ParentForm]="ParentForm"
+                [IsRequired]="false"
+                [MinLength]="0"
+                [MaxLength]="200"
+                [HasBorder]="true"
+                [Placeholder]="'$'"
+                [IsCurrency]="true">
+            </app-text-input>
+        </div>
+    </div>
+
+    <div class="col-sm-12 ml-5 pl-5 dottedUnderline">
+        <label class="inline" for="three_b_1_b_text">
+            b. Complainant believes that assessment should be reduced to full value of (Part one #7)
+        </label>
+        <div class="float-right w-10 pr-4">
+            <!-- title="To delete, highlight the entire value"     -->
+            <app-text-input
+                data-toggle="tooltip" data-placement="top"
+                [Id]="'three_b_1_b_text'"
+                [ParentForm]="ParentForm"
+                [IsRequired]="false"
+                [MinLength]="0"
+                [MaxLength]="200"
+                [HasBorder]="true"
+                [Placeholder]="'$'"
+                [IsCurrency]="true">
+            </app-text-input>
+        </div>
+    </div>
+
+    <div class="col-sm-12 ml-5 pl-5">
+        <label class="inline">
+            c. Attach list of parcels upon which complainant relies for objection, if applicable.
+        </label>
+    </div>
+</div>
+<hr>
+
+<div class="row">
+    <div class="col-sm-1 mr-0 pr-0">
+        <p>2. </p>
+    </div>
+    <div class="col-sm-11 ml-0 pl-0">
+        <div class="inline mr-3">
+            <app-checkbox [Id]="'three_b_2_check'" [ParentForm]="ParentForm"></app-checkbox>
+        </div>
+        <label class="" for="three_b_2_check">
+            The taxable asssessed value is excessive because of the denial of all or portion of a partial exemption.
+        </label>
+    </div>
+
+    <div class="col-sm-12 ml-5 pl-5 dottedUnderline">
+        <label class="inline" for="three_b_2_a_text">
+            a. Specify exemption (e.g., senior citizens, veterans, school tax relief [STAR])
+        </label>
+        <div class="float-right w-10 pr-4">
+            <app-text-input
+                [Id]="'three_b_2_a_text'"
+                [ParentForm]="ParentForm"
+                [IsRequired]="false"
+                [MinLength]="0"
+                [MaxLength]="200"
+                [HasBorder]="true"
+                [Placeholder]="''">
+            </app-text-input>
+        </div>
+    </div>
+
+    <div class="col-sm-12 ml-5 pl-5 dottedUnderline">
+        <label class="inline" for="three_b_2_b_text">
+            b. Amount of exemption claimed
+        </label>
+        <div class="float-right w-10 pr-4">
+            <!-- title="To delete, highlight the entire value" -->
+            <app-text-input
+                data-toggle="tooltip" data-placement="top"
+                [Id]="'three_b_2_b_text'"
+                [ParentForm]="ParentForm"
+                [IsRequired]="false"
+                [MinLength]="0"
+                [MaxLength]="200"
+                [HasBorder]="true"
+                [Placeholder]="'$'"
+                [IsCurrency]="true">
+            </app-text-input>
+        </div>
+    </div>
+
+    <div class="col-sm-12 ml-5 pl-5 dottedUnderline">
+        <label class="inline" for="three_b_2_c_text">
+            c. Amount granted, if any
+        </label>
+        <div class="float-right w-10 pr-4">
+            <!-- title="To delete, highlight the entire value" -->
+            <app-text-input
+                data-toggle="tooltip" data-placement="top"
+                [Id]="'three_b_2_c_text'"
+                [ParentForm]="ParentForm"
+                [IsRequired]="false"
+                [MinLength]="0"
+                [MaxLength]="200"
+                [HasBorder]="true"
+                [Placeholder]="'$'"
+                [IsCurrency]="true">
+            </app-text-input>
+        </div>
+    </div>
+
+    <div class="col-sm-12 ml-5 pl-5">
+        <label class="inline">
+            d. If application for exemption was filed, attach copy of application to this complaint.
+        </label>
+    </div>
+</div>
+<hr>
+
+<div class="row">
+    <div class="col-sm-1 mr-0 pr-0">
+        <p>3. </p>
+    </div>
+    <div class="col-sm-11 ml-0 pl-0">
+        <div class="inline mr-3">
+            <app-checkbox [Id]="'three_b_3_check'" [ParentForm]="ParentForm"></app-checkbox>
+        </div>
+        <label class="inline" for="three_b_3_check">
+            Improper calculation of transition assessment.
+            (Applicable only in approved assessing unit which has adopted transition assessments.)
+        </label>
+    </div>
+
+    <div class="col-sm-12 ml-5 pl-5 dottedUnderline">
+        <label class="inline" for="three_b_3_a_text">
+            a. Transition assessment
+        </label>
+        <div class="float-right w-10 pr-4">
+            <!-- title="To delete, highlight the entire value" -->
+            <app-text-input
+                data-toggle="tooltip" data-placement="top"
+                [Id]="'three_b_3_a_text'"
+                [ParentForm]="ParentForm"
+                [IsRequired]="false"
+                [MinLength]="0"
+                [MaxLength]="200"
+                [HasBorder]="true"
+                [Placeholder]="'$'"
+                [IsCurrency]="true">
+            </app-text-input>
+        </div>
+    </div>
+
+    <div class="col-sm-12 ml-5 pl-5 dottedUnderline">
+        <label class="inline" for="three_b_3_b_text">
+            b. Transition assessment claimed
+        </label>
+        <div class="float-right w-10 pr-4">
+            <!-- title="To delete, highlight the entire value" -->
+            <app-text-input
+                data-toggle="tooltip" data-placement="top"
+                [Id]="'three_b_3_b_text'"
+                [ParentForm]="ParentForm"
+                [IsRequired]="false"
+                [MinLength]="0"
+                [MaxLength]="200"
+                [HasBorder]="true"
+                [Placeholder]="'$'"
+                [IsCurrency]="true">
+            </app-text-input>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12 text-center mt-4">
+        <h6 class="bold">
+            C. UNLAWFUL ASSESSMENT (Check one or more)
+        </h6>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <small>The assessment is unlawful for the following reason(s):</small>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-sm-1">
+        <p>1. </p>
+    </div>
+    <div class="col-sm-11">
+        <div class="inline mr-3">
+            <app-checkbox [Id]="'three_c_1_check'" [ParentForm]="ParentForm"></app-checkbox>
+        </div>
+        <label class="inline" for="three_c_1_check">
+            Property is wholly exempt. (Specify exemption (e.g., nonprofit organization))
+        </label>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-1">
+        <p>2. </p>
+    </div>
+    <div class="col-sm-11">
+        <div class="inline mr-3">
+            <app-checkbox [Id]="'three_c_2_check'" [ParentForm]="ParentForm"></app-checkbox>
+        </div>
+        <label class="inline" for="three_c_2_check">
+            Property is entirely outside the boundaries of the city, town, village,
+            school district or special district in which it is designated as being located.
+        </label>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-1">
+        <p>3. </p>
+    </div>
+    <div class="col-sm-11">
+        <div class="inline mr-3">
+            <app-checkbox [Id]="'three_c_3_check'" [ParentForm]="ParentForm"></app-checkbox>
+        </div>
+        <label class="inline" for="three_c_3_check">
+            Property has been assessed and entered on assessment roll by a person or
+            body without the authority to make the entry.
+        </label>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-1">
+        <p>4. </p>
+    </div>
+    <div class="col-sm-11">
+        <div class="inline mr-3">
+            <app-checkbox [Id]="'three_c_4_check'" [ParentForm]="ParentForm"></app-checkbox>
+        </div>
+        <label class="inline" for="three_c_4_check">
+            Property cannot be identified from description or tax map number on the assessment roll.
+        </label>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-1">
+        <p>5. </p>
+    </div>
+    <div class="col-sm-11">
+        <div class="inline mr-3">
+            <app-checkbox [Id]="'three_c_5_check'" [ParentForm]="ParentForm"></app-checkbox>
+        </div>
+        <label class="inline" for="three_c_5_check">
+            Property is special franchise property, the assessment of which exceeds the final assessment thereof
+            as determined by the Office of Real Property Tax Services. (Attach copy of certificate.)
+        </label>
+    </div>
+</div>
+<!-- <hr> -->
+
+
+<div class="row">
+    <div class="col-sm-12 text-center mt-1">
+        <h6 class="bold">
+            D. MISCLASSIFICATION (Check one)
+        </h6>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <small>
+            The property is misclassified for the following reason
+            (relevant only in approved assessing unit which establish homestead and non-homestead tax rates):
+        </small>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-1 mr-0 pr-0 ">
+        <p style="visibility: hidden">0. </p>
+    </div>
+    <div class="col-sm-7 ml-0 pl-0">
+        <div class="inline mr-3">
+            <app-checkbox [Id]="'three_d_0_check'" [ParentForm]="ParentForm"></app-checkbox>
+        </div>
+        <label class="inline" for="three_d_0_check">
+            Class designation on the assessment roll:
+        </label>
+    </div>
+    <div class="col-sm-4">
+        <div class="float-right">
+            <app-text-input
+                [Id]="'three_d_0_text'"
+                [ParentForm]="ParentForm"
+                [IsRequired]="false"
+                [MinLength]="1"
+                [MaxLength]="200"
+                [HasBorder]="true"
+                [Placeholder]="''">
+            </app-text-input>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-1 mr-0 pr-0 ">
+        <p>1. </p>
+    </div>
+    <div class="col-sm-7 ml-0 pl-0">
+        <div class="inline mr-3">
+            <app-checkbox [Id]="'three_d_1_check'" [ParentForm]="ParentForm"></app-checkbox>
+        </div>
+        <label class="inline" for="three_d_1_check">
+            Complainant believes class designation should be
+        </label>
+    </div>
+    <div class="col-sm-4">
+        <div class="float-right">
+            <app-text-input
+                [Id]="'three_d_1_text'"
+                [ParentForm]="ParentForm"
+                [IsRequired]="false"
+                [MinLength]="1"
+                [MaxLength]="200"
+                [HasBorder]="true"
+                [Placeholder]="''">
+            </app-text-input>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-1 mr-0 pr-0 ">
+        <p>2. </p>
+    </div>
+    <div class="col-sm-7 ml-0 pl-0">
+        <div class="inline mr-3">
+            <app-checkbox [Id]="'three_d_2_check'" [ParentForm]="ParentForm"></app-checkbox>
+        </div>
+        <label class="inline" for="three_d_2_check">
+            The assessed value is improperly allocated between homestead and non-homestead real property.
+        </label>
+    </div>
+    <div class="col-sm-4">
+        <div class="float-right">
+            <app-text-input
+                [Id]="'three_d_2_text'"
+                [ParentForm]="ParentForm"
+                [IsRequired]="false"
+                [MinLength]="1"
+                [MaxLength]="200"
+                [HasBorder]="true"
+                [Placeholder]="''">
+            </app-text-input>
+        </div>
+    </div>
+</div>
+<!-- <hr> -->
+
+<div class="row">
+    <div class="col-sm-3">
+        <!--  -->
+    </div>
+    <div class="col-sm-4">
+        <small class="float-left">
+            Allocation of assessed value on assessment roll
+        </small>
+    </div>
+    <div class="col-sm-5">
+        <small class="float-left">
+            Claimed allocation
+        </small>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-3">
+        <p class="mb-0"><b>Homestead</b></p>
+    </div>
+    <div class="col-sm-4">
+        <div class="float-left">
+            <!-- title="To delete, highlight the entire value" -->
+            <app-text-input
+                data-toggle="tooltip" data-placement="top"
+                [Id]="'three_d_homestead_allocation_text'"
+                [ParentForm]="ParentForm"
+                [IsRequired]="false"
+                [MinLength]="1"
+                [MaxLength]="200"
+                [HasBorder]="true"
+                [Placeholder]="'$'"
+                [IsCurrency]="true">
+            </app-text-input>
+        </div>
+    </div>
+    <div class="col-sm-5">
+        <div class="float-left">
+            <!-- title="To delete, highlight the entire value" -->
+            <app-text-input
+                data-toggle="tooltip" data-placement="top"
+                [Id]="'three_d_homestead_claimed_text'"
+                [ParentForm]="ParentForm"
+                [IsRequired]="false"
+                [MinLength]="1"
+                [MaxLength]="200"
+                [HasBorder]="true"
+                [Placeholder]="'$'"
+                [IsCurrency]="true">
+            </app-text-input>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-sm-3">
+        <p class="mb-0"><b>Non-Homestead</b></p>
+    </div>
+    <div class="col-sm-4">
+        <div class="float-left">
+            <!-- title="To delete, highlight the entire value" -->
+            <app-text-input
+                data-toggle="tooltip" data-placement="top"
+                [Id]="'three_d_nonhomestead_allocation_text'"
+                [ParentForm]="ParentForm"
+                [IsRequired]="false"
+                [MinLength]="1"
+                [MaxLength]="200"
+                [HasBorder]="true"
+                [Placeholder]="'$'"
+                [IsCurrency]="true">
+            </app-text-input>
+        </div>
+    </div>
+    <div class="col-sm-5">
+        <div class="float-left">
+            <!-- title="To delete, highlight the entire value" -->
+            <app-text-input
+                data-toggle="tooltip" data-placement="top"
+                [Id]="'three_d_nonhomestead_claimed_text'"
+                [ParentForm]="ParentForm"
+                [IsRequired]="false"
+                [MinLength]="1"
+                [MaxLength]="200"
+                [HasBorder]="true"
+                [Placeholder]="'$'"
+                [IsCurrency]="true">
+            </app-text-input>
+        </div>
+    </div>
+</div>
+
+

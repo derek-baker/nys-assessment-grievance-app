@@ -1,0 +1,276 @@
+<div class="row">
+    <div class="col-sm-12 text-center mt-4">
+        <h6 class="bold">PART ONE: GENERAL INFORMATION</h6>
+        <i>(General information and instructions for completing this form are contained in form RP-524-Ins)</i>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-6">
+        <p class="mb-1">
+            1. Name and telephone no. of owner(s)
+        </p>
+        <app-text-input
+            data-toggle="tooltip" data-placement="left" title="Name"
+            [Id]="'OwnerNameLine1'"
+            [ParentForm]="ParentForm" [IsRequired]="true" [MinLength]="5" [MaxLength]="100" [HasBorder]="true"
+            [Placeholder]="''">
+        </app-text-input>
+        <app-text-input
+            data-toggle="tooltip" data-placement="left" title="Name cont."
+            [Id]="'OwnerNameLine2'"
+            [ParentForm]="ParentForm" [IsRequired]="false" [MinLength]="0" [MaxLength]="100" [HasBorder]="true"
+            [Placeholder]="''">
+        </app-text-input>
+        <app-text-input
+            data-toggle="tooltip" data-placement="left" title="Day phone num."
+            [Id]="'DayPhone'"
+            [ParentForm]="ParentForm" [IsRequired]="false" [MinLength]="11" [MaxLength]="50" [HasBorder]="true"
+            [Placeholder]="'Day phone (xxx-xxx-xxxx)'">
+        </app-text-input>
+        <app-text-input
+            data-toggle="tooltip" data-placement="left" title="Evening phone num."
+            [Id]="'EveningPhone'"
+            [ParentForm]="ParentForm" [IsRequired]="false" [MinLength]="11" [MaxLength]="50" [HasBorder]="true"
+            [Placeholder]="'Evening phone (xxx-xxx-xxxx)'">
+        </app-text-input>
+    </div>
+    <div class="col-sm-6">
+        <p class="mb-1">
+            2. Mailing Address of owner(s)
+        </p>
+
+        <app-text-input
+            data-toggle="tooltip" data-placement="left" title="Address"
+            [Id]="'OwnerAddressLine1'"
+            [ParentForm]="ParentForm" [IsRequired]="true" [MinLength]="5" [MaxLength]="100" [HasBorder]="true"
+            [Placeholder]="''">
+        </app-text-input>
+        <app-text-input
+            data-toggle="tooltip" data-placement="left" title="Address cont."
+            [Id]="'OwnerAddressLine2'"
+            [ParentForm]="ParentForm" [IsRequired]="false" [MinLength]="0" [MaxLength]="100" [HasBorder]="true"
+            [Placeholder]="''">
+        </app-text-input>
+        <app-text-input
+            data-toggle="tooltip" data-placement="left" title="Address cont."
+            [Id]="'OwnerAddressLine3'"
+            [ParentForm]="ParentForm" [IsRequired]="false" [MinLength]="11" [MaxLength]="50" [HasBorder]="true"
+            [Placeholder]="''">
+        </app-text-input>
+        <app-text-input
+            data-toggle="tooltip" data-placement="left" title="Email"
+            [Id]="'Email'"
+            [ParentForm]="ParentForm" [IsRequired]="true" [MinLength]="11" [MaxLength]="50" [HasBorder]="true"
+            [Placeholder]="'Email'">
+        </app-text-input>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12 mt-4">
+        <p>
+            3. &nbsp;&nbsp;Name, address and telephone no. of representative of owner, if representative is filing
+            application.
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp; (if applicable, complete Part Four on page 4.)
+        </p>
+        <app-text-input [Id]="'RepInfo'" [ParentForm]="ParentForm" [IsRequired]="false" [MinLength]="1"
+            [MaxLength]="200" [HasBorder]="true">
+        </app-text-input>
+
+        <!-- We need to capture structured rep data -->
+        <div style="display:none">
+            <app-text-input [Id]="'RepInfoComplete'" [ParentForm]="ParentForm" [IsRequired]="false" [MinLength]="1"
+                [MaxLength]="200000" [HasBorder]="false">
+            </app-text-input>
+        </div>
+
+    </div>
+</div>
+
+<p class="mt-4 mb-0">4. Property Location</p>
+<div class="row">
+    <div class="col-sm-6">
+        <div class="mt-3">
+            <app-text-input [Id]="'LocationStreetAddress'" [ParentForm]="ParentForm" [ParentForm]="ParentForm"
+                [IsRequired]="true" [MinLength]="1" [MaxLength]="200" [HasBorder]="true">
+            </app-text-input>
+        </div>
+        <div class="d-flex justify-content-center">
+            <small>Street Address</small>
+        </div>
+        <div class="mt-3">
+            <app-text-input [Id]="'LocationCityTown'" [ParentForm]="ParentForm" [IsRequired]="true" [MinLength]="1"
+                [MaxLength]="200" [HasBorder]="true">
+            </app-text-input>
+        </div>
+        <div class="d-flex justify-content-center">
+            <small>City/Town</small>
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="mt-3">
+            <app-text-input [Id]="'LocationVillage'" [ParentForm]="ParentForm" [IsRequired]="false" [MinLength]="1"
+                [MaxLength]="200" [HasBorder]="true">
+            </app-text-input>
+        </div>
+        <div class="d-flex justify-content-center">
+            <small>Village (if any)</small>
+        </div>
+        <div class="mt-3">
+            <app-text-input [Id]="'LocationCounty'" [ParentForm]="ParentForm" [IsRequired]="true" [MinLength]="1"
+                [MaxLength]="200" [HasBorder]="true">
+            </app-text-input>
+        </div>
+        <div class="d-flex justify-content-center">
+            <small>County</small>
+        </div>
+    </div>
+
+</div>
+
+<div class="d-flex justify-content-center">
+    <div class="w-50 mt-3">
+        <app-text-input [Id]="'SchoolDistrict'" [ParentForm]="ParentForm" [IsRequired]="true" [MinLength]="1"
+            [MaxLength]="200" [HasBorder]="true">
+        </app-text-input>
+    </div>
+</div>
+<div class="d-flex justify-content-center">
+    <small>School District</small>
+</div>
+
+<p>5. &nbsp;&nbsp; Property identification (see tax bill or assessment roll)</p>
+<div class="row">
+    <label class="inline ml-5" for="TaxMapNum">Tax map number or section/block/lot &nbsp;&nbsp;</label>
+    <div class="w-50">
+        <app-text-input [Id]="'TaxMapNum'" [ParentForm]="ParentForm" [IsRequired]="true" [MinLength]="1"
+            [MaxLength]="200" [HasBorder]="true">
+        </app-text-input>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-3 px-0">
+        <small class="float-right">
+            Type of property:
+        </small>
+    </div>
+
+    <div class="col-sm-3 px-0">
+        <div>
+            <div class="float-right">
+                <app-checkbox [Id]="'ResidenceCheck'" [ParentForm]="ParentForm">
+                </app-checkbox>
+            </div>
+            <label class="float-right mb-0" for="Residence"><small>Residence &nbsp;&nbsp;</small></label>
+        </div>
+        <br>
+        <br>
+        <div>
+            <div class="float-right">
+                <app-checkbox [Id]="'CommercialCheck'" [ParentForm]="ParentForm">
+                </app-checkbox>
+            </div>
+            <label class="float-right" for="Commercial"><small>Commercial &nbsp;&nbsp;</small></label>
+        </div>
+    </div>
+    <div class="col-sm-3 px-0 text-right">
+        <div class="float-right">
+            <app-checkbox [Id]="'FarmCheck'" [ParentForm]="ParentForm">
+            </app-checkbox>
+        </div>
+        <label class="float-right" for="Farm"><small>Farm &nbsp;&nbsp;</small></label>
+        <br>
+        <br>
+        <div class="float-right">
+            <app-checkbox [Id]="'IndustrialCheck'" [ParentForm]="ParentForm">
+            </app-checkbox>
+        </div>
+        <label class="float-right" for="Industrial"><small>Industrial &nbsp;&nbsp;</small></label>
+    </div>
+    <div class="col-sm-3 px-0">
+        <div class="float-right">
+            <app-checkbox [Id]="'VacantCheck'" [ParentForm]="ParentForm">
+            </app-checkbox>
+        </div>
+        <label class="float-right" for="Vacant Land"><small>Vacant land &nbsp;&nbsp;</small></label>
+        <br>
+        <br>
+        <div class="float-right">
+            <app-checkbox [Id]="'OtherCheck'" [ParentForm]="ParentForm">
+            </app-checkbox>
+        </div>
+        <label class="float-right" for="Other"><small>Other &nbsp;&nbsp;</small></label>
+    </div>
+</div>
+
+<div class="row">
+    <label class="inline ml-5" for="PropertyDescription">Description: &nbsp;&nbsp;</label>
+    <div class="w-50">
+        <app-text-input [Id]="'PropertyDescription'" [ParentForm]="ParentForm" [IsRequired]="false" [MinLength]="0"
+            [MaxLength]="200" [HasBorder]="true">
+        </app-text-input>
+    </div>
+</div>
+
+<p class="my-4">6. &nbsp;&nbsp; Assessed value appearing on the assessment roll:</p>
+<div class="row">
+    <label class="inline ml-5" for="LandVal">Land &nbsp;&nbsp;</label>
+    <div>
+        <!-- title="To delete, highlight the entire value"  -->
+        <app-text-input
+            data-toggle="tooltip" data-placement="top"
+            [Id]="'LandVal'"
+            [ParentForm]="ParentForm"
+            [IsRequired]="true"
+            [MinLength]="1"
+            [MaxLength]="200"
+            [HasBorder]="true"
+            [Placeholder]="'$'"
+            [IsCurrency]="true">
+        </app-text-input>
+    </div>
+    <label class="inline" for="TotalVal">&nbsp;&nbsp; Total &nbsp;&nbsp;</label>
+    <div>
+        <!-- title="To delete, highlight the entire value"  -->
+        <app-text-input
+            data-toggle="tooltip" data-placement="top"
+            [Id]="'TotalVal'"
+            [ParentForm]="ParentForm"
+            [IsRequired]="true"
+            [MinLength]="1"
+            [MaxLength]="200"
+            [HasBorder]="true"
+            [Placeholder]="'$'"
+            [IsCurrency]="true">
+        </app-text-input>
+    </div>
+</div>
+
+<div class="mt-4 dottedUnderline">
+    <p class="my-4 inline">
+        7. Property owner’s estimate of market value of property as of valuation date
+    </p>
+    <div class="row inline">
+        <div class="float-right">
+            <!-- title="To delete, highlight the entire value"  -->
+            <app-text-input
+                data-toggle="tooltip" data-placement="top"
+                [Id]="'MarketValueEstimate'"
+                [ParentForm]="ParentForm"
+                [IsRequired]="true"
+                [MinLength]="1"
+                [MaxLength]="200"
+                [HasBorder]="true"
+                [Placeholder]="'$'"
+                [IsCurrency]="true">
+            </app-text-input>
+        </div>
+    </div>
+</div>
+<small class="ml-3 text-muted">
+    (see instructions)
+</small>

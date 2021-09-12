@@ -1,0 +1,9 @@
+
+<input #textInput [attr.id]="Id" [attr.name]="Id" [attr.minlength]="MinLength" [attr.maxlength]="MaxLength"
+    [attr.placeholder]="Placeholder" [formControl]="FormControl" class="formTextInput" type="text" />
+
+<div *ngIf="FormControl.invalid && (FormControl.dirty || FormControl.touched)" class="alert alert-danger p-0">
+    <small *ngIf="FormControl.errors.required">
+        *required.
+    </small>
+</div>

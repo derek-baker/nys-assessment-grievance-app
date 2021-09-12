@@ -1,0 +1,141 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <IsPackable>false</IsPackable>
+    <SpaRoot>ClientApp\</SpaRoot>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+
+    <!-- Set this to true if you enable server-side prerendering -->
+    <BuildServerSideRenderer>false</BuildServerSideRenderer>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="itext7" Version="7.1.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.7" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
+    <PackageReference Include="MongoDB.Bson" Version="2.11.5" />
+    <PackageReference Include="MongoDB.Driver" Version="2.11.5" />
+    <PackageReference Include="System.IO.Abstractions" Version="12.1.1" />
+  </ItemGroup>
+  
+  <!-- NOTE: Turning this off so we can compile in Cloud Build -->
+  <PropertyGroup>
+    <EnableDefaultItems>false</EnableDefaultItems>
+  </PropertyGroup>
+
+  <!-- NOTE: Manually enumerating defaults to deal with duplicate include issues. -->
+  <!--https://docs.microsoft.com/en-us/dotnet/core/project-sdk/overview#default-compilation-includes-->
+  <ItemGroup>
+    <Compile Include="**/*.cs" />
+    <!--<Compile Exclude="**/*.user" />-->
+    <!--<Compile Exclude="**/*.*proj" />
+    <Compile Exclude="**/*.sln" />
+    <Compile Exclude="**/*.vssscc" />-->
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="ClientApp\dist\**" />
+    <Compile Remove="ClientApp\node_modules\**" />
+    <!--<Compile Remove="Extensions\**" />-->
+    <!--<Compile Remove="Middleware\**" />-->
+    <!--<Compile Remove="Models\**" />-->
+    <Compile Remove="obj\**" />
+    <Compile Remove="out\**" />
+    <Compile Remove="Services\**" />
+    <Compile Remove="Tests.Unit\**" />
+    
+    <Content Remove="$(SpaRoot)**" />
+    <Content Remove="out\**" />
+    <Content Remove="Tests.Unit\**" />
+    <Content Remove="wwwroot\**" />
+    
+    <EmbeddedResource Remove="out\**" />
+    <EmbeddedResource Remove="Tests.Unit\**" />
+    
+    <None Remove="$(SpaRoot)**" />
+    <None Remove="out\**" />
+    <None Remove="Tests.Unit\**" />
+
+    <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />    
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ClientApp\dist\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.Production.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.Development.json" />
+    <Content Include="appsettings.json" />
+    <Content Include="appsettings.Staging.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include=".gcloudignore" />
+    <Content Include="Assets\BOARD_ONLY_PAGE.pdf" />
+    <Content Include="Assets\NYS_BOARD_ONLY_PAGE.pdf" />
+    <Content Include="Assets\NYS_RP525.pdf" />
+    <None Include="Assets\NYS_RP524_WithSignatureButtons_WithFillableBoardOnly.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Library\Library.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Assets\BOARD_ONLY_PAGE.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\NYS_BOARD_ONLY_PAGE.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\NYS_RP525.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
+    <!-- Ensure Node.js is installed -->
+    <Exec Command="node --version" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+    </Exec>
+    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+  </Target>
+
+  <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
+    <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build -- --prod" />
+    <!-- <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build:ssr - - - -prod" Condition=" '$(BuildServerSideRenderer)' == 'true' " /> -->
+
+    <!-- Include the newly-built files in the publish output -->
+    <ItemGroup>
+      <DistFiles Include="$(SpaRoot)dist\**; $(SpaRoot)dist-server\**" />
+      <DistFiles Include="$(SpaRoot)node_modules\**" Condition="'$(BuildServerSideRenderer)' == 'true'" />
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>%(DistFiles.Identity)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
+
+</Project>

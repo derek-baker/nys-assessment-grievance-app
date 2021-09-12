@@ -1,0 +1,379 @@
+<div class="row">
+    <div class="col-sm-6">
+        <small class="float-left">RP-524 (03/09)</small>
+    </div>
+    <div class="col-sm-6">
+        <small class="float-right">2</small>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12 text-center mt-0">
+        <h6 class="bold mb-0">PART TWO: INFORMATION NECESSARY TO DETERMINE VALUE OF PROPERTY</h6>
+        <p class="mb-0"><u>(If additional explanation or documentation is necessary, please attach)</u></p>
+
+        <p>Information to suppport the value of property claimed in Part One, item 7 (complete one or more):</p>
+    </div>
+</div>
+<hr>
+
+<div class="row">
+    <div class="col-sm-1">
+        <p>1. </p>
+    </div>
+    <div class="col-sm-7">
+        <div class="float-left">
+            <app-checkbox [Id]="'CheckPurchasePrice'" [ParentForm]="ParentForm"></app-checkbox>
+        </div>
+        <label class="float-left mb-0 ml-3" for="CheckPurchasePrice">
+            <p>
+                Purchase price of property:
+            </p>
+        </label>
+        <label class="float-right" for="Two_One_PurchasePrice"></label>
+    </div>
+    <div class="col-sm-4 pl-0">
+        <!-- title="To delete, highlight the entire value" -->
+        <div class="w-50">
+            <app-text-input
+                data-toggle="tooltip" data-placement="top"
+                [Id]="'Two_One_PurchasePrice'"
+                [ParentForm]="ParentForm"
+                [IsRequired]="false"
+                [MinLength]="1"
+                [MaxLength]="200"
+                [HasBorder]="true"
+                [Placeholder]="'$'"
+                [IsCurrency]="true">
+            </app-text-input>
+        </div>
+    </div>
+</div>
+
+<div class="row ml-3">
+    <label class="inline ml-5 mr-3" for="DateOfPurchase">a. Date of purchase: &nbsp;</label>
+    <div>
+        <app-text-input
+            [Id]="'DateOfPurchase'"
+            [ParentForm]="ParentForm"
+            [IsRequired]="false"
+            [MinLength]="1"
+            [MaxLength]="200"
+            [HasBorder]="true">
+        </app-text-input>
+    </div>
+</div>
+
+<div class="row ml-3">
+    <p class="inline ml-5 mr-5" for="Terms">b. Terms: &nbsp;</p>
+    <div>
+        <app-checkbox [Id]="'TermsCashCheck'" [ParentForm]="ParentForm"></app-checkbox>
+    </div>
+    <label class="ml-2 mr-5" for="TermsCashCheck">&nbsp;Cash</label>
+    <div>
+        <app-checkbox [Id]="'TermsContractCheck'" [ParentForm]="ParentForm"></app-checkbox>
+    </div>
+    <label class="ml-2 mr-5" for="TermsContractCheck">&nbsp;Contract</label>
+    <div>
+        <app-checkbox [Id]="'TermsOtherCheck'" [ParentForm]="ParentForm"></app-checkbox>
+    </div>
+    <label class="ml-2" for="TermsOtherCheck">&nbsp;Other (explain)</label>
+</div>
+
+<div class="row ml-3">
+    <label class="inline ml-5 mr-3" for="RelationshipBetweenParties">
+        c. Relationship between seller and purchaser (parent-child, in-laws, siblings, etc.):
+    </label>
+    <div class="width-one-fifty">
+        <app-text-input
+            [Id]="'RelationshipBetweenParties'"
+            [ParentForm]="ParentForm"
+            [IsRequired]="false"
+            [MinLength]="0"
+            [MaxLength]="200"
+            [HasBorder]="true"
+            [Placeholder]="''">
+        </app-text-input>
+    </div>
+</div>
+
+<div class="row ml-3">
+    <label class="inline ml-5 mr-1 mb-0" for="PersonalProperty">
+        d. Personal property, if any, included in purchase price
+    </label>
+    <div class="width-one-fifty">
+        <app-text-input
+            [Id]="'PersonalProperty'"
+            [ParentForm]="ParentForm"
+            [IsRequired]="false"
+            [MinLength]="0"
+            [MaxLength]="200"
+            [HasBorder]="true">
+        </app-text-input>
+    </div>
+</div>
+<div class="row ml-3">
+    <small class="ml-5">(furniture, livestock, etc.; attach list and sales tax receipt) &nbsp;</small>
+</div>
+
+<hr>
+
+<div class="row">
+    <div class="col-sm-1">
+        <p>2. </p>
+    </div>
+    <div class="col-sm-11">
+        <div class="inline mr-3">
+            <app-checkbox [Id]="'PropertyOfferedForSaleCheck'" [ParentForm]="ParentForm"></app-checkbox>
+        </div>
+        <label class="" for="PropertyOfferedForSaleCheck">
+            Property has been recently offered for sale (attach copy of listing agreement, if any):
+        </label>
+    </div>
+</div>
+
+<div class="row">
+    <label class="ml-5 mr-3 pl-5 inline" for="PropertyOfferedForSaleDate">
+        When and for how long:
+    </label>
+    <div class="inline w-50">
+        <app-text-input
+            [Id]="'PropertyOfferedForSaleDate'"
+            [ParentForm]="ParentForm"
+            [IsRequired]="false"
+            [MinLength]="0"
+            [MaxLength]="200"
+            [HasBorder]="true">
+        </app-text-input>
+    </div>
+</div>
+
+<div class="row">
+    <label class="ml-5 mr-3 pl-5 inline" for="PropertyOfferedForSaleHow">
+        How offered:
+    </label>
+    <div class="inline">
+        <app-text-input
+            [Id]="'PropertyOfferedForSaleHow'"
+            [ParentForm]="ParentForm"
+            [IsRequired]="false"
+            [MinLength]="0"
+            [MaxLength]="200"
+            [HasBorder]="true">
+        </app-text-input>
+    </div>
+    <label class="ml-5 pl-5 inline" for="PropertyOfferedForSaleAskingPrice">
+        Asking price:
+    </label>
+    <!-- title="To delete, highlight the entire value" -->
+    <div class="inline">
+        <app-text-input
+            data-toggle="tooltip" data-placement="top"
+            [Id]="'PropertyOfferedForSaleAskingPrice'"
+            [ParentForm]="ParentForm"
+            [IsRequired]="false"
+            [MinLength]="0"
+            [MaxLength]="200"
+            [HasBorder]="true"
+            [Placeholder]="'$'"
+            [IsCurrency]="true">
+        </app-text-input>
+    </div>
+</div>
+<hr>
+
+<div class="row">
+    <div class="col-sm-1">
+        <p>3. </p>
+    </div>
+    <div class="col-sm-11">
+        <div class="inline mr-3">
+            <app-checkbox [Id]="'PropertyRecentlyAppraisedCheck'" [ParentForm]="ParentForm"></app-checkbox>
+        </div>
+        <label class="" for="PropertyRecentlyAppraisedCheck">
+            Property has been recently appraised (attach copy):
+        </label>
+    </div>
+</div>
+
+<div class="row">
+    <label class="ml-5 pl-5 inline" for="PropertyRecentlyAppraisedDate">
+        When:
+    </label>
+    <div class="inline w-25">
+        <app-text-input
+            [Id]="'PropertyRecentlyAppraisedDate'"
+            [ParentForm]="ParentForm"
+            [IsRequired]="false"
+            [MinLength]="0"
+            [MaxLength]="200"
+            [HasBorder]="true">
+        </app-text-input>
+    </div>
+    <label class="ml-2 inline" for="PropertyRecentlyAppraisedAppraiser">
+        By Whom:
+    </label>
+    <div class="inline w-25">
+        <app-text-input
+            [Id]="'PropertyRecentlyAppraisedAppraiser'"
+            [ParentForm]="ParentForm"
+            [IsRequired]="false"
+            [MinLength]="0"
+            [MaxLength]="200"
+            [HasBorder]="true">
+        </app-text-input>
+    </div>
+</div>
+
+<div class="row">
+    <label class="ml-5 pl-5 inline" for="PropertyRecentlyAppraisedPurpose">
+        Purpose of appraisal:
+    </label>
+    <div class="inline">
+        <app-text-input
+            [Id]="'PropertyRecentlyAppraisedPurpose'"
+            [ParentForm]="ParentForm"
+            [IsRequired]="false"
+            [MinLength]="0"
+            [MaxLength]="200"
+            [HasBorder]="true">
+        </app-text-input>
+    </div>
+    <label class="ml-2 inline" for="PropertyRecentlyAppraisedValue">
+        Appraised value:
+    </label>
+    <!-- title="To delete, highlight the entire value" -->
+    <div class="inline">
+        <app-text-input
+            data-toggle="tooltip" data-placement="top"
+            [Id]="'PropertyRecentlyAppraisedValue'"
+            [ParentForm]="ParentForm"
+            [IsRequired]="false"
+            [MinLength]="0"
+            [MaxLength]="200"
+            [HasBorder]="true"
+            [Placeholder]="'$'"
+            [IsCurrency]="true">
+        </app-text-input>
+    </div>
+</div>
+<hr>
+
+<div class="row">
+    <div class="col-sm-1">
+        <p>4. </p>
+    </div>
+    <div class="col-sm-11">
+        <div class="inline mr-3">
+            <app-checkbox [Id]="'PropertyDescCheck'" [ParentForm]="ParentForm"></app-checkbox>
+        </div>
+        <label class="inline" for="PropertyDescCheck">
+            Description of any buildings or improvements located on the property,
+            including year of construction and present condition:
+        </label>
+    </div>
+    <div class="ml-5 pl-5 w-100">
+        <app-text-input
+            [Id]="'PropertyDescText'"
+            [ParentForm]="ParentForm"
+            [IsRequired]="false"
+            [MinLength]="0"
+            [MaxLength]="200"
+            [HasBorder]="true">
+        </app-text-input>
+    </div>
+</div>
+<hr>
+
+<div class="row">
+    <div class="col-sm-1">
+        <p>5. </p>
+    </div>
+    <div class="col-sm-11">
+        <div class="inline mr-3">
+            <app-checkbox [Id]="'BuildingsRecentlyAlteredCheck'" [ParentForm]="ParentForm"></app-checkbox>
+        </div>
+        <label class="inline" for="BuildingsRecentlyAlteredCheck">
+            Buildings have been recently remodeled, constructed, or additional improvements made:
+        </label>
+    </div>
+</div>
+<div class="row ml-5 pl-5">
+    <label class="inline" for="RemodelledCost">
+        Cost &nbsp;
+    </label>
+    <div class="">
+        <app-text-input
+            [Id]="'RemodelledCost'"
+            [ParentForm]="ParentForm"
+            [IsRequired]="false"
+            [MinLength]="0"
+            [MaxLength]="200"
+            [HasBorder]="true"
+            [Placeholder]="'$'"
+            [IsCurrency]="true">
+        </app-text-input>
+    </div>
+</div>
+<div class="row ml-5 pl-5">
+    <label class="inline" for="RemodelledDateStart">
+        Date Started:
+    </label>
+    <div class="">
+        <app-text-input
+            [Id]="'RemodelledDateStart'"
+            [ParentForm]="ParentForm"
+            [IsRequired]="false"
+            [MinLength]="0"
+            [MaxLength]="200"
+            [HasBorder]="true">
+        </app-text-input>
+    </div>
+    <label class="inline" for="RemodelledDateEnd">
+        Date Completed:
+    </label>
+    <div class="">
+        <app-text-input
+            [Id]="'RemodelledDateEnd'"
+            [ParentForm]="ParentForm"
+            [IsRequired]="false"
+            [MinLength]="0"
+            [MaxLength]="200"
+            [HasBorder]="true">
+        </app-text-input>
+    </div>
+    <small>Complainant should submit construction cost details where available.</small>
+</div>
+<hr>
+
+<div class="row">
+    <div class="col-sm-1">
+        <p>6. </p>
+    </div>
+    <div class="col-sm-11">
+        <div class="inline mr-3">
+            <app-checkbox [Id]="'PropertyIsIncomeProducingCheck'" [ParentForm]="ParentForm"></app-checkbox>
+        </div>
+        <label class="inline" for="PropertyIsIncomeProducingCheck">
+            Property is income producing (e.g., leased or rented), commercial or industrial property
+            and the complainant is prepared to present detailed information about the property including rental
+            income, operating expenses, sales volume, and income statements.
+        </label>
+    </div>
+</div>
+<hr>
+
+<div class="row">
+    <div class="col-sm-1">
+        <p>7. </p>
+    </div>
+    <div class="col-sm-11">
+        <div class="inline mr-3">
+            <app-checkbox [Id]="'Two_Seven_Check'" [ParentForm]="ParentForm"></app-checkbox>
+        </div>
+        <label class="" for="Two_Seven_Check">
+            Additional supporting documentation (check if attached).
+        </label>
+    </div>
+</div>
+

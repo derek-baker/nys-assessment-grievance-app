@@ -1,0 +1,1020 @@
+<div class="modal fade" id="BarReviewOnlineModal" tabindex="-1" role="dialog"
+    aria-labelledby="BarReviewOnlineModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="BarReviewOnlineModalLabel">Online Bar Review</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="container">
+                    <button *ngIf="IsArchiveDownloading === false" (click)="DownloadFilesAssociatedWithSelectedGrievance()" class="btn btn-primary shadow">
+                        Download Grievance Files
+                    </button>
+                    <button *ngIf="IsArchiveDownloading === true" class="btn btn-primary shadow">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </button>
+
+                    <br><br>
+                </div>
+
+                <div class="card p-3 shadow">
+
+                    <form [formGroup]="NysRp525" id="BarReviewOnlineModal_Form" enctype="multipart/form-data"
+                        method="POST">
+
+                        <input formControlName="UserName" type="hidden" required>
+                        <input formControlName="Password" type="hidden" required>
+                        <input formControlName="SubmissionGuid" type="hidden" required>
+                        <input formControlName="TaxMapId" type="hidden" required>
+                        <input formControlName="SubmitterEmail" type="hidden" required>
+                        <input formControlName="SignatureAsBase64String" type="hidden" required>
+
+                        <!-- Header -->
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <img class="img-fluid" src="assets/img/nys-seal.gif" alt="NYS Logo" />
+                            </div>
+
+                            <div class="col-sm-7 text-center">
+                                <br><br>
+                                <h6 class="bold">NEW YORK STATE DEPARTMENT OF TAXATION & FINANCE</h6>
+                                <h6 class="bold">OFFICE OF REAL PROPERTY TAX SERVICES</h6>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <p class="float-right">RP-525 (9/04)</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-center">
+                            <div class="row">
+                                <div class="norightPadOrMargin">
+                                    <h6 class="inline negMarRightFive bold">
+                                        NOTICE OF DETERMINATION OF BOARD OF ASSESSMENT REVIEW
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-center">
+                            <div class="">
+                                <h6 class="inline">For &nbsp;&nbsp;</h6>
+                            </div>
+                            <div class="w-50 text-center">
+                                <app-text-input [Id]="'Admin_Rp525_Muni'" [ParentForm]="NysRp525" [IsRequired]="true"
+                                    [MinLength]="2" [MaxLength]="50" [HasBorder]="true">
+                                </app-text-input>
+                                <br>
+                                <small class="text-muted">(city, town, village, or county)</small>
+                            </div>
+                        </div>
+
+                        <br>
+                        <!-- /Header -->
+
+                        <!-- under header section -->
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <textarea formControlName="Admin_Rp525_ComplainantInfoTextArea" class="form-control" rows="4" required></textarea>
+                                <p class="text-center mb-0">Name and address of Complainant</p>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <app-text-input [Id]="'Admin_Rp525_TaxMapId'" [ParentForm]="NysRp525" [IsRequired]="true"
+                                    [MinLength]="0" [MaxLength]="200" [HasBorder]="true">
+                                </app-text-input>
+                                <p class="text-center mb-0">
+                                    Tax map section/block/lot #
+                                </p>
+                                <app-text-input [Id]="'Admin_Rp525_Location1'" [ParentForm]="NysRp525" [IsRequired]="false"
+                                    [MinLength]="0" [MaxLength]="200" [HasBorder]="true">
+                                </app-text-input>
+                                <app-text-input [Id]="'Admin_Rp525_Location2'" [ParentForm]="NysRp525" [IsRequired]="false"
+                                    [MinLength]="0" [MaxLength]="200" [HasBorder]="true">
+                                </app-text-input>
+                                <p class="text-center">
+                                    Location of property if different than address of Complainant
+                                </p>
+                            </div>
+
+                            <div class="col-sm-12 mt-2">
+                                <hr>
+                                <p class="inline">
+                                    <b>The tentative assessed value of </b>
+                                    <app-text-input-nonstyled [Id]="'Admin_Rp525_Tentative'" [ParentForm]="NysRp525"
+                                        [Classes]="'width-one-fifty'" [Placeholder]="'$'" [IsCurrency]="true" [IsRequired]="true">
+                                    </app-text-input-nonstyled>
+                                    <b> for this property:</b>
+                                </p>
+                            </div>
+
+                            <hr><br>
+
+                            <div class="col-sm-12 ml-5 mt-2">
+                                <p class="float-left inline">a. &nbsp;</p>
+                                <div class="float-left inline mr-3">
+                                    <app-checkbox [Id]="'Admin_Rp525_Check2a'" [ParentForm]="NysRp525"></app-checkbox>
+                                </div>
+                                <p class="inline">
+                                    has been reduced to an assessed value of
+                                    Land
+                                    <app-text-input-nonstyled [Id]="'Admin_Rp525_Land'" [ParentForm]="NysRp525"
+                                        [Classes]="'width-one-fifty'" [Placeholder]="'$'" [IsCurrency]="true">
+                                    </app-text-input-nonstyled>
+                                    Total
+                                    <app-text-input-nonstyled [Id]="'Admin_Rp525_Total'" [ParentForm]="NysRp525"
+                                        [Classes]="'width-one-fifty'" [Placeholder]="'$'" [IsCurrency]="true">
+                                    </app-text-input-nonstyled>
+                                </p>
+                            </div>
+
+                            <div style="margin-left: 15%;" class="col-sm-12">
+                                <div class="inline">
+                                    <app-checkbox [Id]="'Admin_Rp525_Check2ai'" [ParentForm]="NysRp525"></app-checkbox>
+                                </div>
+                                <label class="ml-3 inline" for="CheckEqualizationA">
+                                    <p class="inline">
+                                        if this box is checked, assessment has been reduced to amount claimed in
+                                        complaint
+                                    </p>
+                                </label>
+                            </div>
+
+                            <div class="col-sm-12 ml-5 mt-3">
+                                <p class="float-left inline">b. &nbsp;</p>
+                                <div class="float-left inline">
+                                    <app-checkbox [Id]="'Admin_Rp525_Check2b'" [ParentForm]="NysRp525"></app-checkbox>
+                                </div>
+                                <label class="ml-3 inline" for="CheckEqualizationA">
+                                    <p class="inline">
+                                        has not been reduced
+                                    </p>
+                                </label>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <p>
+                                    <b>
+                                        Your complaint was based upon a contention that your assessment should
+                                        be changed because of the following:
+                                    </b>
+                                </p>
+                            </div>
+
+                            <div class="row ml-5">
+                                <div class="ml-5">
+                                    <app-checkbox [Id]="'Admin_Rp525_AssessedCheck'" [ParentForm]="NysRp525"></app-checkbox>
+                                </div>
+                                <label class="ml-2 mr-5" for="Admin_Rp525_AssessedCheck">&nbsp;Assessed Valuation</label>
+                                <div>
+                                    <app-checkbox [Id]="'Admin_Rp525_ExemptionCheck'" [ParentForm]="NysRp525"></app-checkbox>
+                                </div>
+                                <label class="ml-2 mr-5" for="Admin_Rp525_ExemptionCheck">&nbsp;Exemption</label>
+                                <div>
+                                    <app-checkbox [Id]="'Admin_Rp525_ClassificationCheck'" [ParentForm]="NysRp525"></app-checkbox>
+                                </div>
+                                <label class="ml-2 mr-5" for="Admin_Rp525_ClassificationCheck">&nbsp;Classification</label>
+                                <div>
+                                    <app-checkbox [Id]="'Admin_Rp525_OtherCheck'" [ParentForm]="NysRp525"></app-checkbox>
+                                </div>
+                                <label class="ml-2" for="Admin_Rp525_OtherCheck">&nbsp;Other</label>
+                            </div>
+
+                        </div>
+
+                        <br><br>
+                        <!-- /under header section -->
+
+                        <p>
+                            <b>
+                                The Board of Assessment Review has made this determination for reason set forth below:
+                            </b>
+                        </p>
+                        <hr>
+
+                        <!-- assessed valuation -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h4><b>Assessed Valuation</b></h4>
+                            </div>
+                        </div>
+
+                        <div class="row ml-3">
+                            <p>
+                                a. The current full market value of your property was determined to be &nbsp;
+                            </p>
+                            <app-text-input-nonstyled [Id]="'Admin_Rp525_3a'" [ParentForm]="NysRp525"
+                                [Classes]="'width-one-fifty'" [Placeholder]="'$'" [IsCurrency]="true">
+                            </app-text-input-nonstyled>
+                        </div>
+
+                        <div class="row ml-3">
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_3a1'" [ParentForm]="NysRp525"></app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <p class="inline">
+                                    (1.) &nbsp;&nbsp;&nbsp;&nbsp;
+                                    The proof of value you presented was adequate to support reduction granted.
+                                </p>
+                            </div>
+                            <div class="col-sm-3 pl-0">
+                                <!--  -->
+                            </div>
+                        </div>
+
+                        <div class="row ml-3">
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_3a2'" [ParentForm]="NysRp525"></app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-11">
+                                <p class="inline">
+                                    (2.) &nbsp;&nbsp;&nbsp;&nbsp;
+                                    The proof of value you presented was inadequate because:
+                                </p>
+                                <app-text-input-nonstyled [Id]="'Admin_Rp525_3a2text'" [ParentForm]="NysRp525"
+                                    [Classes]="'width-one-fifty'" [Placeholder]="'$'" [IsCurrency]="true">
+                                </app-text-input-nonstyled>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <!--  -->
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_3a2i'" [ParentForm]="NysRp525">
+                                    </app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="inline">
+                                    i. &nbsp;&nbsp;
+                                    the supporting data was insufficient
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <!--  -->
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_3a2ii'" [ParentForm]="NysRp525">
+                                    </app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="inline">
+                                    ii. &nbsp;&nbsp;
+                                    sales were not comparable to your property
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <!--  -->
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_3a2iii'" [ParentForm]="NysRp525">
+                                    </app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="inline">
+                                    iii. &nbsp;&nbsp;
+                                    the written appraisal was incomplete
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <!--  -->
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_3a2iv'" [ParentForm]="NysRp525">
+                                    </app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="inline">
+                                    iv. &nbsp;&nbsp;
+                                    the income and expense statement was incomplete (income producing property)
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <!--  -->
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_3a2v'" [ParentForm]="NysRp525">
+                                    </app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="inline">
+                                    v. &nbsp;&nbsp;
+                                    the construction cost details were incomplete.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="row ml-3 mt-3">
+                            <p>
+                                b. The uniform percentage of value applicable in this assessing unit is &nbsp;
+                            </p>
+                            <app-text-input-nonstyled [Id]="'Admin_Rp525_3b'" [ParentForm]="NysRp525"
+                                [Classes]="'width-one-fifty'" [Placeholder]="'$'" [IsCurrency]="true">
+                            </app-text-input-nonstyled>
+                        </div>
+
+                        <div class="row ml-3">
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_3b1'" [ParentForm]="NysRp525"></app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <p class="inline">
+                                    (1.) &nbsp;&nbsp;&nbsp;&nbsp;
+                                    The proof of assessment ratio that you presented was adequate to support reduction granted.
+                                </p>
+                            </div>
+                            <div class="col-sm-3 pl-0">
+                                <!--  -->
+                            </div>
+                        </div>
+
+                        <div class="row ml-3">
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_3b2'" [ParentForm]="NysRp525"></app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <p class="inline">
+                                    (2.) &nbsp;&nbsp;&nbsp;&nbsp;
+                                    The proof of assessment ratio that you presented was inadequate because:
+                                </p>
+                            </div>
+                            <div class="col-sm-3 pl-0">
+                                <!--  -->
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <!--  -->
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_3b2i'" [ParentForm]="NysRp525">
+                                    </app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="inline">
+                                    i. &nbsp;&nbsp;
+                                    insufficient evidence was used in calculating an assessment ratio
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <!--  -->
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_3b2ii'" [ParentForm]="NysRp525">
+                                    </app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="inline">
+                                    ii. &nbsp;&nbsp;
+                                    sufficient evidence was presented by the assessor to refute the residential
+                                    assessment ratio (RAR) or the State equalization rate
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <!--  -->
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_3b2iii'" [ParentForm]="NysRp525">
+                                    </app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="inline">
+                                    iii. &nbsp;&nbsp;
+                                    the State ratios are inapplicable due to revaluation
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <!--  -->
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_3b2iv'" [ParentForm]="NysRp525">
+                                    </app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="inline">
+                                    iv. &nbsp;&nbsp;
+                                    the ratio that you presented was not the correct residential assessment ratio (RAR)
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <!--  -->
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_3b2v'" [ParentForm]="NysRp525">
+                                    </app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="inline">
+                                    v. &nbsp;&nbsp;
+                                    the rate that you presented was not the correct State equalization rate.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="row ml-3 mt-3">
+                            <p>
+                                c. The physical characteristics and inventory of your property were determined to be:
+                            </p>
+                        </div>
+
+                        <div class="row ml-3">
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_3c1'" [ParentForm]="NysRp525"></app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <p class="inline">
+                                    (1.) &nbsp;&nbsp;&nbsp;&nbsp;
+                                    Correct
+                                </p>
+                            </div>
+                            <div class="col-sm-3 pl-0">
+                                <!--  -->
+                            </div>
+                        </div>
+
+                        <div class="row ml-3">
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_3c2'" [ParentForm]="NysRp525"></app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <p class="inline">
+                                    (2.) &nbsp;&nbsp;&nbsp;&nbsp;
+                                    Incorrect
+                                </p>
+                            </div>
+                            <div class="col-sm-3 pl-0">
+                                <!--  -->
+                            </div>
+                        </div>
+
+                        <br><hr>
+                        <!-- /assessed valuation -->
+
+                        <!-- assessed valuation cont -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h4><b>Assessed Valuation (cont.)</b></h4>
+                                <p>
+                                    The correct inventory should indicate the following:
+                                </p>
+                                <div class="w-100">
+                                    <app-text-input [Id]="'Admin_Rp525_4_1'" [ParentForm]="NysRp525"
+                                        [IsRequired]="false" [MinLength]="0" [MaxLength]="200" [HasBorder]="true">
+                                    </app-text-input>
+                                    <app-text-input [Id]="'Admin_Rp525_4_2'" [ParentForm]="NysRp525"
+                                        [IsRequired]="false" [MinLength]="0" [MaxLength]="200" [HasBorder]="true">
+                                    </app-text-input>
+                                    <app-text-input [Id]="'Admin_Rp525_4_3'" [ParentForm]="NysRp525"
+                                        [IsRequired]="false" [MinLength]="0" [MaxLength]="200" [HasBorder]="true">
+                                    </app-text-input>
+                                    <app-text-input [Id]="'Admin_Rp525_4_4'" [ParentForm]="NysRp525"
+                                        [IsRequired]="false" [MinLength]="0" [MaxLength]="200" [HasBorder]="true">
+                                    </app-text-input>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br><hr>
+                        <!-- /assessed valuation cont -->
+
+                        <!-- exemption -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h4><b>Exemption</b></h4>
+                            </div>
+                            <div class="col-sm-12">
+                                <p class="inline">The taxable assessed value was determined to be:</p>
+                                <div class="mb-3">
+                                    <app-text-input [Id]="'Admin_Rp525_5'" [ParentForm]="NysRp525"
+                                        [IsRequired]="false" [MinLength]="1" [MaxLength]="200" [HasBorder]="true"
+                                        [Placeholder]="'$'" [IsCurrency]="true">
+                                    </app-text-input>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_5_1_Check'" [ParentForm]="NysRp525"></app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <p class="inline">
+                                    (1.) &nbsp;&nbsp;&nbsp;&nbsp;
+                                    Your request for exemption has been granted in the amount of:
+                                </p>
+                            </div>
+                            <div class="col-sm-3 pl-0">
+                                <div class="w-50">
+                                    <app-text-input [Id]="'Admin_Rp525_5_1_Text'" [ParentForm]="NysRp525"
+                                        [IsRequired]="false" [MinLength]="1" [MaxLength]="200" [HasBorder]="true"
+                                        [Placeholder]="'$'" [IsCurrency]="true">
+                                    </app-text-input>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_5_2_Check'" [ParentForm]="NysRp525"></app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <p class="inline">
+                                    (2.) &nbsp;&nbsp;&nbsp;&nbsp;
+                                    Your request for an exemption was denied because you do not qualify for that
+                                    exemption.
+                                </p>
+                            </div>
+                        </div>
+
+                        <br>
+                        <hr>
+                        <!-- /exemption -->
+
+                        <!-- classification -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h4><b>Classification</b></h4>
+                            </div>
+
+                        </div>
+
+                        <div class="row ml-2">
+                            <p class="mb-0">
+                                a. &nbsp;&nbsp;&nbsp;&nbsp; The property class designation was determined to be:
+                            </p>
+                        </div>
+
+                        <div class="row ml-5">
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_6a1'" [ParentForm]="NysRp525">
+                                    </app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <p class="inline">
+                                    (1.) &nbsp;&nbsp;&nbsp;&nbsp;
+                                    correct
+                                </p>
+                            </div>
+                            <div class="col-sm-3 pl-0">
+                                <!--  -->
+                            </div>
+                        </div>
+
+                        <div class="row ml-5">
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_6a2'" [ParentForm]="NysRp525">
+                                    </app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <p class="inline">
+                                    (2.) &nbsp;&nbsp;&nbsp;&nbsp;
+                                    incorrect because:
+                                </p>
+                            </div>
+                            <div class="col-sm-3 pl-0">
+                                <!--  -->
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <!--  -->
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_6a2i'" [ParentForm]="NysRp525">
+                                    </app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="inline">
+                                    i. &nbsp;&nbsp;
+                                    the class designation should be homestead
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <!--  -->
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp5256a2ii'" [ParentForm]="NysRp525">
+                                    </app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="inline">
+                                    ii. &nbsp;&nbsp;
+                                    the class designation should be non-homestead
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="row ml-2">
+                            <p class="mb-0">
+                                b. &nbsp;&nbsp;&nbsp;&nbsp; The property class allocation was determined to be:
+                            </p>
+                        </div>
+
+                        <div class="row ml-5">
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_6b1'" [ParentForm]="NysRp525">
+                                    </app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <p class="inline">
+                                    (1.) &nbsp;&nbsp;&nbsp;&nbsp;
+                                    correct
+                                </p>
+                            </div>
+                            <div class="col-sm-3 pl-0">
+                                <!--  -->
+                            </div>
+                        </div>
+
+                        <div class="row ml-5">
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_6b2'" [ParentForm]="NysRp525">
+                                    </app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <p class="inline">
+                                    (2.) &nbsp;&nbsp;&nbsp;&nbsp;
+                                    incorrect because:
+                                </p>
+                            </div>
+                            <div class="col-sm-3 pl-0">
+                                <!--  -->
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <!--  -->
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="inline">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    the class designation should be allocated homestead in the amount of
+                                    <app-text-input-nonstyled [Id]="'Admin_Rp525_6b2i'" [ParentForm]="NysRp525"
+                                        [Classes]="'width-one-fifty'" [Placeholder]="'$'" [IsCurrency]="true">
+                                    </app-text-input-nonstyled>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <!--  -->
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="inline">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    and non-homestead in the amount of
+                                    <app-text-input-nonstyled [Id]="'Admin_Rp525_6b2ii'" [ParentForm]="NysRp525"
+                                        [Classes]="'width-one-fifty'" [Placeholder]="'$'" [IsCurrency]="true">
+                                    </app-text-input-nonstyled>
+                                </p>
+                            </div>
+                        </div>
+
+                        <hr><br>
+                        <!-- /classification -->
+
+                        <!-- dismissal -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h4><b>Dismissal</b></h4>
+                            </div>
+
+                            <div class="col-sm-1">
+                                <div class="float-left">
+                                    <app-checkbox [Id]="'Admin_Rp525_7'" [ParentForm]="NysRp525"></app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-11">
+                                <p>
+                                    Your complaint has been dismissed because of your (or your representative's) willful
+                                    neglect or refusal to attend this board's hearing or to be examined concerning your
+                                    complaint or to answer questions relevant to your complaint.
+                                    Where the court finds that a dismissal is warranted, no assessment reduction can be
+                                    granted.
+                                </p>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <br>
+                        <!-- /dismissal -->
+
+                        <!-- additional factors -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h4><b>Additional Factors</b></h4>
+                                <p>
+                                    Factors in addition to or other than those listed that affected the determination
+                                    were:
+                                </p>
+                            </div>
+
+                            <div class="container">
+                                <div class="w-100">
+                                    <app-text-input [Id]="'Admin_Rp525_8_1'" [ParentForm]="NysRp525"
+                                        [IsRequired]="false" [MinLength]="0" [MaxLength]="200" [HasBorder]="true">
+                                    </app-text-input>
+                                    <app-text-input [Id]="'Admin_Rp525_8_2'" [ParentForm]="NysRp525"
+                                        [IsRequired]="false" [MinLength]="0" [MaxLength]="200" [HasBorder]="true">
+                                    </app-text-input>
+                                    <app-text-input [Id]="'Admin_Rp525_8_3'" [ParentForm]="NysRp525"
+                                        [IsRequired]="false" [MinLength]="0" [MaxLength]="200" [HasBorder]="true">
+                                    </app-text-input>
+                                    <app-text-input [Id]="'Admin_Rp525_8_4'" [ParentForm]="NysRp525"
+                                        [IsRequired]="false" [MinLength]="0" [MaxLength]="200" [HasBorder]="true">
+                                    </app-text-input>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br><br>
+                        <!-- 4_l factors -->
+
+                        <!-- before vote -->
+                        <p>
+                            If you are dissatisfied with the determination of the Board of Assessment Review,
+                            you may seek judicial review of your assessment pursuant to Article 7 of the Real
+                            Property Tax Law (RPTL). If you are the owner of one, two or three family residential
+                            structure and reside at such residence, or, if you are the owner of unimproved property
+                            which is not of sufficient size as determined by your assessing unit to contain a one,
+                            two or three family residential structure, you may seek small claims assessment review
+                            pursuant to Title 1-A of Article 7 of the RPTL. Petitions for judicial review must be
+                            filed within thirty (30) days of the last date allowed by law for the filing of the final
+                            assessment roll for your assessing unit, or the published notice of such filing, whichever
+                            is later. Petition forms for Small Claims Assessment Review may be obtained from the
+                            County Clerk's Office.
+                        </p>
+
+                        <hr><br>
+                        <!-- /before vote -->
+
+                        <!-- vote -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h4><b>Vote on complaint</b></h4>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <div class="float-right">
+                                    <app-checkbox [Id]="'Admin_Rp525_9_All'" [ParentForm]="NysRp525"></app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-11">
+                                <p>
+                                    All Concur
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <div class="float-right">
+                                    <app-checkbox [Id]="'Admin_Rp525_9_NotAll'" [ParentForm]="NysRp525"></app-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <p>
+                                    All Concur Except
+                                </p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="inline"> (name) </p>
+                                <app-text-input-nonstyled [Id]="'Admin_Rp525_9_Name1'" [ParentForm]="NysRp525"
+                                    [Classes]="'width-one-fifty'" [Placeholder]="''" [IsCurrency]="false">
+                                </app-text-input-nonstyled>
+
+                                &nbsp;&nbsp;
+
+                                <app-checkbox [Id]="'Admin_Rp525_9_Against1'" [ParentForm]="NysRp525"></app-checkbox>
+                                <label class="ml-2 mr-5" for="Admin_Rp525_9_Against1">&nbsp;Against</label>
+
+                                <app-checkbox [Id]="'Admin_Rp525_9_Abstain1'" [ParentForm]="NysRp525"></app-checkbox>
+                                <label class="ml-2 mr-5" for="Admin_Rp525_9_Abstain1">&nbsp;Abstain</label>
+
+                                <app-checkbox [Id]="'Admin_Rp525_9_Absent1'" [ParentForm]="NysRp525"></app-checkbox>
+                                <label class="ml-2 mr-5" for="Admin_Rp525_9_Absent1">&nbsp;Absent</label>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <!--  -->
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="inline"> (name) </p>
+                                <app-text-input-nonstyled [Id]="'Admin_Rp525_9_Name2'" [ParentForm]="NysRp525"
+                                    [Classes]="'width-one-fifty'" [Placeholder]="''" [IsCurrency]="false">
+                                </app-text-input-nonstyled>
+
+                                &nbsp;&nbsp;
+
+                                <app-checkbox [Id]="'Admin_Rp525_9_Against2'" [ParentForm]="NysRp525"></app-checkbox>
+                                <label class="ml-2 mr-5" for="Admin_Rp525_9_Against2">&nbsp;Against</label>
+
+                                <app-checkbox [Id]="'Admin_Rp525_9_Abstain2'" [ParentForm]="NysRp525"></app-checkbox>
+                                <label class="ml-2 mr-5" for="Admin_Rp525_9_Abstain2">&nbsp;Abstain</label>
+
+                                <app-checkbox [Id]="'Admin_Rp525_9_Absent2'" [ParentForm]="NysRp525"></app-checkbox>
+                                <label class="ml-2 mr-5" for="Admin_Rp525_9_Absent2">&nbsp;Absent</label>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-2 text-center">
+                                <div class="pt-3">
+                                    <app-text-input
+                                        [Id]="'Admin_Rp525_SignDate'"
+                                        [ParentForm]="NysRp525"
+                                        [IsRequired]="true"
+                                        [MinLength]="0"
+                                        [MaxLength]="200"
+                                        [HasBorder]="true"
+                                        [Placeholder]="''">
+                                    </app-text-input>
+                                    <small class="text-muted">Date</small>
+                                </div>
+                            </div>
+                            <div class="col-sm-5 text-center">
+                                <div class="pt-3">
+                                    <app-text-input
+                                        [Id]="'Admin_Rp525_SignName'"
+                                        [ParentForm]="NysRp525"
+                                        [IsRequired]="true"
+                                        [MinLength]="0"
+                                        [MaxLength]="200"
+                                        [HasBorder]="true"
+                                        [Placeholder]="''">
+                                    </app-text-input>
+                                    <small class="text-muted">Print Name</small>
+                                </div>
+                            </div>
+                            <div class="col-sm-5 text-center pr-0">
+                                <div class="float-left w-100">
+                                    <img class="img-fluid" id="Admin_BarReview_SignatureInput" src="">
+                                    <input id="Admin_BarReview_SignatureUnderline" class="writtenSignature" type="text" readonly>
+                                </div>
+                                <br>
+                                <small class="text-muted">Signature of owner (or officer thereof) &nbsp;&nbsp;</small>
+
+                                <br>
+
+                                <div>
+                                    <button (click)="ShowSignaturePad()" type="button" class="btn btn-primary px-1 py-0">
+                                        Sign
+                                    </button>
+                                    <button (click)="ClearSignature('Admin_BarReview_SignatureInput')" type="button" class="btn btn-dark px-1 py-0 ml-1">
+                                        Clear Signature
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="Admin_BarReview_signature-pad" [ngClass]="{'d-none': IsSignaturePadHidden}" class="row" style="height: 250px;">
+                            <div class="signature-pad mx-auto mt-3">
+                                <div class="signature-pad--body">
+                                    <canvas id="Admin_BarReview_sig-pad-canvas" style="touch-action: none;" width="700" height="371"></canvas>
+                                </div>
+                                <div class="signature-pad--footer">
+                                    <div class="description">
+                                        Sign above. By signing or uploading a signature, you are consenting to the use of your signature in an electronic format.
+                                    </div>
+                                    <div class="signature-pad--actions">
+                                        <div>
+                                            <button (click)="EraseSignatureFromSignaturePad()" type="button" class="button clear">Erase</button>
+                                        </div>
+
+                                        <button (click)="InitiateSignatureFileDialog()" type="button">Upload</button>
+                                        <input (change)="RenderSignatureImage()" id="Admin_BarReview_SignatureFile" type="file" style="display: none;" accept=".jpg, .jpeg .png, .bmp"/>
+
+                                        <div>
+                                            <button (click)="SaveSignature()" id="Admin_BarReview_SignatureSave" class="button save">
+                                                Save
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="input-group mt-3">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text" id="basic-addon1">Type here to generate a signature:</span>
+                                    </div>
+                                    <input (keyup)="HandleSignatureKeyup($event)" type="text" class="form-control" placeholder="Type your signature" aria-label="Username" aria-describedby="basic-addon1">
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- /vote -->
+
+                        <br />
+
+                        <button *ngIf="IsOnlineBarReviewSaving == false"
+                            (click)="SaveOnlineBarReview()"
+                            class="btn btn-primary btn-lg shadow btn-block" type="button">
+                            Save
+                        </button>
+                        <button *ngIf="IsOnlineBarReviewSaving == true" class="btn btn-primary btn-lg shadow btn-block"
+                            type="button">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only">Saving...</span>
+                            </div>
+                        </button>
+
+                        <button *ngIf="IsOnlineBarReviewUploading == false"
+                            (click)="CompleteOnlineBarReview()"
+                            class="btn btn-success btn-lg shadow btn-block" type="button">
+                            Submit
+                        </button>
+                        <button *ngIf="IsOnlineBarReviewUploading == true" class="btn btn-success btn-lg shadow btn-block"
+                            type="button">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only">Submitting...</span>
+                            </div>
+                        </button>
+
+                    </form>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

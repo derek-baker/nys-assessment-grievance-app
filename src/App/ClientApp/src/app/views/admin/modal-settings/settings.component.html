@@ -1,0 +1,60 @@
+<div class="modal fade" id="Admin_Settings" tabindex="-1" role="dialog" aria-labelledby="Admin_SettingsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="Admin_SettingsLabel">Edit App Settings</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="container-fluid alert-light shadow">
+                    <!-- Level of assessment -->
+                    <div class="form-group">
+                        <label for="Admin_SettingsLevelOfAssessment">Level of Assessment</label>
+                        <input [(ngModel)]="Settings.levelOfAssessment" [ngModelOptions]="{standalone: true}" id="Admin_SettingsLevelOfAssessment" type="text" class="form-control">
+                    </div>
+
+                    <!-- GrievanceYear -->
+                    <div class="form-group">
+                        <label for="Admin_SettingsYear">Grievance Year</label>
+                        <input [(ngModel)]="Settings.year" [ngModelOptions]="{standalone: true}" id="Admin_SettingsYear" type="number" class="form-control">
+                    </div>
+
+                    <!-- SubmissionsStartDate -->
+                    <div class="form-group">
+                        <label for="Admin_SettingsSubmissionsStart">Submissions Start Date</label>
+                        <input [(ngModel)]="Settings.submissionsStartDate" [ngModelOptions]="{standalone: true}" id="Admin_SettingsSubmissionsStart" type="date" class="form-control">
+                    </div>
+
+                    <!-- SubmissionsStartEnd -->
+                    <div class="form-group">
+                        <label for="Admin_SettingsSubmissionsEnd">Submissions End Date</label>
+                        <input [(ngModel)]="Settings.submissionsEndDate" [ngModelOptions]="{standalone: true}" id="Admin_SettingsSubmissionsEnd" type="date" class="form-control">
+                    </div>
+
+                    <!-- SupportingDocsDateEnd -->
+                    <div class="form-group">
+                        <label for="Admin_SettingsDocsEnd">Supporting Docs End Date</label>
+                        <input [(ngModel)]="Settings.supportingDocsEndDate" [ngModelOptions]="{standalone: true}" id="Admin_SettingsDocsEnd" type="date" class="form-control">
+                    </div>
+
+                    <br>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button (click)="Clean()" type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Close</button>
+
+                <button class="btn btn-success float-right" (click)="SaveSettings()">
+                    Save Settings</button>
+            </div>
+        </div>
+    </div>
+</div>
+

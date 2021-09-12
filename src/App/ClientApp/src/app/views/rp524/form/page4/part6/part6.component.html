@@ -1,0 +1,158 @@
+<!-- Modal -->
+<div class="modal fade" id="SignatureModalPart6" tabindex="-1" role="dialog" aria-labelledby="SignatureModalPart6Label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="SignatureModalPart6Label">
+                    To sign, click and drag on the pad below.
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="height: 250px;">
+
+                <div id="signature-pad-part6" class="signature-pad">
+                    <div class="signature-pad--body">
+                        <canvas id="sig-pad-canvas-part6" style="touch-action: none;" width="664" height="371"></canvas>
+                    </div>
+                    <div class="signature-pad--footer">
+                        <div class="description">
+                            Sign above. By signing, you are consenting to the use of your signature in an electronic format.
+                        </div>
+                        <div class="signature-pad--actions">
+                            <div>
+                                <button type="button" class="button clear" data-action="clear">Erase</button>
+                            </div>
+                            <div>
+                                <button type="button" class="button save" data-action="save-png" data-dismiss="modal">
+                                    Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Modal -->
+
+
+<div class="row">
+    <div class="col-sm-12 text-center mt-4">
+        <h6 class="bold">
+            PART SIX: STIPULATION
+        </h6>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <small>
+            The complainant (or complainant’s representative) and assessor (or assessor designated by a majority of the board of assessors)
+            whose signatures appear below stipulate that the following assessed value is to be applied to the above described property on the
+            <app-text-input-nonstyled
+                [Id]="'six_one_text'"
+                [Classes]="'py-0'"
+                [ParentForm]="ParentForm">
+            </app-text-input-nonstyled> (year)
+            assessment roll:
+
+            <br>
+
+            Land
+            <app-text-input-nonstyled
+                [Id]="'six_two_text'"
+                [Classes]="'py-0'"
+                [ParentForm]="ParentForm"
+                [Placeholder]="'$'"
+                [IsCurrency]="true">
+            </app-text-input-nonstyled>
+            Total
+            <app-text-input-nonstyled
+                [Id]="'six_three_text'"
+                [Classes]="'py-0'"
+                [ParentForm]="ParentForm"
+                [Placeholder]="'$'"
+                [IsCurrency]="true">
+            </app-text-input-nonstyled>
+        </small>
+    </div>
+</div>
+
+<div class="d-flex justify-content-center">
+    <small>
+        (Check box if stipulation approves exemption indicated in Part Three, section B.2. or C.1.)
+    </small>
+    <div class="ml-2 mb-3">
+        <app-checkbox [Id]="'six_stipulation_check'" [ParentForm]="ParentForm">
+        </app-checkbox>
+    </div>
+
+</div>
+
+
+<div class="row">
+    <div class="col-sm-4 text-center">
+        <div class="float-left w-100">
+            <img style="height:30px;" id="signature3" src="">
+            <input id="signatureUnderline3" class="writtenSignature" type="hidden" readonly>
+        </div>
+        <br>
+        <div>
+            <!-- Button to trigger modal -->
+            <!-- <button type="button" class="btn btn-primary px-1 py-0" data-toggle="modal" data-target="#SignatureModalPart6">
+                Sign
+            </button>
+            <button (click)="ClearSignature('signature3')" type="button" class="btn btn-dark px-1 py-0 ml-1">
+                Clear Signature
+            </button> -->
+        </div>
+        <!-- <small class="text-muted">Complainant or representative</small> -->
+    </div>
+    <div class="col-sm-4 text-center">
+        <app-text-input
+            [Id]="'six_signature_name'"
+            [ParentForm]="ParentForm"
+            [IsRequired]="false"
+            [MinLength]="0"
+            [MaxLength]="200"
+            [HasBorder]="true"
+            [Placeholder]="''">
+        </app-text-input>
+        <small class="text-muted">Print Name Of Owner Or Officer Thereof</small>
+
+        <!-- <small class="text-muted">Assessor</small> -->
+    </div>
+    <!-- <div class="col-sm-4 text-center">
+        <app-text-input
+            [Id]="'6_assessor_text'"
+            [ParentForm]="ParentForm"
+            [IsRequired]="false"
+            [MinLength]="0"
+            [MaxLength]="200"
+            [HasBorder]="true"
+            [Placeholder]="''">
+        </app-text-input>
+        <small class="text-muted">Assessor</small>
+    </div> -->
+    <div class="col-sm-4 text-center">
+        <app-text-input
+            [Id]="'six_date_text'"
+            [ParentForm]="ParentForm"
+            [IsRequired]="false"
+            [MinLength]="0"
+            [MaxLength]="200"
+            [HasBorder]="true"
+            [Placeholder]="''">
+        </app-text-input>
+        <small class="text-muted">Date</small>
+    </div>
+</div>
+
+

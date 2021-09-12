@@ -1,0 +1,150 @@
+/* You can add global styles to this file, and also import other style files */
+
+body {
+    background-color: #e9ecef;
+}
+
+.darker-hr {
+    height: 0px;
+    border: none;
+    border-top: 1px solid black;
+}
+
+.noLeftPadOrMargin {
+    padding-left: 0px !important;
+    margin-left : 0px !important;
+}
+
+.norightPadOrMargin {
+    padding-right: 0px !important;
+    margin-right : 0px !important;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.noBorder {
+    border: none !important;
+}
+
+.inline {
+    display: inline;
+}
+
+.width-fifty {
+    width: 50px !important;
+}
+.width-one-fifty {
+    width: 150px !important;
+}
+
+.writtenSignature {
+    padding      : 0 !important;
+    border       : none;
+    border-bottom: solid 1px black;
+    width        : 100%;
+}
+
+.dottedUnderline {
+    border-bottom: 1px black dotted;
+}
+
+/* Signature Pad styles */
+.signature-pad {
+    position             : relative;
+    display              : -webkit-box;
+    display              : -ms-flexbox;
+    display              : flex;
+    -webkit-box-orient   : vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction   : column;
+    flex-direction       : column;
+    font-size            : 10px;
+    width                : 100%;
+    height               : 100%;
+    max-width            : 700px;
+    max-height           : 460px;
+    border               : 1px solid #e8e8e8;
+    background-color     : #fff;
+    box-shadow           : 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.08) inset;
+    border-radius        : 4px;
+    padding              : 16px;
+}
+.signature-pad::before,
+.signature-pad::after {
+    position  : absolute;
+    z-index   : -1;
+    content   : "";
+    width     : 40%;
+    height    : 10px;
+    bottom    : 10px;
+    background: transparent;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+}
+.signature-pad::before {
+    left             : 20px;
+    -webkit-transform: skew(-3deg) rotate(-3deg);
+    transform        : skew(-3deg) rotate(-3deg);
+}
+.signature-pad::after {
+    right            : 20px;
+    -webkit-transform: skew(3deg) rotate(3deg);
+    transform        : skew(3deg) rotate(3deg);
+}
+.signature-pad--body {
+    position        : relative;
+    -webkit-box-flex: 1;
+    -ms-flex        : 1;
+    flex            : 1;
+    border          : 1px solid #f4f4f4;
+}
+.signature-pad--body canvas {
+    position     : absolute;
+    left         : 0;
+    top          : 0;
+    width        : 100%;
+    height       : 100%;
+    border-radius: 4px;
+    box-shadow   : 0 0 5px rgba(0, 0, 0, 0.02) inset;
+}
+.signature-pad--footer {
+    color     : #C3C3C3;
+    text-align: center;
+    font-size : 1.2em;
+    margin-top: 8px;
+}
+.signature-pad--actions {
+    display         : -webkit-box;
+    display         : -ms-flexbox;
+    display         : flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack   : justify;
+    justify-content : space-between;
+    margin-top      : 8px;
+}
+/* /Signature Pad styles */
+
+* {
+    font-family: Calibri, sans-serif
+}
+
+@media screen and (max-width: 1200px) {
+    .hideOnSmall {
+        display: none;
+    }
+}
+
+#form {
+    min-width:930px;
+    width: auto !important;
+    width:930px;
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* TO DO: This should be in a component */
+.customFileInput {
+    /* Hide default file input selected files text */
+    color: transparent;
+}

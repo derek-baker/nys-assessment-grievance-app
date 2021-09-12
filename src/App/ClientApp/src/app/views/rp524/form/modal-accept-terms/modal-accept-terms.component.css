@@ -1,0 +1,9 @@
+#AffirmLink {
+    color: #007bff;
+    cursor: pointer;
+
+}
+#AffirmLink:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}

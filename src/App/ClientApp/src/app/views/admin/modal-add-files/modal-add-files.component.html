@@ -1,0 +1,154 @@
+<div class="modal fade" id="AddFilesToSubmission" tabindex="-1" role="dialog" aria-labelledby="AddFilesToSubmissionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="AddFilesToSubmissionLabel">Add Files To Submission</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="alert alert-light shadow">
+                    <form id="AddFilesForm" enctype="multipart/form-data" method="POST">
+
+                        <input [ngModel]="UserName" id="Admin_AddFiles_UserName" name="userName" type="hidden">
+                        <input [ngModel]="ReviewerPassword" id="password3" name="password" type="hidden">
+
+                        <!-- Files -->
+                        <div class="alert alert-warning shadow">
+                            <label for="files">
+                                <b>
+                                    Use the 'Browse' button below to select the file(s) you want to add to the submission.
+                                </b>
+                                <br>
+                                <small class="text-muted">
+                                    To select multiple files (on Windows), hold the 'Ctrl' key down before clicking on the files you
+                                    want to upload in the File Upload dialog that opens after clicking the 'Browse' button.
+                                    The process is similar on MacOS.
+                                </small>
+                            </label>
+                            <br />
+                            <br />
+                            <input class="customFileInput" type="file" id="files" name="files" multiple required>
+
+                            <app-staged-files [IdOfWatchedFileInput]="'files'"></app-staged-files>
+                        </div>
+
+
+
+                        <!-- Guid -->
+                        <div class="form-group">
+                            <label for="submissionGuid">Submission Reference ID</label>
+                            <input [(ngModel)]="SelectedApplication.Guid" id="submissionGuid" name="submissionGuid" type="text" class="form-control" placeholder="Enter submission ID" required readonly>
+                        </div>
+
+                        <!-- Tax Map ID -->
+                        <div class="form-group">
+                            <label for="taxMapId">Parcel Identifier</label>
+                            <input [(ngModel)]="SelectedApplication.TaxMapId" id="taxMapId" name="taxMapId" type="text" class="form-control" placeholder="Enter parcel identifier" required readonly>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="form-group form-check">
+                            <input [(ngModel)]="includesPersonalHearing" name="includesPersonalHearing" type="checkbox" class="form-check-input"
+                                id="AddFiles_IncludesPersonalHearing" value="true" />
+                            <label class="form-check-label" for="AddFiles_IncludesPersonalHearing">
+                                This submission includes a 'Request For Personal Hearing' form.
+                            </label>
+                        </div>
+
+                        <!-- This submission includes a 'Conflict of Interest Form' -->
+                        <div class="form-group form-check">
+                            <input [(ngModel)]="includesConflictOfInterest" name="includesConflictOfInterest" type="checkbox" class="form-check-input"
+                                id="AddFiles_IncludesConflictOfInterest" value="true" />
+                            <label class="form-check-label" for="AddFiles_IncludesConflictOfInterest">
+                                This submission includes a 'Conflict of Interest' form.
+                            </label>
+                        </div>
+
+                        <!-- This submission includes a 'Residential Questionnaire' -->
+                        <div class="form-group form-check">
+                            <input [(ngModel)]="includesResQuestionnaire" name="includesResQuestionnaire" type="checkbox" class="form-check-input"
+                                id="AddFiles_IncludesResQuestionnaire" value="true" />
+                            <label class="form-check-label" for="AddFiles_IncludesResQuestionnaire">
+                                This submission includes a 'Residential Questionnaire' form.
+                            </label>
+                        </div>
+
+                        <!-- This submission includes a 'Commercial Questionnaire' -->
+                        <div class="form-group form-check">
+                            <input [(ngModel)]="includesComQuestionnaire" name="includesComQuestionnaire" type="checkbox" class="form-check-input"
+                                id="AddFiles_IncludesComQuestionnaire" value="true" />
+                            <label class="form-check-label" for="AddFiles_IncludesComQuestionnaire">
+                                This submission includes a 'Commercial Questionnaire' form.
+                            </label>
+                        </div>
+
+                        <!-- This submission includes a 'Letter of Authorization' -->
+                        <div class="form-group form-check">
+                            <input [(ngModel)]="includesLetterOfAuthorization" name="includesLetterOfAuthorization" type="checkbox" class="form-check-input"
+                                id="AddFiles_IncludesLetterOfAuthorization" value="true" />
+                            <label class="form-check-label" for="AddFiles_IncludesLetterOfAuthorization">
+                                This submission includes a 'Letter of Authorization' form.
+                            </label>
+                        </div>
+
+                        <!-- This submission includes I&E Form(s) -->
+                        <div class="form-group form-check">
+                            <input name="includesIncomeExpenseForms" type="checkbox" class="form-check-input"
+                                id="AddFiles_IncludesIncomeExpenseForms" value="true" />
+                            <label class="form-check-label" for="AddFiles_IncludesIncomeExpenseForms">
+                                This submission includes 'I&E' form(s).
+                            </label>
+                        </div>
+
+                        <!-- This submission includes an I&E Exclusion -->
+                        <div class="form-group form-check">
+                            <input name="includesIncomeExpenseExclusion" type="checkbox" class="form-check-input"
+                                id="AddFiles_IncludesIncomeExpenseExclusion" value="true"  />
+                            <label class="form-check-label" for="AddFiles_IncludesIncomeExpenseExclusion">
+                                This submission includes an 'I&E' Exclusion.
+                            </label>
+                        </div>
+
+                        <!-- This submission includes Supporting Documentation -->
+                        <div class="form-group form-check">
+                            <input name="includesSupportingDocumentation" type="checkbox" class="form-check-input"
+                                id="AddFiles_IncludesSupportingDocumentation" value="true" />
+                            <label class="form-check-label" for="AddFiles_IncludesSupportingDocumentation">
+                                This submission includes 'Supporting Documentation'.
+                            </label>
+                        </div>
+
+                        <!-- Applicant Email -->
+                        <!-- <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input [(ngModel)]="SelectedApplication.Email" id="email" name="email" type="text" class="form-control" placeholder="Enter applicant email" required readonly>
+                        </div> -->
+
+                        <br />
+                        <button *ngIf="AddingFilesToSubmission == false" (click)="AddFileToSubmission()"
+                            class="btn btn-success btn-lg shadow btn-block" type="button">
+                            Add file(s)
+                        </button>
+                        <button *ngIf="AddingFilesToSubmission == true" class="btn btn-success btn-lg shadow btn-block" type="button">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only">Adding files...</span>
+                            </div>
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button (click)="UncheckBoxes()" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+

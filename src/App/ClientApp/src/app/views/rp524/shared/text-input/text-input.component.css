@@ -1,0 +1,7 @@
+.formTextInput {
+    padding: 0 !important;
+    border: none;
+    background-color: #dafafd;
+    border-bottom: solid 1px black;
+    width: 100%;
+}

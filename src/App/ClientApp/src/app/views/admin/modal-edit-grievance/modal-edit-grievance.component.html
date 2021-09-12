@@ -1,0 +1,193 @@
+<div class="modal fade" id="Admin_EditGrievance" tabindex="-1" role="dialog" aria-labelledby="Admin_EditGrievanceLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="Admin_EditGrievanceLabel">Edit Grievance</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="alert alert-light shadow">
+                    <form>
+                        <!-- Guid -->
+                        <div class="form-group">
+                            <label for="Admin_Edit_Guid">Grievance ID</label>
+                            <input [ngModel]="GrievanceWrapper.Grievance.guid" [ngModelOptions]="{standalone: true}" id="Admin_Edit_Guid" type="text" class="form-control" readonly>
+                        </div>
+
+                        <!-- Tax Map ID -->
+                        <div class="form-group">
+                            <label for="Admin_Edit_TaxMapId">Parcel Identifier</label>
+                            <input [(ngModel)]="GrievanceWrapper.Grievance.tax_map_id" [ngModelOptions]="{standalone: true}" id="Admin_Edit_TaxMapId" type="text" class="form-control">
+                        </div>
+
+                        <!-- email: string-->
+                        <div class="form-group">
+                            <label for="Admin_Edit_Email">Rep/Owner Email</label>
+                            <input [(ngModel)]="GrievanceWrapper.Grievance.email" [ngModelOptions]="{standalone: true}" id="Admin_Edit_Email" type="text" class="form-control">
+                        </div>
+
+                        <!-- complaint_type: string-->
+                        <div class="form-group">
+                            <label for="Admin_Edit_ComplaintType">Complaint Type</label>
+                            <input [(ngModel)]="GrievanceWrapper.Grievance.complaint_type" [ngModelOptions]="{standalone: true}" id="Admin_Edit_ComplaintType" type="text" class="form-control">
+                        </div>
+
+                        <!-- proposed_value: string-->
+                        <div class="form-group">
+                            <label for="Admin_Edit_ProposedValue">Proposed Value</label>
+                            <input [(ngModel)]="GrievanceWrapper.Grievance.proposed_value" [ngModelOptions]="{standalone: true}" id="Admin_Edit_ProposedValue" type="text" class="form-control">
+                        </div>
+
+
+                        <!-- complainant: string-->
+                        <div class="form-group">
+                            <label for="Admin_Edit_Complainant">Complainant</label>
+                            <input [(ngModel)]="GrievanceWrapper.Grievance.complainant" [ngModelOptions]="{standalone: true}" id="Admin_Edit_Complainant" type="text" class="form-control">
+                        </div>
+
+                        <!-- attorney_group: string-->
+                        <div class="form-group">
+                            <label for="Admin_Edit_RepGroup">Attorney/Rep Group</label>
+                            <input [(ngModel)]="GrievanceWrapper.Grievance.attorney_group" [ngModelOptions]="{standalone: true}" id="Admin_Edit_RepGroup" type="text" class="form-control">
+                        </div>
+
+                        <!-- attorney_phone: string-->
+                        <div class="form-group">
+                            <label for="Admin_Edit_AttyPhone">Attorney Phone</label>
+                            <input [(ngModel)]="GrievanceWrapper.Grievance.attorney_phone" [ngModelOptions]="{standalone: true}" id="Admin_Edit_AttyPhone" type="text" class="form-control">
+                        </div>
+
+                        <!-- complainant_mail_address: string-->
+                        <div class="form-group">
+                            <label for="Admin_Edit_ComplainantMail">Complainant Mail Address</label>
+                            <input [(ngModel)]="GrievanceWrapper.Grievance.complainant_mail_address" [ngModelOptions]="{standalone: true}" id="Admin_Edit_ComplainantMail" type="text" class="form-control">
+                        </div>
+
+                        <!-- co_op_unit_num: string-->
+                        <div class="form-group">
+                            <label for="Admin_Edit_CoOpNum">Co-Op Unit #</label>
+                            <input [(ngModel)]="GrievanceWrapper.Grievance.co_op_unit_num" [ngModelOptions]="{standalone: true}" id="Admin_Edit_CoOpNum" type="text" class="form-control">
+                        </div>
+
+                        <!-- reason: string-->
+                        <div class="form-group">
+                            <label for="Admin_Edit_Reason">Reason</label>
+                            <input [(ngModel)]="GrievanceWrapper.Grievance.reason" [ngModelOptions]="{standalone: true}" id="Admin_Edit_Reason" type="text" class="form-control">
+                        </div>
+
+                        <!-- notes: string-->
+                        <div class="form-group">
+                            <label for="Admin_Edit_Notes">Notes</label>
+                            <input [(ngModel)]="GrievanceWrapper.Grievance.notes" [ngModelOptions]="{standalone: true}" id="Admin_Edit_Notes" type="text" class="form-control">
+                        </div>
+
+                        <!-- This submission includes a 'Request For Personal Hearing Form' -->
+                        <div class="form-group form-check">
+                            <input name="includesPersonalHearing" type="checkbox" class="form-check-input"
+                                id="Admin_EditGrievance_IncludesPersonalHearing"
+                                [(ngModel)]="GrievanceWrapper.Grievance.requested_personal_hearing" [ngModelOptions]="{standalone: true}"/>
+                            <label class="form-check-label" for="Admin_EditGrievance_IncludesPersonalHearing">
+                                This submission includes a 'Request For Personal Hearing' form.
+                            </label>
+                        </div>
+
+                        <!-- This submission includes a 'Conflict of Interest Form' -->
+                        <div class="form-group form-check">
+                            <input name="includesConflictOfInterest" type="checkbox" class="form-check-input"
+                                id="Admin_EditGrievance_IncludesConflictOfInterest"
+                                [(ngModel)]="GrievanceWrapper.Grievance.includes_conflict" [ngModelOptions]="{standalone: true}" />
+                            <label class="form-check-label" for="Admin_EditGrievance_IncludesConflictOfInterest">
+                                This submission includes a 'Conflict of Interest' form.
+                            </label>
+                        </div>
+
+                        <!-- This submission includes a 'Residential Questionnaire' -->
+                        <div class="form-group form-check">
+                            <input name="includesResQuestionnaire" type="checkbox" class="form-check-input"
+                                id="Admin_EditGrievance_IncludesResQuestionnaire"
+                                [(ngModel)]="GrievanceWrapper.Grievance.includes_res_questionnaire" [ngModelOptions]="{standalone: true}" />
+                            <label class="form-check-label" for="Admin_EditGrievance_IncludesResQuestionnaire">
+                                This submission includes a 'Residential Questionnaire' form.
+                            </label>
+                        </div>
+
+                        <!-- This submission includes a 'Commercial Questionnaire' -->
+                        <div class="form-group form-check">
+                            <input name="includesComQuestionnaire" type="checkbox" class="form-check-input"
+                                id="Admin_EditGrievance_IncludesComQuestionnaire"
+                                [(ngModel)]="GrievanceWrapper.Grievance.includes_com_questionnaire" [ngModelOptions]="{standalone: true}" />
+                            <label class="form-check-label" for="Admin_EditGrievance_IncludesComQuestionnaire">
+                                This submission includes a 'Commercial Questionnaire' form.
+                            </label>
+                        </div>
+
+                        <!-- This submission includes a 'Letter of Authorization' -->
+                        <div class="form-group form-check">
+                            <input name="includesLetterOfAuthorization" type="checkbox" class="form-check-input"
+                                id="Admin_EditGrievance_IncludesLetterOfAuthorization"
+                                [(ngModel)]="GrievanceWrapper.Grievance.includes_letter_of_auth" [ngModelOptions]="{standalone: true}" />
+                            <label class="form-check-label" for="Admin_EditGrievance_IncludesLetterOfAuthorization">
+                                This submission includes a 'Letter of Authorization' form.
+                            </label>
+                        </div>
+
+
+
+                        <!-- This submission includes I&E Form(s) -->
+                        <div class="form-group form-check">
+                            <input name="includesIncomeExpenseForms" type="checkbox" class="form-check-input"
+                                id="EditGrievance_IncludesIncomeExpenseForms"
+                                [(ngModel)]="GrievanceWrapper.Grievance.includes_income_expense_forms" [ngModelOptions]="{standalone: true}"/>
+                            <label class="form-check-label" for="EditGrievance_IncludesIncomeExpenseForms">
+                                This submission includes 'I&E' form(s).
+                            </label>
+                        </div>
+
+                        <!-- This submission includes an I&E Exclusion -->
+                        <div class="form-group form-check">
+                            <input name="includesIncomeExpenseExclusion" type="checkbox" class="form-check-input"
+                                id="EditGrievance_IncludesIncomeExpenseExclusion"
+                                [(ngModel)]="GrievanceWrapper.Grievance.includes_income_expense_exclusion" [ngModelOptions]="{standalone: true}" />
+                            <label class="form-check-label" for="EditGrievance_IncludesIncomeExpenseExclusion">
+                                This submission includes an 'I&E' Exclusion.
+                            </label>
+                        </div>
+
+                        <!-- This submission includes Supporting Documentation -->
+                        <div class="form-group form-check">
+                            <input name="includesSupportingDocumentation" type="checkbox" class="form-check-input"
+                                id="EditGrievance_IncludesSupportingDocumentation"
+                                [(ngModel)]="GrievanceWrapper.Grievance.includes_supporting_docs" [ngModelOptions]="{standalone: true}" />
+                            <label class="form-check-label" for="EditGrievance_IncludesSupportingDocumentation">
+                                This submission includes 'Supporting Documentation'.
+                            </label>
+                        </div>
+
+
+                        <br />
+                        <button *ngIf="IsEditing === false" (click)="EditGrievance()"
+                            class="btn btn-success btn-lg shadow btn-block" type="button">
+                            Save edit
+                        </button>
+                        <button *ngIf="IsEditing === true" class="btn btn-success btn-lg shadow btn-block" type="button">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only">Saving...</span>
+                            </div>
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+

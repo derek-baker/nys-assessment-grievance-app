@@ -1,0 +1,77 @@
+﻿namespace Library.Models
+{
+    public class NysRps525OnlineFormAnswers
+    {
+        public string Admin_Rp5256a2ii { get; set; }
+        public string Admin_Rp525_3a { get; set; }
+        public string Admin_Rp525_3a1 { get; set; }
+        public string Admin_Rp525_3a2 { get; set; }
+        public string Admin_Rp525_3a2i { get; set; }
+        public string Admin_Rp525_3a2ii { get; set; }
+        public string Admin_Rp525_3a2iii { get; set; }
+        public string Admin_Rp525_3a2iv { get; set; }
+        public string Admin_Rp525_3a2text { get; set; }
+        public string Admin_Rp525_3a2v { get; set; }
+        public string Admin_Rp525_3b { get; set; }
+        public string Admin_Rp525_3b1 { get; set; }
+        public string Admin_Rp525_3b2 { get; set; }
+        public string Admin_Rp525_3b2i { get; set; }
+        public string Admin_Rp525_3b2ii { get; set; }
+        public string Admin_Rp525_3b2iii { get; set; }
+        public string Admin_Rp525_3b2iv { get; set; }
+        public string Admin_Rp525_3b2v { get; set; }
+        public string Admin_Rp525_3c1 { get; set; }
+        public string Admin_Rp525_3c2 { get; set; }
+        public string Admin_Rp525_4_1 { get; set; }
+        public string Admin_Rp525_4_2 { get; set; }
+        public string Admin_Rp525_4_3 { get; set; }
+        public string Admin_Rp525_4_4 { get; set; }
+        public string Admin_Rp525_5 { get; set; }
+        public string Admin_Rp525_5_1_Check { get; set; }
+        public string Admin_Rp525_5_1_Text { get; set; }
+        public string Admin_Rp525_5_2_Check { get; set; }
+        public string Admin_Rp525_6a1 { get; set; }
+        public string Admin_Rp525_6a2 { get; set; }
+        public string Admin_Rp525_6a2i { get; set; }
+        public string Admin_Rp525_6b1 { get; set; }
+        public string Admin_Rp525_6b2 { get; set; }
+        public string Admin_Rp525_6b2i { get; set; }
+        public string Admin_Rp525_6b2ii { get; set; }
+        public string Admin_Rp525_7 { get; set; }
+        public string Admin_Rp525_8_1 { get; set; }
+        public string Admin_Rp525_8_2 { get; set; }
+        public string Admin_Rp525_8_3 { get; set; }
+        public string Admin_Rp525_8_4 { get; set; }
+        public string Admin_Rp525_9_All { get; set; }
+        public string Admin_Rp525_9_Against1 { get; set; }
+        public string Admin_Rp525_9_Against2 { get; set; }
+        public string Admin_Rp525_9_Abstain1 { get; set; } 
+        public string Admin_Rp525_9_Abstain2 { get; set; }
+        public string Admin_Rp525_9_Name1 { get; set; }
+        public string Admin_Rp525_9_Name2 { get; set; }
+        public string Admin_Rp525_9_NotAll { get; set; }        
+        public string Admin_Rp525_9_Absent1 { get; set; }
+        public string Admin_Rp525_9_Absent2 { get; set; }
+        public string Admin_Rp525_AssessedCheck { get; set; }
+        public string Admin_Rp525_Check2a { get; set; }
+        public string Admin_Rp525_Check2ai { get; set; }
+        public string Admin_Rp525_Check2b { get; set; }
+        public string Admin_Rp525_ClassificationCheck { get; set; }
+        public string Admin_Rp525_ComplainantInfoTextArea { get; set; }
+        public string Admin_Rp525_ExemptionCheck { get; set; }
+        public string Admin_Rp525_Land { get; set; }
+        public string Admin_Rp525_Location1 { get; set; }
+        public string Admin_Rp525_Location2 { get; set; }
+        public string Admin_Rp525_Muni { get; set; }
+        public string Admin_Rp525_OtherCheck { get; set; }
+        public string Admin_Rp525_SignDate { get; set; }
+        public string Admin_Rp525_SignName { get; set; }
+        public string Admin_Rp525_TaxMapId { get; set; }
+        public string Admin_Rp525_Tentative { get; set; }
+        public string Admin_Rp525_Total { get; set; }
+        public string SignatureAsBase64String { get; set; }
+        public string SubmissionGuid { get; set; }
+        public string SubmitterEmail { get; set; }
+        public string TaxMapId { get; set; }
+    }
+}

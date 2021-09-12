@@ -1,0 +1,46 @@
+<div class="modal fade" id="Admin_ExportReview_Modal" tabindex="-1" role="dialog" aria-labelledby="Admin_ExportReview_ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="Admin_ExportReview_ModalLabel">Generate List of Changes Report</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="alert alert-light shadow">
+                    <form>
+
+                        <div class="form-group">
+                            <label for="Admin_ExportReview_DateStart">BAR Completion Date Filter Start</label>
+                            <input [(ngModel)]="DateFilterStart" [ngModelOptions]="{standalone: true}" id="Admin_ExportReview_DateStart" type="date" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Admin_ExportReview_DateEnd">BAR Completion Date Filter End</label>
+                            <input [(ngModel)]="DateFilterEnd" [ngModelOptions]="{standalone: true}" id="Admin_ExportReview_DateEnd" type="date" class="form-control">
+                        </div>
+
+                        <button *ngIf="IsGeneratingChangeReport === false" (click)="GenerateChangeListReport()" type="button" class="btn btn-success">
+                            Export Report
+                        </button>
+                        <button *ngIf="IsGeneratingChangeReport === true" type="button" class="btn btn-success">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+

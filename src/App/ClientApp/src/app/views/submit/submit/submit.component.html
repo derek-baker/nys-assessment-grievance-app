@@ -1,0 +1,205 @@
+<div class="container">
+    <br><br>
+
+    <div class="alert alert-danger shadow">
+        <h4>Important</h4>
+        <b>
+            Do not use your browser's forward or back functionality, refresh this tab,
+            or otherwise navigate to a different page or site using this tab.
+        </b>
+    </div>
+
+    <form id="Submit_FileUploadForm" enctype="multipart/form-data" method="POST">
+
+        <input [ngModel]="SerializedFormData" type="hidden" id="input_form_data" name="formData" required>
+        <input [ngModel]="Base64SignatureFromPartFour" type="hidden" id="input_signature_four" name="signatureFour"
+            required>
+        <input [ngModel]="Base64SignatureFromPartFive" type="hidden" id="input_signature_five" name="signatureFive"
+            required>
+
+        <div class="alert alert-warning shadow">
+            <h4>Your completed NYS RP-524 form is staged for upload as part of your submission.</h4>
+            <p>
+                Please review all information below.
+                <br>
+                After reviewing, you can use the green 'Submit Application' button at the bottom of this page to submit
+                your application.
+            </p>
+        </div>
+
+        <div class="alert alert-light shadow">
+            <h4>(Optional) Select any PDF files that will serve as supporting documentation</h4>
+            <input class="customFileInput" class="mb-3" type="file" id="files" name="files" accept=".pdf" multiple required>
+
+            <app-staged-files [IdOfWatchedFileInput]="'files'"></app-staged-files>
+
+            <ul>
+                <li>
+                    Use the button above to select the PDF file(s) you want to upload.
+                    All files you upload must be PDF files. Non-PDF files will be auto-deleted.
+                </li>
+                <li>
+                    To select multiple files (on Windows), hold the 'Ctrl' key down while clicking on the files you want
+                    to upload
+                    in the File Upload dialog that opens after clicking the button above.
+                </li>
+                <br>
+            </ul>
+
+        </div>
+
+        <div class="form-group">
+            <label for="input_tax_map_id">Tax Map ID Or Section/Block/Lot</label>
+            <input [ngModel]="TaxMapId" name="taxMapId" type="text" class="form-control" id="input_tax_map_id"
+                placeholder="Enter parcel identifier" readonly required>
+            <small class="form-text text-muted">
+                The tax map identifier or section-block-lot number.
+            </small>
+        </div>
+
+        <div class="form-group">
+            <label for="input_email">Email Address</label>
+            <input [ngModel]="Email" name="inputEmail" type="text" class="form-control" id="input_email"
+                placeholder="Enter email" required>
+            <small class="form-text text-muted">
+                We'll send you a submission confirmation at this email
+            </small>
+        </div>
+        <div class="form-group">
+            <label for="input_email_confirm">Confirm Email Address</label>
+            <input [ngModel]="Email" name="input_email_confirm" type="text" class="form-control"
+                id="input_email_confirm" placeholder="Enter email again" required>
+            <small class="form-text text-muted">
+                This should match the email above
+            </small>
+        </div>
+
+        <div class="form-group">
+            <label>Reason For Grievance. Hold CTRL to select multiple options.</label>
+            <select multiple (change)="HandleReasonSelectChange()" class="custom-select" size="2"
+                name="reason" [formControl]="ReasonSelectControl">
+                <option *ngFor="let item of GrievanceReasons" [selected]="item === 'Value'">
+                    {{ item }}
+                </option>
+            </select>
+        </div>
+
+        <div class="g-recaptcha"
+            data-sitekey="6Lc-KvoUAAAAAJESyR-eA3xXzkimmniZL6VfJHfS"
+            data-callback="ReCapchaCallbackOne">
+        </div>
+
+        <hr class="my-4">
+
+        <div class="form-group form-check">
+            <input name="includesPersonalHearing" type="checkbox" class="form-check-input"
+                id="Docs_IncludesPersonalHearing" value="true"
+                onchange="this.value=this.checked"
+                [checked]="IncludesPersonalHearing"
+                (change)="IncludesPersonalHearing = !IncludesPersonalHearing"
+            />
+            <label class="form-check-label" for="Docs_IncludesPersonalHearing">
+                This submission includes a 'Request For Personal Hearing' form.
+            </label>
+        </div>
+
+        <!-- This submission includes a 'Conflict of Interest Form' -->
+        <div class="form-group form-check">
+            <input name="includesConflictOfInterest" type="checkbox" class="form-check-input"
+                id="CreateGrievance_IncludesConflictOfInterest" value="true"
+                onchange="this.value=this.checked"
+                [checked]="IncludesConflictOfInterest"
+                (change)="IncludesConflictOfInterest = !IncludesConflictOfInterest"
+            />
+            <label class="form-check-label" for="CreateGrievance_IncludesConflictOfInterest">
+                This submission includes a 'Conflict of Interest' form.
+            </label>
+        </div>
+        <!-- This submission includes a 'Residential Questionnaire' -->
+        <div class="form-group form-check">
+            <input name="includesResQuestionnaire" type="checkbox" class="form-check-input"
+                id="CreateGrievance_IncludesResQuestionnaire" value="true"
+                onchange="this.value=this.checked"
+                [checked]="IncludesResQuestionnaire"
+                (change)="IncludesResQuestionnaire = !IncludesResQuestionnaire"
+            />
+            <label class="form-check-label" for="CreateGrievance_IncludesResQuestionnaire">
+                This submission includes a 'Residential Questionnaire' form.
+            </label>
+        </div>
+        <!-- This submission includes a 'Commercial Questionnaire' -->
+        <div class="form-group form-check">
+            <input name="includesComQuestionnaire" type="checkbox" class="form-check-input"
+                id="CreateGrievance_IncludesComQuestionnaire" value="true"
+                onchange="this.value=this.checked"
+                [checked]="IncludesComQuestionnaire"
+                (change)="IncludesComQuestionnaire = !IncludesComQuestionnaire"
+            />
+            <label class="form-check-label" for="CreateGrievance_IncludesComQuestionnaire">
+                This submission includes a 'Commercial Questionnaire' form.
+            </label>
+        </div>
+
+        <!-- This submission includes a 'Letter of Authorization' -->
+        <div class="form-group form-check">
+            <input name="includesLetterOfAuthorization" type="checkbox" class="form-check-input"
+                id="CreateGrievance_IncludesLetterOfAuthorization" value="true" onchange="this.value=this.checked"
+                [checked]="IncludesLetterOfAuthorization"
+                (change)="IncludesLetterOfAuthorization = !IncludesLetterOfAuthorization" />
+            <label class="form-check-label" for="CreateGrievance_IncludesLetterOfAuthorization">
+                This submission includes a 'Letter of Authorization' form.
+            </label>
+        </div>
+
+        <!-- This submission includes I&E Form(s) -->
+        <div class="form-group form-check">
+            <input name="includesIncomeExpenseForms" type="checkbox" class="form-check-input"
+                id="CreateGrievance_IncludesIncomeExpenseForms" value="true" onchange="this.value=this.checked"
+                [checked]="IncludesIncomeExpenseForms"
+                (change)="IncludesIncomeExpenseForms = !IncludesIncomeExpenseForms" />
+            <label class="form-check-label" for="CreateGrievance_IncludesIncomeExpenseForms">
+                This submission includes 'I&E' form(s).
+            </label>
+        </div>
+
+        <!-- This submission includes an I&E Exclusion -->
+        <div class="form-group form-check">
+            <input name="includesIncomeExpenseExclusion" type="checkbox" class="form-check-input"
+                id="CreateGrievance_IncludesIncomeExpenseExclusion" value="true" onchange="this.value=this.checked"
+                [checked]="IncludesIncomeExpenseExclusion"
+                (change)="IncludesIncomeExpenseExclusion = !IncludesIncomeExpenseExclusion" />
+            <label class="form-check-label" for="CreateGrievance_IncludesIncomeExpenseExclusion">
+                This submission includes an 'I&E Exclusion' form.
+            </label>
+        </div>
+
+        <!-- This submission includes Supporting Documentation -->
+        <div class="form-group form-check">
+            <input name="includesSupportingDocumentation" type="checkbox" class="form-check-input"
+                id="CreateGrievance_IncludesSupportingDocumentation" value="true" onchange="this.value=this.checked"
+                [checked]="IncludesSupportingDocumentation"
+                (change)="IncludesSupportingDocumentation = !IncludesSupportingDocumentation" />
+            <label class="form-check-label" for="CreateGrievance_IncludesSupportingDocumentation">
+                This submission includes Supporting Documentation.
+            </label>
+        </div>
+
+        <br>
+        <button *ngIf="IsUploading == false" (click)="UploadInitialSubmissionData('Submit_FileUploadForm')"
+            class="btn btn-success btn-lg shadow float-right" type="button">
+            Submit Grievance
+        </button>
+        <button *ngIf="IsUploading == true" class="btn btn-success btn-lg shadow float-right" type="button">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </button>
+
+    </form>
+
+    <br>
+    <br>
+    <br>
+    <br>
+
+</div>

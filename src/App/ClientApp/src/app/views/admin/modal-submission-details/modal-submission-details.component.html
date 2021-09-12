@@ -1,0 +1,70 @@
+<div class="modal fade" id="Admin_ListFiles_Modal" tabindex="-1" role="dialog"
+    aria-labelledby="Admin_ListFiles_ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="Admin_ListFiles_ModalLabel">Grievance Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <section class="container">
+                    <input style="display:none" type="text" [ngModel]="SelectedGrievance.Guid" id="SubmissionIdForCopyButton" readonly>
+                    <button (click)="CopyGrievanceId()" class="btn btn-info">Copy Submission ID To Clipboard</button>
+                    <br>
+                    <br>
+
+                    <ul>
+                        <li *ngFor="let grievanceProp of GrievanceData">
+                            <b>{{grievanceProp.Label}}:</b> {{ grievanceProp.Value }}
+                        </li>
+                    </ul>
+
+                    <!-- <p *ngFor="let grievanceProp of GrievanceData">
+                        <u><b>{{grievanceProp.Label}}:</b></u> {{ grievanceProp.Value }}
+                    </p> -->
+                </section>
+
+                <div *ngIf="IsRefreshingFilesList == true">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+                <div *ngIf="IsRefreshingFilesList == false">
+                    <table class="table table-bordered table-striped table-hover shadow">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">File Name</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let file of FileList; index as i;">
+                                <td>{{ i + 1 }}</td>
+                                <td>{{ file.friendlyName }}</td>
+                                <td><button (click)="DeleteFile(i)" class="btn btn-sm btn-danger">Delete File</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <button *ngIf="IsArchiveDownloading == false" (click)="DownloadFilesAssociatedWithSelectedGrievance()"
+                        class="btn btn-success w-100 sharp-corners">
+                        Download grievance files
+                    </button>
+                    <button *ngIf="IsArchiveDownloading == true" class="btn btn-success w-100 sharp-corners">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Downloading...</span>
+                        </div>
+                    </button>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

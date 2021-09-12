@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Assessment Grievance</title>
+    <base href="/" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Meie+Script&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <noscript>
+        <div class="alert alert-danger">
+            <h3>
+                It appears that you have JavaScript disabled.
+                This site will not work properly without JavaScript.
+                Please use a browser that has JavaScript enabled.
+            </h3>
+        </div>
+    </noscript>
+
+    <app-root>
+        <div class="container mt-4 text-center">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+    </app-root>
+
+</body>
+
+
+<script>
+    //Check if the browser is IE11
+    if (window.document.documentMode) {
+        window.alert(
+            'Internet Explorer is not capable of running this app. \n' +
+            'Please use a different browser. \n' +
+            'Supported browsers include: Firefox, Chrome, Safari, Edge(versions 88 and above), Vivaldi, and Brave.'
+        );
+    }
+</script>
+
+</html>

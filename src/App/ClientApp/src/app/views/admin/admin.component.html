@@ -1,0 +1,549 @@
+<app-modal-edit-grievance (RefreshGridEvent)="RefreshRowEventHandler($event)" [GrievanceWrapper]="SelectedGrievanceWrapper" [UserName]="UserName" [Password]="ReviewerPassword">
+</app-modal-edit-grievance>
+
+<app-modal-add-files [SelectedApplication]="SelectedApplication" [UserName]="UserName" [ReviewerPassword]="ReviewerPassword">
+</app-modal-add-files>
+
+<app-modal-create-submission (reloadGridEvent)="reloadGridEventHandler()" [UserName]="UserName" [ReviewerPassword]="ReviewerPassword">
+</app-modal-create-submission>
+
+<app-modal-online-bar-review
+    [DownloadFilesAssociatedWithSelectedGrievance]="DownloadFilesAssociatedWithSelectedGrievance.bind(this)"
+    [IsArchiveDownloading]="IsArchiveDownloading">
+</app-modal-online-bar-review>
+
+<app-modal-email-dispositions [UserName]="UserName" [Password]="ReviewerPassword">
+</app-modal-email-dispositions>
+
+<app-modal-submission-details [UserName]="UserName" [Password]="ReviewerPassword" [SelectedGrievance]="SelectedApplication"
+    [DownloadFilesAssociatedWithSelectedGrievance]="DownloadFilesAssociatedWithSelectedGrievance.bind(this)"
+    [IsArchiveDownloading]="IsArchiveDownloading" [GetSelectedGrievance]="GetSelectedData.bind(this)">
+</app-modal-submission-details>
+
+<app-modal-export-review [UserName]="UserName" [Password]="ReviewerPassword">
+</app-modal-export-review>
+
+<app-modal-set-representatives [UserName]="UserName" [Password]="ReviewerPassword"></app-modal-set-representatives>
+
+<app-admin-settings [UserName]="UserName" [Password]="ReviewerPassword"></app-admin-settings>
+
+<!-- TODO: Component for: Offline Bar Review Modal -->
+<div class="modal fade" id="BarReviewModal" tabindex="-1" role="dialog" aria-labelledby="BarReviewModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="BarReviewModalLabel">Offline Bar Review</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div *ngIf="CanPrefillBarReview === true">
+                    <button *ngIf="IsDownloadingPrefilled525 === false" (click)="DownloadPrefilledRp525ForOffline()"
+                        class="btn btn-primary shadow">
+                        Download prefilled NYS RP-525 For Offline Use
+                    </button>
+                    <button *ngIf="IsDownloadingPrefilled525 === true" class="btn btn-primary shadow">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </button>
+                    <br>
+                    <br>
+                    <small class="text-muted">
+                        NOTE: To sign this PDF, you'll need to use the newest version of Adobe Reader DC,
+                        or the newest version of Adobe Acrobat. If the file doesn't open automatically, check your
+                        downloads folder.
+                    </small>
+                </div>
+                <div *ngIf="CanPrefillBarReview === false">
+                    <a href="assets/pdf/NYS_RP525.pdf" download>Download Non-Prefilled NYS RP-525 For Offline Use</a>
+                </div>
+
+                <!-- TODO: Feature toggle to enable/disable this feature. -->
+                <div style="display: none" class="alert alert-light shadow">
+                    <form id="BarReviewForm" enctype="multipart/form-data" method="POST">
+
+                        <input [ngModel]="ReviewerPassword" id="password2" name="password" type="hidden">
+
+                        <!-- Files -->
+                        <div class="alert alert-warning shadow">
+                            <label for="nysRp525File">
+                                <b>
+                                    Use the 'Browse' button below to select the completed NYS RP-525 file you want to
+                                    send to the applicant.
+                                </b>
+                                <br>
+                                <small class="text-muted">
+                                    To select multiple files (on Windows), hold the 'Ctrl' key down before clicking on
+                                    the files you
+                                    want to upload in the File Upload dialog that opens after clicking the 'Browse'
+                                    button.
+                                </small>
+                            </label>
+                            <br />
+                            <br />
+                            <input class="customFileInput" type="file" id="nysRp525File" name="nysRp525File" accept=".pdf" required>
+
+                            <app-staged-files [IdOfWatchedFileInput]="'nysRp525File'"></app-staged-files>
+
+                            <br>
+                            <br>
+                            <div class="alert alert-danger">
+                                <h5>
+                                    IMPORTANT: The file you select for upload must be a
+                                    fillable, non-flattened, and completed NYS RP-525.
+                                    After you upload that file, it will be emailed to the
+                                    specified email account.
+                                </h5>
+                            </div>
+                        </div>
+
+                        <!-- Email Radios -->
+                        <div class="alert alert-primary shadow">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
+                                    value="option1">
+                                <label class="form-check-label" for="inlineRadio1">
+                                    Send Email After Upload
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2"
+                                    value="option2">
+                                <label class="form-check-label" for="inlineRadio2">
+                                    Do Not Send Email After Upload
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Guid -->
+                        <div class="form-group">
+                            <label for="submissionGuid">Submission Reference ID</label>
+                            <input [(ngModel)]="SelectedApplication.Guid" id="Admin_OfflineBarReview_submissionGuid"
+                                name="submissionGuid" type="text" class="form-control" required readonly>
+                        </div>
+
+                        <!-- Tax Map ID -->
+                        <div class="form-group">
+                            <label for="Admin_taxMapId">Parcel Identifier</label>
+                            <input [(ngModel)]="SelectedApplication.TaxMapId" id="Admin_taxMapId" name="taxMapId"
+                                type="text" class="form-control" placeholder="Enter parcel identifier" required>
+                        </div>
+
+                        <!-- Applicant Email -->
+                        <div class="form-group">
+                            <label for="submitterEmail">Applicant/Rep Email (Recipient)</label>
+                            <input [(ngModel)]="SelectedApplication.Email" id="submitterEmail" name="submitterEmail"
+                                type="text" class="form-control" placeholder="Enter applicant email" required>
+                            <small class="form-text text-muted">
+                                The email address of the applicant or officer thereof
+                            </small>
+                        </div>
+
+                        <!-- Applicant Email Confirm -->
+                        <div class="form-group">
+                            <label for="emailConfirm">Confirm Applicant/Rep Email</label>
+                            <input [(ngModel)]="SelectedApplication.EmailConfirm" name="emailConfirm" type="text"
+                                class="form-control" id="emailConfirm" placeholder="Enter applicant email again"
+                                required>
+                            <small class="form-text text-muted">
+                                This should match the email above
+                            </small>
+                        </div>
+
+                        <!-- Muni Email -->
+                        <div class="form-group">
+                            <label for="email">Carbon Copy Email Address (CC)</label>
+                            <input [(ngModel)]="SelectedApplication.MuniEmail" id="muniEmail" name="muniEmail"
+                                type="text" class="form-control" placeholder="Enter email" required>
+                            <small class="form-text text-muted">
+                                The email address used to record what is sent to applicants.
+                                PLEASE NOTE: This email should not be the same email used above for the applicant.
+                            </small>
+                        </div>
+
+                        <br />
+                        <button *ngIf="IsUploading == false" (click)="CompleteReview('BarReviewForm')"
+                            class="btn btn-success btn-lg shadow btn-block" type="button">
+                            Upload
+                        </button>
+                        <button *ngIf="IsUploading == true" class="btn btn-success btn-lg shadow btn-block"
+                            type="button">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Offline Bar Review Modal -->
+
+<br>
+
+<div class="container" *ngIf="UserAuthenticated === false">
+    <form (submit)="Authenticate()">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input appAutofocus [(ngModel)]="UserName" id="username" class="form-control" name="username" type="text" placeholder="Enter your username">
+            <small class="text-muted">This field is <u>not</u> case-sensitive</small>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input [(ngModel)]="ReviewerPassword" id="password" name="password" type="password" class="form-control" placeholder="Enter the password">
+            <small class="text-muted">This field <u>is</u> case-sensitive</small>
+        </div>
+
+        <button *ngIf="IsValidatingPassword === false" class="btn btn-success float-right shadow mt-3">
+            Log In
+        </button>
+        <button *ngIf="IsValidatingPassword === true" class="btn btn-success float-right shadow mt-3">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Validating...</span>
+            </div>
+        </button>
+    </form>
+</div>
+<br>
+
+<div class="container-fluid" *ngIf="UserAuthenticated === true">
+
+    <app-admin-instructions></app-admin-instructions>
+
+    <div class="alert alert-dark">
+
+        <!-- Tabs -->
+        <div class="tab">
+            <button class="tablinks w-50 active" (click)="DisplayOptions($event, 'All')">
+                Operate On Multiple Grievances
+            </button>
+            <button id="IndividualGrievanceTab" class="tablinks w-50" (click)="DisplayOptions($event, 'Individual')">
+                Operate On An Individual Grievance
+            </button>
+        </div>
+
+        <div id="All" class="tabcontent">
+            <!-- Button row -->
+            <div class="btn-group d-flex" role="group">
+                <button *ngIf="IsFetchingData == false" (click)="PopulateGridWithData()"
+                    class="btn btn-success sharp-corners">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bootstrap-reboot" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M1.161 8a6.84 6.84 0 1 0 6.842-6.84.58.58 0 0 1 0-1.16 8 8 0 1 1-6.556 3.412l-.663-.577a.58.58 0 0 1 .227-.997l2.52-.69a.58.58 0 0 1 .728.633l-.332 2.592a.58.58 0 0 1-.956.364l-.643-.56A6.812 6.812 0 0 0 1.16 8zm5.48-.079V5.277h1.57c.881 0 1.416.499 1.416 1.32 0 .84-.504 1.324-1.386 1.324h-1.6zm0 3.75V8.843h1.57l1.498 2.828h1.314L9.377 8.665c.897-.3 1.427-1.106 1.427-2.1 0-1.37-.943-2.246-2.456-2.246H5.5v7.352h1.141z" />
+                    </svg>
+                    Refresh Data In Grid
+                </button>
+                <button *ngIf="IsFetchingData == true" class="btn btn-success w-100 sharp-corners">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Refreshing...</span>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Button row -->
+            <div class="btn-group d-flex" role="group">
+                <button *ngIf="IsExportingAllGrievances == false" (click)="ExportAllGrievancesToCsv()" class="btn btn-light sharp-corners">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-paperclip" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M4.5 3a2.5 2.5 0 0 1 5 0v9a1.5 1.5 0 0 1-3 0V5a.5.5 0 0 1 1 0v7a.5.5 0 0 0 1 0V3a1.5 1.5 0 1 0-3 0v9a2.5 2.5 0 0 0 5 0V5a.5.5 0 0 1 1 0v7a3.5 3.5 0 1 1-7 0V3z" />
+                    </svg>
+                    Download Grievances As CSV
+                </button>
+
+                <button *ngIf="IsExportingAllGrievances == true" class="btn btn-light w-100 sharp-corners">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Button row -->
+            <div class="btn-group d-flex" role="group">
+                <button (click)="BeginGenerateChangeListReport()"
+                    class="btn btn-dark sharp-corners">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-arrow-down-fill"
+                        fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M12 1H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z" />
+                    </svg>
+                    Generate List of Changes Report
+                </button>
+            </div>
+
+            <!-- Button row -->
+            <div class="btn-group d-flex" role="group">
+                <button *ngIf="IsFindingAppealsLacking524 == false" (click)="FindGrievancesMissingRp524()"
+                    class="btn btn-info sharp-corners">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-exclamation-diamond"
+                        fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M6.95.435c.58-.58 1.52-.58 2.1 0l6.515 6.516c.58.58.58 1.519 0 2.098L9.05 15.565c-.58.58-1.519.58-2.098 0L.435 9.05a1.482 1.482 0 0 1 0-2.098L6.95.435zm1.4.7a.495.495 0 0 0-.7 0L1.134 7.65a.495.495 0 0 0 0 .7l6.516 6.516a.495.495 0 0 0 .7 0l6.516-6.516a.495.495 0 0 0 0-.7L8.35 1.134z" />
+                        <path
+                            d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z" />
+                    </svg>
+                    Find appeals lacking NYS RP-524 PDF
+                </button>
+                <button *ngIf="IsFindingAppealsLacking524 == true" class="btn btn-info w-100 sharp-corners">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Refreshing...</span>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Button row -->
+            <!-- Button opens modal -->
+            <button *ngIf="IsLoadingDispositionsModal === false" class="btn btn-danger sharp-corners w-100" (click)="BeginGenerateDispositions()">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-envelope-fill" fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z" />
+                </svg>
+                Dispositions
+            </button>
+            <button *ngIf="IsLoadingDispositionsModal === true" class="btn btn-danger w-100" type="button">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </button>
+
+            <!-- Button row -->
+            <!-- Button opens modal -->
+            <button (click)="OpenEditRepsModal()" class="btn btn-dark w-100 sharp-corners">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pen" fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M5.707 13.707a1 1 0 0 1-.39.242l-3 1a1 1 0 0 1-1.266-1.265l1-3a1 1 0 0 1 .242-.391L10.086 2.5a2 2 0 0 1 2.828 0l.586.586a2 2 0 0 1 0 2.828l-7.793 7.793zM3 11l7.793-7.793a1 1 0 0 1 1.414 0l.586.586a1 1 0 0 1 0 1.414L5 13l-3 1 1-3z" />
+                    <path fill-rule="evenodd"
+                        d="M9.854 2.56a.5.5 0 0 0-.708 0L5.854 5.855a.5.5 0 0 1-.708-.708L8.44 1.854a1.5 1.5 0 0 1 2.122 0l.293.292a.5.5 0 0 1-.707.708l-.293-.293z" />
+                    <path
+                        d="M13.293 1.207a1 1 0 0 1 1.414 0l.03.03a1 1 0 0 1 .03 1.383L13.5 4 12 2.5l1.293-1.293z" />
+                </svg>
+                Edit Representatives
+            </button>
+
+            <!-- Button row -->
+            <!-- Button opens modal -->
+            <button (click)="OpenEditSettingsModal()" class="btn btn-warning w-100 sharp-corners">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pen" fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M5.707 13.707a1 1 0 0 1-.39.242l-3 1a1 1 0 0 1-1.266-1.265l1-3a1 1 0 0 1 .242-.391L10.086 2.5a2 2 0 0 1 2.828 0l.586.586a2 2 0 0 1 0 2.828l-7.793 7.793zM3 11l7.793-7.793a1 1 0 0 1 1.414 0l.586.586a1 1 0 0 1 0 1.414L5 13l-3 1 1-3z" />
+                    <path fill-rule="evenodd"
+                        d="M9.854 2.56a.5.5 0 0 0-.708 0L5.854 5.855a.5.5 0 0 1-.708-.708L8.44 1.854a1.5 1.5 0 0 1 2.122 0l.293.292a.5.5 0 0 1-.707.708l-.293-.293z" />
+                    <path
+                        d="M13.293 1.207a1 1 0 0 1 1.414 0l.03.03a1 1 0 0 1 .03 1.383L13.5 4 12 2.5l1.293-1.293z" />
+                </svg>
+                Edit App Settings
+            </button>
+
+        </div>
+
+        <div style="display: none;" id="Individual" class="tabcontent">
+            <!-- Button Row -->
+
+            <div class="btn-group d-flex" role="group">
+                <button *ngIf="IsFetchingData == false" (click)="PopulateGridWithData()"
+                    class="btn btn-success sharp-corners w-100">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bootstrap-reboot" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M1.161 8a6.84 6.84 0 1 0 6.842-6.84.58.58 0 0 1 0-1.16 8 8 0 1 1-6.556 3.412l-.663-.577a.58.58 0 0 1 .227-.997l2.52-.69a.58.58 0 0 1 .728.633l-.332 2.592a.58.58 0 0 1-.956.364l-.643-.56A6.812 6.812 0 0 0 1.16 8zm5.48-.079V5.277h1.57c.881 0 1.416.499 1.416 1.32 0 .84-.504 1.324-1.386 1.324h-1.6zm0 3.75V8.843h1.57l1.498 2.828h1.314L9.377 8.665c.897-.3 1.427-1.106 1.427-2.1 0-1.37-.943-2.246-2.456-2.246H5.5v7.352h1.141z" />
+                    </svg>
+                    Refresh Data In Grid
+                </button>
+                <button *ngIf="IsFetchingData == true" class="btn btn-success w-100 sharp-corners">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Refreshing...</span>
+                    </div>
+                </button>
+
+                <button *ngIf="IsArchiveDownloading == false" (click)="DownloadFilesAssociatedWithSelectedGrievance()"
+                    class="btn btn-dark w-100 sharp-corners">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-arrow-down-fill"
+                        fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M12 1H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z" />
+                    </svg>
+                    Download files for selected grievance
+                </button>
+                <button *ngIf="IsArchiveDownloading == true" class="btn btn-dark w-100 sharp-corners">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Downloading...</span>
+                    </div>
+                </button>
+
+            </div>
+
+            <!-- Button row -->
+            <div class="btn-group d-flex" role="group">
+                <!-- Button opens modal -->
+                <button (click)="BeginDisplayOfSubmissionFiles()" class="btn btn-dark w-100">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-card-list" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M14.5 3h-13a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z" />
+                        <path fill-rule="evenodd"
+                            d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8zm0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5z" />
+                        <circle cx="3.5" cy="5.5" r=".5" />
+                        <circle cx="3.5" cy="8" r=".5" />
+                        <circle cx="3.5" cy="10.5" r=".5" />
+                    </svg>
+                    Grievance details
+                </button>
+
+                <!-- Button opens modal -->
+                <button (click)="BeginOnlineBarReview()" class="btn btn-light w-100">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cloud-plus-fill" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2zm.5 4a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V10a.5.5 0 0 0 1 0V8.5H10a.5.5 0 0 0 0-1H8.5V6z" />
+                    </svg>
+                    Online BAR review
+                </button>
+            </div>
+
+            <!-- Button row -->
+            <div class="btn-group d-flex" role="group">
+                <!-- Button opens modal -->
+                <button (click)="BeginSubmissionCreation()" class="btn btn-warning w-100 sharp-corners">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cloud-arrow-up-fill"
+                        fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2zm2.354 5.146l-2-2a.5.5 0 0 0-.708 0l-2 2a.5.5 0 1 0 .708.708L7.5 6.707V10.5a.5.5 0 0 0 1 0V6.707l1.146 1.147a.5.5 0 0 0 .708-.708z" />
+                    </svg>
+                    Manually create grievance
+                </button>
+
+                <button *ngIf="IsFetchingReviewData == false" (click)="BeginOfflineBarReview()"
+                    class="btn btn-dark w-100 sharp-corners">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chat-left-text" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M14 1H2a1 1 0 0 0-1 1v11.586l2-2A2 2 0 0 1 4.414 11H14a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                        <path fill-rule="evenodd"
+                            d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6zm0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z" />
+                    </svg>
+                    Offline bar review
+                </button>
+                <button *ngIf="IsFetchingReviewData == true" class="btn btn-dark w-100 sharp-corners">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Fetching data...</span>
+                    </div>
+                </button>
+
+            </div>
+
+            <!-- Button row -->
+            <div class="btn-group d-flex" role="group">
+
+                <!-- Button opens modal -->
+                <button (click)="BeginAddFilesToSubmission()" class="btn btn-primary w-100">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cloud-plus-fill" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2zm.5 4a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V10a.5.5 0 0 0 1 0V8.5H10a.5.5 0 0 0 0-1H8.5V6z" />
+                    </svg>
+                    Add file(s) to grievance
+                </button>
+
+                <!-- Button opens modal -->
+                <button (click)="BeginEditGrievance()" class="btn btn-light w-100">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pen" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M5.707 13.707a1 1 0 0 1-.39.242l-3 1a1 1 0 0 1-1.266-1.265l1-3a1 1 0 0 1 .242-.391L10.086 2.5a2 2 0 0 1 2.828 0l.586.586a2 2 0 0 1 0 2.828l-7.793 7.793zM3 11l7.793-7.793a1 1 0 0 1 1.414 0l.586.586a1 1 0 0 1 0 1.414L5 13l-3 1 1-3z" />
+                        <path fill-rule="evenodd"
+                            d="M9.854 2.56a.5.5 0 0 0-.708 0L5.854 5.855a.5.5 0 0 1-.708-.708L8.44 1.854a1.5 1.5 0 0 1 2.122 0l.293.292a.5.5 0 0 1-.707.708l-.293-.293z" />
+                        <path
+                            d="M13.293 1.207a1 1 0 0 1 1.414 0l.03.03a1 1 0 0 1 .03 1.383L13.5 4 12 2.5l1.293-1.293z" />
+                    </svg>
+                    Edit grievance
+                </button>
+
+                <button *ngIf="IsDeletingGrievance === false" (click)="DeleteGrievance()"
+                    class="btn btn-danger w-100 sharp-corners">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-exclamation-triangle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 5zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+                    </svg>
+                    Delete Grievance
+                </button>
+                <button *ngIf="IsDeletingGrievance === true" class="btn btn-danger w-100 sharp-corners">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Deleting...</span>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Btn Row -->
+            <div class="btn-group d-flex" role="group">
+                <button (click)="ToggleHearingCompletedStatus()" class="btn btn-dark w-100 sharp-corners">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pen" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M5.707 13.707a1 1 0 0 1-.39.242l-3 1a1 1 0 0 1-1.266-1.265l1-3a1 1 0 0 1 .242-.391L10.086 2.5a2 2 0 0 1 2.828 0l.586.586a2 2 0 0 1 0 2.828l-7.793 7.793zM3 11l7.793-7.793a1 1 0 0 1 1.414 0l.586.586a1 1 0 0 1 0 1.414L5 13l-3 1 1-3z" />
+                        <path fill-rule="evenodd"
+                            d="M9.854 2.56a.5.5 0 0 0-.708 0L5.854 5.855a.5.5 0 0 1-.708-.708L8.44 1.854a1.5 1.5 0 0 1 2.122 0l.293.292a.5.5 0 0 1-.707.708l-.293-.293z" />
+                        <path
+                            d="M13.293 1.207a1 1 0 0 1 1.414 0l.03.03a1 1 0 0 1 .03 1.383L13.5 4 12 2.5l1.293-1.293z" />
+                    </svg>
+                    Toggle hearing-completed status
+                </button>
+
+                <button (click)="ToggleApplicationDownloadedStatus()" class="btn btn-secondary w-100 sharp-corners">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M11.293 1.293a1 1 0 0 1 1.414 0l2 2a1 1 0 0 1 0 1.414l-9 9a1 1 0 0 1-.39.242l-3 1a1 1 0 0 1-1.266-1.265l1-3a1 1 0 0 1 .242-.391l9-9zM12 2l2 2-9 9-3 1 1-3 9-9z" />
+                        <path fill-rule="evenodd"
+                            d="M12.146 6.354l-2.5-2.5.708-.708 2.5 2.5-.707.708zM3 10v.5a.5.5 0 0 0 .5.5H4v.5a.5.5 0 0 0 .5.5H5v.5a.5.5 0 0 0 .5.5H6v-1.5a.5.5 0 0 0-.5-.5H5v-.5a.5.5 0 0 0-.5-.5H3z" />
+                    </svg>
+                    Toggle downloaded status
+                </button>
+
+                <button (click)="ToggleBarReviewedStatus(undefined)" class="btn btn-dark w-100 sharp-corners">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pen" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M5.707 13.707a1 1 0 0 1-.39.242l-3 1a1 1 0 0 1-1.266-1.265l1-3a1 1 0 0 1 .242-.391L10.086 2.5a2 2 0 0 1 2.828 0l.586.586a2 2 0 0 1 0 2.828l-7.793 7.793zM3 11l7.793-7.793a1 1 0 0 1 1.414 0l.586.586a1 1 0 0 1 0 1.414L5 13l-3 1 1-3z" />
+                        <path fill-rule="evenodd"
+                            d="M9.854 2.56a.5.5 0 0 0-.708 0L5.854 5.855a.5.5 0 0 1-.708-.708L8.44 1.854a1.5 1.5 0 0 1 2.122 0l.293.292a.5.5 0 0 1-.707.708l-.293-.293z" />
+                        <path
+                            d="M13.293 1.207a1 1 0 0 1 1.414 0l.03.03a1 1 0 0 1 .03 1.383L13.5 4 12 2.5l1.293-1.293z" />
+                    </svg>
+                    Toggle bar-reviewed status
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Grid -->
+        <div class="row justify-content-center h-100">
+            <ag-grid-angular
+                #agGrid
+                style="width: 99%; height:500px;"
+                class="ag-theme-alpine"
+                [rowData]="GrievanceStatuses"
+                [columnDefs]="ColumnDefs"
+                [defaultColDef]="DefaultColumnDef"
+                (rowSelected)="onRowSelected($event)"
+            >
+            </ag-grid-angular>
+            <!-- [pagination]="true" -->
+            <!-- [getRowNodeId]="GetRowNodeId()" -->
+        </div>
+    </div>
+
+    <br>
+    <br>
+</div>

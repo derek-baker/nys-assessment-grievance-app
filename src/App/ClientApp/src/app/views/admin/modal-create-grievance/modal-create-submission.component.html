@@ -1,0 +1,292 @@
+<div class="modal fade" id="CreateSubmissionModal" tabindex="-1" role="dialog"
+    aria-labelledby="CreateSubmissionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="CreateSubmissionModalLabel">Create Grievance</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <button (click)="DownloadFillableNysRp524()" class="btn btn-sm btn-primary mb-3"
+                    title="To attach signatures, click a signature box, click 'Browse', select 'Image File' or 'All Files', select an image of your signature, and click 'OK'">
+                    Download NYS RP-524 With Fillable 'Board Only' Section.
+                </button>
+
+                <div class="alert alert-light shadow">
+                    <form id="CreateSubmissionForm" enctype="multipart/form-data" method="POST">
+
+                        <input [ngModel]="UserName" id="Admin_CreateSubmission_UserName" name="userName" type="hidden">
+                        <input [ngModel]="ReviewerPassword" id="Admin_CreateSubmission_password3" name="password"
+                            type="hidden">
+
+                        <!-- Files -->
+                        <div class="alert alert-warning shadow">
+                            <label for="files">
+                                <b>
+                                    Use the 'Browse' button below to select the PDF file(s) you want to add to include
+                                    in the submission.
+                                    All files should be PDF files.
+                                    <u>
+                                        One file (and only 1 file) should be a completed NYS RP-524. This widget will
+                                        attempt to extract data from the NYS RP-524 (assuming it's identifiable via
+                                        metadata).
+                                    </u>
+                                </b>
+                                <br>
+                                <small class="text-muted">
+                                    To select multiple files (on Windows), hold the 'Ctrl' key down before clicking on
+                                    the files you
+                                    want to upload in the File Upload dialog that opens after clicking the 'Browse'
+                                    button.
+                                    The process is similar on MacOS.
+                                </small>
+                            </label>
+                            <br />
+                            <br />
+                            <input class="customFileInput" type="file" id="files_submission_creation" name="files" multiple required>
+
+                            <app-staged-files [IdOfWatchedFileInput]="'files_submission_creation'"></app-staged-files>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Select Complaint Type</label>
+                            <select (change)="HandleComplaintTypeSelectChange()" class="custom-select"
+                                name="complaintType" [formControl]="ComplaintTypeSelectControl">
+                                <option *ngFor="let item of ComplaintTypes">
+                                    {{ item }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="CreateGrievance_ProposedValue">Owners Estimate of Market Value</label>
+                            <input [(ngModel)]="ProposedValue" id="CreateGrievance_ProposedValue" name="proposedValue"
+                                type="text" class="form-control" placeholder="Enter estimate" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Admin_CreateSubmission_taxMapId">Parcel Identifier (minimum 4
+                                characters)</label>
+                            <input [(ngModel)]="TaxMapId" id="Admin_CreateSubmission_taxMapId" name="taxMapId"
+                                type="text" class="form-control" placeholder="Enter parcel identifier" required>
+                        </div>
+
+                        <!-- Complainant -->
+                        <div class="form-group">
+                            <label for="Admin_CreateSubmission_Complainant">Complainant (minimum 4 characters)</label>
+                            <input [(ngModel)]="Complainant" id="Admin_CreateSubmission_Complainant" name="complainant"
+                                type="text" class="form-control" placeholder="Enter complainaint name" required>
+                        </div>
+
+                        <!-- TODO -->
+                        <!-- https://esausilva.com/2017/02/21/filter-select-list-options-typeahead-in-javascript-es6/ -->
+
+                        <!-- Attorney Group Select -->
+                        <div class="form-group">
+                            <label for="repGroupSelect">Select Attorney Group</label>
+                            <select id="repGroupSelect"
+                                (change)="FillAttorneyData()" [formControl]="RepGroupSelectControl" class="custom-select">
+                                <option *ngFor="let attorney of Attorneys" [ngValue]="attorney">
+                                    {{ attorney.GroupName1 }} - {{ attorney.GroupNo }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <input [(ngModel)]="AttorneyDataRaw" name="attorneyDataRaw" type="hidden" required>
+
+                        <!-- We need to capture structured rep data -->
+                        <input type="hidden" [(ngModel)]="AttorneyDataRaw" />
+
+                        <!-- Phone Number -->
+                        <div class="form-group">
+                            <label for="Admin_CreateSubmission_AttorneyPhone">Attorney Phone Number</label>
+                            <input [(ngModel)]="AttorneyPhone" id="Admin_CreateSubmission_AttorneyPhone"
+                                name="attorneyPhone" type="text" class="form-control"
+                                placeholder="Enter attorney phone number" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="applicantEmail">Owner/Representative Email</label>
+                            <input [(ngModel)]="ApplicantEmail" id="applicantEmail" name="applicantEmail" type="text"
+                                class="form-control" placeholder="Enter owner/rep email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="applicantEmailConfirm">Owner/Representative Email Confirm</label>
+                            <input [(ngModel)]="ApplicantEmailConfirm" id="applicantEmailConfirm"
+                                name="applicantEmailConfirm" type="text" class="form-control"
+                                placeholder="Confirm owner/rep email" required>
+                        </div>
+
+                        <!-- Complainant Mailing Address -->
+                        <div class="form-group">
+                            <label for="Admin_CreateSubmission_ComplainantMailAddress">Complainant Mailing
+                                Address</label>
+                            <input [(ngModel)]="ComplainantMailAddress"
+                                id="Admin_CreateSubmission_ComplainantMailAddress" name="complainantMailAddress"
+                                type="text" class="form-control" placeholder="Enter complainant mailing address"
+                                required>
+                        </div>
+                        <!-- Co-op Unit # -->
+                        <div class="form-group">
+                            <label for="Admin_CreateSubmission_CoOpUnitNum">Co-Op Unit #</label>
+                            <input [(ngModel)]="CoOpUnitNum" id="Admin_CreateSubmission_CoOpUnitNum" name="coOpUnitNum"
+                                type="text" class="form-control" placeholder="Enter co-op unit number" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="creatorName">Creator Name</label>
+                            <input [ngModel]="UserName" id="creatorName" name="creatorName" type="text"
+                                class="form-control" placeholder="Enter name of staff member creating submission"
+                                required readonly>
+                        </div>
+
+                        <!-- Reason (Valuation/Exemption/Both) -->
+                        <!-- <div class="form-group">
+                            <label for="Admin_CreateSubmission_Reason">Reason (Valuation/Exemption/Both)</label>
+                            <input [(ngModel)]="Reason" id="Admin_CreateSubmission_Reason" name="reason" type="text" class="form-control"
+                                placeholder="Enter reason" required>
+                        </div> -->
+                        <div class="form-group">
+                            <label>Reason For Grievance. Hold CTRL to select multiple options.</label>
+                            <select multiple (change)="HandleReasonSelectChange()" class="custom-select" size="2"
+                                name="reason" [formControl]="ReasonSelectControl">
+                                <option *ngFor="let item of GrievanceReasons" [selected]="item === 'Value'">
+                                    {{ item }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="form-group">
+                            <label for="Admin_CreateSubmission_Notes">Notes</label>
+                            <textarea [(ngModel)]="Notes" id="Admin_CreateSubmission_Notes" name="notes" rows="3"
+                                class="form-control">
+                                <!--  -->
+                            </textarea>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="form-group form-check">
+                            <input name="includesPersonalHearing" type="checkbox" class="form-check-input"
+                                id="CreateGrievance_IncludesPersonalHearing" value="true"
+                                onchange="this.value=this.checked" [checked]="IncludesPersonalHearing"
+                                (change)="IncludesPersonalHearing = !IncludesPersonalHearing" />
+                            <label class="form-check-label" for="CreateGrievance_IncludesPersonalHearing">
+                                This submission includes a 'Request For Personal Hearing' form.
+                            </label>
+                        </div>
+
+                        <!-- This submission includes a 'Conflict of Interest Form' -->
+                        <div class="form-group form-check">
+                            <input name="includesConflictOfInterest" type="checkbox" class="form-check-input"
+                                id="CreateGrievance_IncludesConflictOfInterest" value="true"
+                                onchange="this.value=this.checked" [checked]="IncludesConflictOfInterest"
+                                (change)="IncludesConflictOfInterest = !IncludesConflictOfInterest" />
+                            <label class="form-check-label" for="CreateGrievance_IncludesConflictOfInterest">
+                                This submission includes a 'Conflict of Interest' form.
+                            </label>
+                        </div>
+
+                        <!-- This submission includes a 'Residential Questionnaire' -->
+                        <div class="form-group form-check">
+                            <input name="includesResQuestionnaire" type="checkbox" class="form-check-input"
+                                id="CreateGrievance_IncludesResQuestionnaire" value="true"
+                                onchange="this.value=this.checked" [checked]="IncludesResQuestionnaire"
+                                (change)="IncludesResQuestionnaire = !IncludesResQuestionnaire" />
+                            <label class="form-check-label" for="CreateGrievance_IncludesResQuestionnaire">
+                                This submission includes a 'Residential Questionnaire' form.
+                            </label>
+                        </div>
+
+                        <!-- This submission includes a 'Commercial Questionnaire' -->
+                        <div class="form-group form-check">
+                            <input name="includesComQuestionnaire" type="checkbox" class="form-check-input"
+                                id="CreateGrievance_IncludesComQuestionnaire" value="true"
+                                onchange="this.value=this.checked" [checked]="IncludesComQuestionnaire"
+                                (change)="IncludesComQuestionnaire = !IncludesComQuestionnaire" />
+                            <label class="form-check-label" for="CreateGrievance_IncludesComQuestionnaire">
+                                This submission includes a 'Commercial Questionnaire' form.
+                            </label>
+                        </div>
+
+                        <!-- This submission includes a 'Letter of Authorization' -->
+                        <div class="form-group form-check">
+                            <input name="includesLetterOfAuthorization" type="checkbox" class="form-check-input"
+                                id="CreateGrievance_IncludesLetterOfAuthorization" value="true"
+                                onchange="this.value=this.checked" [checked]="IncludesLetterOfAuthorization"
+                                (change)="IncludesLetterOfAuthorization = !IncludesLetterOfAuthorization" />
+                            <label class="form-check-label" for="CreateGrievance_IncludesLetterOfAuthorization">
+                                This submission includes a 'Letter of Authorization' form.
+                            </label>
+                        </div>
+
+                        <!-- This submission includes I&E Form(s) -->
+                        <div class="form-group form-check">
+                            <input name="includesIncomeExpenseForms" type="checkbox" class="form-check-input"
+                                id="CreateGrievance_IncludesIncomeExpenseForms" value="true" onchange="this.value=this.checked"
+                                [checked]="IncludesIncomeExpenseForms"
+                                (change)="IncludesIncomeExpenseForms = !IncludesIncomeExpenseForms" />
+                            <label class="form-check-label" for="CreateGrievance_IncludesIncomeExpenseForms">
+                                This submission includes 'I&E' form(s).
+                            </label>
+                        </div>
+
+                        <!-- This submission includes an I&E Exclusion -->
+                        <div class="form-group form-check">
+                            <input name="includesIncomeExpenseExclusion" type="checkbox" class="form-check-input"
+                                id="CreateGrievance_IncludesIncomeExpenseExclusion" value="true" onchange="this.value=this.checked"
+                                [checked]="IncludesIncomeExpenseExclusion"
+                                (change)="IncludesIncomeExpenseExclusion = !IncludesIncomeExpenseExclusion" />
+                            <label class="form-check-label" for="CreateGrievance_IncludesIncomeExpenseExclusion">
+                                This submission includes an 'I&E' Exclusion.
+                            </label>
+                        </div>
+
+                        <!-- This submission includes Supporting Documentation -->
+                        <div class="form-group form-check">
+                            <input name="includesSupportingDocumentation" type="checkbox" class="form-check-input"
+                                id="CreateGrievance_IncludesSupportingDocumentation" value="true" onchange="this.value=this.checked"
+                                [checked]="IncludesSupportingDocumentation"
+                                (change)="IncludesSupportingDocumentation = !IncludesSupportingDocumentation" />
+                            <label class="form-check-label" for="CreateGrievance_IncludesSupportingDocumentation">
+                                This submission includes 'Supporting Documentation'.
+                            </label>
+                        </div>
+
+                        <br />
+                        <button *ngIf="IsUploading == false" (click)="UploadSubmission()"
+                            class="btn btn-success btn-lg shadow btn-block" type="button">
+                            Create Grievance
+                        </button>
+                        <button *ngIf="IsUploading == true" class="btn btn-success btn-lg btn-block shadow"
+                            type="button">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only">Creating Grievance...</span>
+                            </div>
+                        </button>
+
+                    </form>
+
+                    <aside class="alert alert-info m-3">
+                        <p class="p-0">
+                            Using this widget to create a grievance will <b>not</b> result in an email being sent to the
+                            Owner/Rep.
+                        </p>
+                    </aside>
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

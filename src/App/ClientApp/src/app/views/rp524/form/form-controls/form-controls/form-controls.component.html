@@ -1,0 +1,55 @@
+<app-modal-accept-terms (acceptTermsEvent)="acceptTermsEventHandler()"></app-modal-accept-terms>
+
+<div class="btn-group d-flex mt-0 mb-3 shadow" role="group">
+    <button (click)="DisplayTerms()" class="btn btn-danger w-100">Display Terms</button>
+
+    <button (click)="ClearForm()" class="btn btn-light w-100">Clear Form</button>
+
+    <button (click)="BeginSubmission()" class="btn btn-primary w-100">
+        Complete RP-524
+    </button>
+</div>
+
+<div class="alert alert-danger">
+    <b>IMPORTANT:</b> Please familiarize yourself with state and local Grievance Procedures,
+    as well as the instructions for filling out the NYS RP-524 form.
+    <br>
+    Information on both topics can be found at the links below.
+    <br>
+    <a href="https://www.tax.ny.gov/pit/property/contest/grievproced.htm" target="_blank" rel="noopener noreferrer">
+        NYS Grievance Procedures
+    </a>
+    <br>
+    <a href="https://www.tax.ny.gov/pdf/current_forms/orpts/rp524ins.pdf" target="_blank" rel="noopener noreferrer">
+        NYS RP-524 Form Instructions
+    </a>
+</div>
+
+
+<div class="alert alert-warning">
+    <b>INSTRUCTIONS: </b>
+    <a [routerLink]="['/help']" target="_blank" rel="noopener noreferrer">
+        Open app instructions in new tab.
+    </a>
+
+    <p>
+        In most cases, you will be completing part 3:
+        GROUNDS FOR COMPLAINT / SECTION B: EXCESSIVE ASSESSMENT (in the middle of page 3).
+        <br>
+        <u>It's recommended that you verify the accuracy of any prefilled information to ensure its accuracy.</u>
+    </p>
+
+    <div class="alert alert-dark">
+        <p class="mb-0">If you are representing yourself, select Pro Se.</p>
+        <p class="mb-0">If you’re an attorney/rep, select your group.</p>
+        <form [formGroup]="AttorneyForm">
+            <select (change)="FillAttorneyData()" formControlName="AttorneyControl" class="custom-select">
+                <option *ngFor="let attorney of Attorneys" [ngValue]="attorney">
+                    {{ attorney.GroupName1 }} - {{ attorney.GroupNo }}
+                </option>
+            </select>
+            <small>You can use the dropdown above to prefill attorney-related and rep-related info.</small>
+        </form>
+    </div>
+
+</div>

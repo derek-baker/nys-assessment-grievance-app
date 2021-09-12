@@ -1,0 +1,154 @@
+<!-- Signature From Part 4 Modal -->
+<div class="modal fade" id="SignatureModal" tabindex="-1" role="dialog" aria-labelledby="SignatureModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="SignatureModalLabel">
+                    Add your signature
+                </h5>
+                <!-- <div class="alert alert-warning">
+                    <p>There are three ways you can add your signature:</p>
+                    <ol>
+                        <li>Click/tap and drag in the pad below.</li>
+                        <li>Upload an image of your signature (.PNG, .JPG, .BMP).</li>
+                        <li>Type in the input in the footer of this modal.</li>
+                    </ol>
+                </div> -->
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="height: 250px;">
+
+                <div id="signature-pad-part4" class="signature-pad">
+                    <div class="signature-pad--body">
+                        <canvas id="sig-pad-canvas-part4" style="touch-action: none;" width="700" height="371"></canvas>
+                    </div>
+                    <div class="signature-pad--footer">
+                        <div class="description">
+                            Sign above. By signing or uploading a signature, you are consenting to the use of your signature in an electronic format.
+                        </div>
+                        <div class="signature-pad--actions">
+                            <div>
+                                <button type="button" class="button clear" data-action="clear">Erase</button>
+                            </div>
+
+                            <button type="button" id="UploadSignature">Upload</button>
+                            <input type="file" id="SignatureFile" style="display: none;" accept=".jpg, .jpeg .png, .bmp"/>
+
+                            <div>
+                                <button id="Signature4Save" class="button save" data-action="save-png" data-dismiss="modal">
+                                    Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="basic-addon1">Type here to generate a signature:</span>
+                    </div>
+                    <input (keyup)="HandleSignatureKeyup($event)" type="text" class="form-control" placeholder="Type your signature" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Signature Modal -->
+
+<div class="row">
+    <div class="col-sm-6">
+        <small class="float-left">RP-524 (03/09)</small>
+    </div>
+    <div class="col-sm-6">
+        <small class="float-right">4</small>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-sm-12 text-center mt-0">
+        <h6 class="bold">
+            PART FOUR: DESIGNATION OF REPRESENTATIVE TO MAKE COMPLAINT
+        </h6>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <small>
+            I,
+            <app-text-input-nonstyled [Id]="'four_one_text'" [ParentForm]="ParentForm" [Classes]="'py-0'">
+            </app-text-input-nonstyled>,
+            as complainant (or officer thereof) hereby designate
+            <app-text-input-nonstyled [Id]="'four_2_text'" [Classes]="'py-0'" [ParentForm]="ParentForm">
+            </app-text-input-nonstyled>
+            to act as my representative in any and all proceedings before the board
+            of assessment review of the city/town/village/county of
+            <app-text-input-nonstyled [Id]="'four_three_text'" [Classes]="'py-0'" [ParentForm]="ParentForm">
+            </app-text-input-nonstyled>
+            for purposes of reviewing the assessment of my real property as it appears on the
+            <app-text-input-nonstyled [Id]="'four_four_text'" [Classes]="'py-0'" [ParentForm]="ParentForm">
+            </app-text-input-nonstyled>
+            (year) tentative assessment roll of such assessing unit.
+        </small>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-2 text-center">
+        <div class="pt-3">
+            <app-text-input
+                [Id]="'four_date_text'"
+                [ParentForm]="ParentForm"
+                [IsRequired]="false"
+                [MinLength]="0"
+                [MaxLength]="200"
+                [HasBorder]="true"
+                [Placeholder]="''">
+            </app-text-input>
+            <small class="text-muted">Date</small>
+        </div>
+    </div>
+    <div class="col-sm-5 text-center">
+        <div class="pt-3">
+            <app-text-input
+                [Id]="'four_signature_name'"
+                [ParentForm]="ParentForm"
+                [IsRequired]="false"
+                [MinLength]="0"
+                [MaxLength]="200"
+                [HasBorder]="true"
+                [Placeholder]="''">
+            </app-text-input>
+            <small class="text-muted">Print Name Of Owner Or Officer Thereof</small>
+        </div>
+    </div>
+    <div class="col-sm-5 text-center pr-0">
+        <div class="float-left w-100">
+            <img class="img-fluid" id="signature1" src="">
+            <input id="signatureUnderline1" class="writtenSignature" type="text" readonly>
+        </div>
+        <br>
+        <small class="text-muted">Signature of owner (or officer thereof) &nbsp;&nbsp;</small>
+
+        <br>
+
+        <div>
+            <!-- Button to trigger modal -->
+            <button type="button" class="btn btn-primary px-1 py-0" data-toggle="modal" data-target="#SignatureModal">
+                Sign
+            </button>
+            <button (click)="ClearSignature('signature1')" type="button" class="btn btn-dark px-1 py-0 ml-1">
+                Clear Signature
+            </button>
+        </div>
+    </div>
+</div>
+
+<hr>

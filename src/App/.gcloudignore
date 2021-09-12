@@ -1,0 +1,14 @@
+**/obj/
+**/bin/
+**/node_modules/
+**/Tests.Integration/
+**/Test.EndToEnd/
+**/Test.API/
+
+**/.vs/
+.vscode/
+**/.editorconfig
+
+**/_storage_svc_acct_key.json
+_Deploy*.ps1
+
