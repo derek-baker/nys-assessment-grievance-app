@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { HttpService } from 'src/app/services/http.service';
+import { HttpPublicService } from 'src/app/services/http.service.public';
 
 interface IChangeReport {
     TaxMapSbl: string;
@@ -30,14 +31,25 @@ export class ModalExportReviewComponent implements OnInit {
     @Input()
     public readonly Password: string;
 
+    public LevelOfAssessment: number;
     public IsGeneratingChangeReport: boolean = false;
     public DateFilterStart: string;
     public DateFilterEnd: string;
 
-    constructor(private readonly http: HttpService) { }
+    constructor(
+        private readonly http: HttpService,
+        private readonly httpPublic: HttpPublicService) { }
 
     public ngOnInit(): void {
-        //
+        this.httpPublic.GetUserSettings().subscribe(
+            (data) => {
+                this.LevelOfAssessment = data.levelOfAssessment;
+            },
+            (error) => {
+                window.alert('An error occurred');
+                console.error(error);
+            }
+        );
     }
 
     private validateReportParams(
@@ -61,7 +73,7 @@ export class ModalExportReviewComponent implements OnInit {
     }
 
     // TO DO: refactor to server-side settings
-    public GenerateChangeListReport(levelOfAssessment = .0209) {
+    public GenerateChangeListReport(levelOfAssessment = this.LevelOfAssessment) {
         if (this.validateReportParams() === false) {
             window.alert('VALIDATION ERROR: You must supply both a start date filter and an end date value.');
             return;
