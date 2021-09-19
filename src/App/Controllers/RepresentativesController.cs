@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Library.Services.Auth;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace App.Controllers
 {
@@ -33,7 +34,7 @@ namespace App.Controllers
             var repsCollection = _db.GetCollection(_dbSettings.RepresentativesCollectionName);
             var reps = await _db.GetRepresentatives(repsCollection);
             
-            return Ok(reps);
+            return Ok(reps ?? new List<RepGroupInfo>());
         }
 
         [HttpPost]
