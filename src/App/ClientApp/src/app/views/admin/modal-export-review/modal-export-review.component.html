@@ -12,6 +12,10 @@
             <div class="modal-body">
                 <div class="alert alert-light shadow">
                     <form>
+                        <div class="form-group">
+                            <label for="Admin_ExportReview_LevelOfAssessment">BAR Completion Date Filter Start</label>
+                            <input [(ngModel)]="LevelOfAssessment" [ngModelOptions]="{standalone: true}" id="Admin_ExportReview_LevelOfAssessment" type="text" class="form-control">
+                        </div>
 
                         <div class="form-group">
                             <label for="Admin_ExportReview_DateStart">BAR Completion Date Filter Start</label>
