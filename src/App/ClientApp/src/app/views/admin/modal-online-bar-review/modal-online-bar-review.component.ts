@@ -381,8 +381,8 @@ export class ModalOnlineBarReviewComponent implements OnInit {
                 formInputs.Admin_Rp525_SignDate.setValue(this.signatureDateCache);
                 formInputs.Admin_Rp525_SignName.setValue(this.signatureNameCache);
 
-                // TODO: Should we wrap this into the back-end controller action?
-                this.parent.ToggleBarReviewedStatus(true);
+                // TODO: wrap behavior below into the back-end controller action?
+                // this.parent.ToggleBarReviewedStatus(true);
 
                 window.alert(
                     'Review completed successfully. The grievance was marked as being BAR-Reviewed. \n\n' +

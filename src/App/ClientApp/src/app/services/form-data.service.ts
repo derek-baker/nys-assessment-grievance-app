@@ -28,11 +28,6 @@ export class FormDataService {
     }
 
     public InitFormRef(formRef: FormGroup): void {
-        // if (this.form) {
-        //     throw new Error(
-        //         'ERROR: this.form is already initialized. Please investigate.'
-        //     );
-        // }
         this.form = formRef;
     }
 
@@ -73,9 +68,6 @@ export class FormDataService {
      * @param dataURL - Assumed to be in this format: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAO0AAAAWCAYAAAAsGBtVAAADV'
      */
     public GetBase64ImageFromDataUrl(dataURL: string): string {
-        // const base64Img = dataURL.split(';base64,')[1];
-        // return base64Img;
-
         const urlSections: Array<string> = dataURL.split(';base64,');
         if (urlSections.length !== 2) {
             return '';

@@ -7,7 +7,7 @@ import { IRP525PrefillData } from 'src/app/types/IRP525PrefillData';
 import { ISelectedGrievance } from 'src/app/types/ISelectedApplication';
 import { SelectedGrievanceService } from 'src/app/services/selected-application.service';
 import { IAssessmentGrievance } from 'src/app/types/IAssessmentGrievance';
-import { ModalEmailDispositionsComponent } from './modal-email-dispositions/modal-email-dispositions.component';
+import { ModalEmailDispositionsComponent } from './modal-generate-dispositions/modal-generate-dispositions.component';
 import { ModalSubmissionFilesComponent } from './modal-submission-details/modal-submission-details.component';
 import { IAuthResponse } from 'src/app/types/ApiResponses/IAuthResponse';
 import { ClientStorageService } from 'src/app/services/client-storage.service';
@@ -346,87 +346,6 @@ export class AdminComponent implements OnInit {
             return undefined;
         }
         return selectedData;
-    }
-
-    public ToggleApplicationDownloadedStatus(): void {
-        const selectedData = this.GetSelectedData();
-        if (!selectedData) {
-            window.alert(this.nothingSelectedMessage);
-            return;
-        }
-        this.httpService.SetIsDownloadedStatus(
-            selectedData[0].guid,
-            !selectedData[0].downloaded,
-            this.UserName,
-            this.ReviewerPassword
-        ).subscribe(
-            () => {
-                const dataUpdater = (rowToUpdate: IAssessmentGrievance) => {
-                    rowToUpdate.downloaded = (rowToUpdate.downloaded === true) ? false : true;
-                    rowToUpdate.download_date = new Date().toLocaleDateString('en-us');
-                };
-                this.refreshGridData(dataUpdater);
-            },
-            (error) => {
-                window.alert('Unable to update data. See console for more info.');
-                console.error(error);
-            }
-        );
-    }
-
-    public ToggleHearingCompletedStatus(): void {
-        const selectedData = this.GetSelectedData();
-        if (!selectedData) {
-            window.alert(this.nothingSelectedMessage);
-            return;
-        }
-        this.httpService.SetHearingCompletedStatus(
-            selectedData[0].guid,
-            !selectedData[0].completed_personal_hearing,
-            this.UserName,
-            this.ReviewerPassword
-        ).subscribe(
-            () => {
-                const dataUpdater = (rowToUpdate: IAssessmentGrievance) => {
-                    rowToUpdate.completed_personal_hearing =
-                        (rowToUpdate.completed_personal_hearing === true)
-                            ? false : true;
-                };
-                this.refreshGridData(dataUpdater);
-            },
-            (error) => {
-                window.alert('Unable to update data. See console for more info.');
-                console.error(error);
-            }
-        );
-    }
-
-    public ToggleBarReviewedStatus(desiredStatus: boolean): void {
-        const selectedData = this.GetSelectedData();
-        if (!selectedData) {
-            window.alert(this.nothingSelectedMessage);
-            return;
-        }
-        this.httpService.SetBarReviewStatus(
-            selectedData[0].guid,
-            (desiredStatus ?? !selectedData[0].barReviewed),
-            this.UserName,
-            this.ReviewerPassword
-        ).subscribe(
-            () => {
-                const dataUpdater = (rowToUpdate: any) => {
-                    rowToUpdate.barReviewed =
-                        (rowToUpdate.barReviewed === true) ? false : true;
-                    rowToUpdate.barReviewDate =
-                        (!rowToUpdate.barReviewDate) ? new Date().toLocaleDateString('en-us') : '';
-                };
-                this.refreshGridData(dataUpdater);
-            },
-            (error) => {
-                window.alert('Unable to update bar review status. See console for more info.');
-                console.error(error);
-            }
-        );
     }
 
     /**

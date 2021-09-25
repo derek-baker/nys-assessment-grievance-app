@@ -33,7 +33,7 @@ import { ModalAddFilesComponent } from './views/admin/modal-add-files/modal-add-
 import { ModalCreateSubmissionComponent } from './views/admin/modal-create-grievance/modal-create-submission.component';
 import { ModalAcceptTermsComponent } from './views/rp524/form/modal-accept-terms/modal-accept-terms.component';
 import { ModalOnlineBarReviewComponent } from './views/admin/modal-online-bar-review/modal-online-bar-review.component';
-import { ModalEmailDispositionsComponent } from './views/admin/modal-email-dispositions/modal-email-dispositions.component';
+import { ModalEmailDispositionsComponent } from './views/admin/modal-generate-dispositions/modal-generate-dispositions.component';
 import { ModalSubmissionFilesComponent } from './views/admin/modal-submission-details/modal-submission-details.component';
 import { ModalEditGrievanceComponent } from './views/admin/modal-edit-grievance/modal-edit-grievance.component';
 import { ModalExportReviewComponent } from './views/admin/modal-export-review/modal-export-review.component';
