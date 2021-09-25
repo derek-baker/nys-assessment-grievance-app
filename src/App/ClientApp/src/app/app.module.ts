@@ -31,7 +31,6 @@ import { HelpComponent } from './views/help/help.component';
 import { IeBlockerComponent } from './views/ie-blocker/ie-blocker.component';
 import { ModalAddFilesComponent } from './views/admin/modal-add-files/modal-add-files.component';
 import { ModalCreateSubmissionComponent } from './views/admin/modal-create-grievance/modal-create-submission.component';
-import { ModalAcceptTermsComponent } from './views/rp524/form/modal-accept-terms/modal-accept-terms.component';
 import { ModalOnlineBarReviewComponent } from './views/admin/modal-online-bar-review/modal-online-bar-review.component';
 import { ModalEmailDispositionsComponent } from './views/admin/modal-generate-dispositions/modal-generate-dispositions.component';
 import { ModalSubmissionFilesComponent } from './views/admin/modal-submission-details/modal-submission-details.component';
@@ -73,7 +72,6 @@ import { StagedFilesComponent } from './components/FileInputStagedFilesDisplay/s
         AutofocusDirective,
         ModalAddFilesComponent,
         ModalCreateSubmissionComponent,
-        ModalAcceptTermsComponent,
         ModalOnlineBarReviewComponent,
         ModalEmailDispositionsComponent,
         ModalSubmissionFilesComponent,

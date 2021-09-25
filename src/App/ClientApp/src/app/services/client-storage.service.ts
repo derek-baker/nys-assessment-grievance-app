@@ -33,22 +33,7 @@ export class ClientStorageService {
         return storage.getItem(key);
     }
 
-    public GetTermsAccepted(
-        storage = sessionStorage
-    ): boolean {
-        if (this.GetData(this.hasAcceptedRp524TermsKey, storage)) {
-            return true;
-        }
-        return false;
-    }
-
-    public SetTermsAccepted(
-        key: string = this.hasAcceptedRp524TermsKey,
-        storage = sessionStorage
-    ): void {
-        storage.setItem(key, 'true');
-    }
-
+    
     /** NOTE: Not currently used */
     public SetSessionHash(
         sessionHash: string,

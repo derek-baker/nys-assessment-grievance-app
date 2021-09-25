@@ -14,7 +14,7 @@ namespace Library.Services.Auth
 
         public AuthService()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public AuthenticationResult AuthenticateAndAuthorizeUser(string userName, string password)

@@ -206,12 +206,9 @@ namespace App.Controllers
         )
         {
             var userSettings = await _userSettings.GetUserSettings();
-            
-            if (DateTime.Now < userSettings.SubmissionsStartDate) 
+
+            if (DateTime.Now < userSettings.SubmissionsStartDate || DateTime.Now > userSettings.SubmissionsEndDate) 
                 return StatusCode(403);
-            
-            if (DateTime.Now > userSettings.SubmissionsEndDate) 
-                return StatusCode(403);            
 
             string grievanceId = _guid.GetNewGuid(_dbClient, _dbSettings);
             if (
