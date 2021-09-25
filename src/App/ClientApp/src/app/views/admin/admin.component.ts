@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 import { AssessmentGrievance } from 'src/app/types/AssessmentGrievance';
 import { HttpAdminService } from 'src/app/services/http.service.admin';
 import { FileDownloadService } from 'src/app/services/file-download-service';
+import { HttpPublicService } from 'src/app/services/http.service.public';
 
 @Component({
     selector: 'app-admin',
@@ -62,6 +63,7 @@ export class AdminComponent implements OnInit {
     public IsFetchingReviewData = false;
     public IsDeletingGrievance = false;
     public IsLoadingDispositionsModal = false;
+    public IsAppConfigured = true;
 
     public CanPrefillBarReview: boolean = true;
 
@@ -144,13 +146,14 @@ export class AdminComponent implements OnInit {
 
     constructor(
         private readonly httpService: HttpService,
+        private readonly httpPublic: HttpPublicService,
         private readonly httpAdminService: HttpAdminService,
         private readonly selectedAppService: SelectedGrievanceService,
         private readonly clientStorage: ClientStorageService,
         private readonly browserSniffer: BrowserSnifferService,
         private readonly fileDownloadService: FileDownloadService,
         private readonly router: Router
-    ) { }
+    ) {}
 
     /** Intended to auto-switch tabs when user highlights a row */
     public onRowSelected(event: RowSelectedEvent) {
@@ -192,6 +195,30 @@ export class AdminComponent implements OnInit {
         if (this.browserSniffer.TestBrowserValidity() === false) {
             this.router.navigate(['/warning']);
         }
+
+        this.httpPublic.GetUserSettings().subscribe(
+            (settings) => {
+                if (!settings) {
+                    this.IsAppConfigured = false;
+                    return;
+                }
+                for (const propName in settings) {
+                    if (!settings[propName]) {
+                        this.IsAppConfigured = false;
+
+                        console.log(propName)
+                        console.log(settings[propName])
+
+                        return;
+                    }
+                }
+            },
+            (error) => {
+                window.alert('An error occurred. Please report this issue.');
+                console.error(error);
+            }
+        );
+
         this.IsFetchingData = true;
         this.httpService.GetSubmissionData()
             .subscribe(

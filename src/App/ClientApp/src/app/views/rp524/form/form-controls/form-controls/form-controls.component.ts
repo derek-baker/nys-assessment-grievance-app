@@ -2,8 +2,6 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ClientStorageService } from 'src/app/services/client-storage.service';
 import 'bootstrap';
-// @ts-ignore
-import $ from 'jquery';
 import { Router } from '@angular/router';
 import { FormDataService } from 'src/app/services/form-data.service';
 import { IAttorneyPrefillData } from 'src/app/types/IAttorneyPrefillData';
@@ -24,39 +22,52 @@ export class FormControlsComponent implements OnInit {
     public IsFetchingData: boolean = false;
     public Attorneys: Array<IAttorneyPrefillData> = [];
     public AttorneyForm = new FormGroup(
-        // Set form's initial value to 'Pro-Se'
-        { AttorneyControl: new FormControl( ) } // this.Attorneys[0] ) }
+        { AttorneyControl: new FormControl( ) }
     );
-    public TermsAccepted: boolean = false;
 
-    private readonly termsModalId: string = 'AcceptTermsModal';
     private readonly proSeLabel = 'Pro Se | Individuals';
 
     constructor(
-        private readonly storage: ClientStorageService,
         private readonly router: Router,
         private readonly formData: FormDataService,
         private readonly browserSniffer: BrowserSnifferService,
         private readonly timeline: TimelineValidationService,
         private readonly httpPublic: HttpPublicService
-    ) {
-        this.TermsAccepted = this.storage.GetTermsAccepted();
+    ) {}
+
+    private disableRouteGuard() {
+        this.formData.UserWantsToSubmit = true;
     }
 
     public ngOnInit(): void {
         // TODO: Refactor
         if (this.browserSniffer.TestBrowserValidity() === false) {
-            // Disable the router guard
-            this.formData.UserWantsToSubmit = true;
+            this.disableRouteGuard();
             this.router.navigate(['/warning']);
             return;
         }
+
+        this.httpPublic.GetUserSettings().subscribe(
+            (settings) => {
+                for (const propName in settings) {
+                    if (!settings[propName]) {
+                        this.disableRouteGuard();
+                        // this.router.navigate(['/admin'], { state: { isAppConfigured: false } });
+                        this.router.navigate(['/admin']);
+                    }
+                }
+            },
+            (error) => {
+                window.alert('An error occurred. Please report this issue.');
+                console.error(error);
+            }
+        );
 
         this.checkForSmallWidthDevice();
 
         this.Attorneys = [
             {
-                GroupNo:  '100',
+                GroupNo:  '000',
                 GroupName1:  this.proSeLabel,
                 ContactName: undefined,
                 Address1: undefined,
@@ -84,27 +95,6 @@ export class FormControlsComponent implements OnInit {
                 this.IsFetchingData = false;
             }
         );
-
-        if (this.storage.GetTermsAccepted() === false) {
-            this.toggleTermsModal();
-        }
-    }
-
-    public acceptTermsEventHandler(): void {
-        this.TermsAccepted = true;
-        this.storage.SetTermsAccepted();
-        this.toggleTermsModal();
-    }
-
-    private toggleTermsModal(
-        modalId: string = this.termsModalId
-    ) {
-        $(`#${modalId}`).modal('toggle');
-    }
-    private showTermsModal(
-        modalId: string = this.termsModalId
-    ) {
-        $(`#${modalId}`).modal('show');
     }
 
     /**
@@ -133,20 +123,6 @@ export class FormControlsComponent implements OnInit {
             this.ParentForm.controls.five_signature_name.setValue(attorneyGroup);
             this.ParentForm.controls.six_signature_name.setValue(attorneyGroup);
 
-            // this.ParentForm.controls.OwnerAddressLine1.setValue(
-            //     // `Represented by: ${attorneyGroup}`
-            //     ''
-            // );
-            // const address2Text =
-            //     (attorneyControl.Address1 || attorneyControl.Address1.length > 0)
-            //         ? attorneyControl.Address1 : '';
-            // this.ParentForm.controls.OwnerAddressLine1.setValue(
-            //     `${attorneyControl.Address1} ${address2Text}`
-            // );
-
-            // this.ParentForm.controls.OwnerAddressLine2.setValue(
-            //     `${attorneyControl.City} ${attorneyControl.State}, ${attorneyControl.ZipCode}`
-            // );
             this.ParentForm.controls.Email.setValue(repEmail);
         }
     }
@@ -175,18 +151,9 @@ export class FormControlsComponent implements OnInit {
         this.ParentForm.reset();
     }
 
-    public DisplayTerms() {
-        this.TermsAccepted = false;
-        this.showTermsModal();
-    }
-
     private validateForm(
         errorMsgFirstLine = 'FORM IS INCOMPLETE OR INVALID. \n'
     ): boolean {
-        if (this.TermsAccepted === false) {
-            window.alert('Please accept the terms and conditions.');
-            this.showTermsModal();
-        }
         const dayPhone: string = this.ParentForm.controls.DayPhone.value;
         if (
             dayPhone

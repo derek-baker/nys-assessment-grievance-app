@@ -191,6 +191,13 @@
 <br>
 
 <div class="container" *ngIf="UserAuthenticated === false">
+    <div *ngIf="IsAppConfigured === false" class="container col-sm-6 alert alert-danger">
+        <div>
+            <h3>APP NOT CONFIGURED</h3>
+            <p>Please configure the app prior to its use.</p>
+        </div>
+    </div>
+
     <form (submit)="Authenticate()">
         <div class="form-group">
             <label for="username">Username</label>
@@ -214,6 +221,8 @@
     </form>
 </div>
 <br>
+
+
 
 <div class="container-fluid" *ngIf="UserAuthenticated === true">
 

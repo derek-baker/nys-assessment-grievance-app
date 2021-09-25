@@ -191,7 +191,8 @@ export class SubmitComponent implements OnInit {
                     'If it appears you did not recieve a confirmation email, check your spam/junk folder. \n\n' +
                     'IMPORTANT: If you plan to submit additional documentation later, you\'ll need your submission\'s reference ID.'
                 );
-                this.router.navigate(['/']);
+                const data = await response.json();
+                this.router.navigate(['/'], { state: { grievanceId: data.grievanceId } });
             }
             else {
                 console.error('Reponse was: ');

@@ -3,6 +3,7 @@ import { HttpService } from 'src/app/services/http.service';
 import { Router } from '@angular/router';
 import { TimelineValidationService } from 'src/app/services/timeline.service';
 import { BrowserSnifferService } from 'src/app/services/browser-sniffer.service';
+import { HttpPublicService } from 'src/app/services/http.service.public';
 
 @Component({
     selector: 'app-submission-continue',
@@ -29,6 +30,7 @@ export class SubmissionContinueComponent implements OnInit {
 
     constructor(
         private readonly httpService: HttpService,
+        private readonly httpPublic: HttpPublicService,
         private readonly router: Router,
         private readonly timeline: TimelineValidationService,
         private readonly browserSniffer: BrowserSnifferService
@@ -38,11 +40,23 @@ export class SubmissionContinueComponent implements OnInit {
 
     public ngOnInit(): void {
         if (this.browserSniffer.TestBrowserValidity() === false) {
-            // Disable the router guard
-            // this.formData.UserWantsToSubmit = true;
             this.router.navigate(['/warning']);
             return;
         }
+
+        this.httpPublic.GetUserSettings().subscribe(
+            (settings) => {
+                for (const propName in settings) {
+                    if (!settings[propName]) {
+                        this.router.navigate(['/admin']);
+                    }
+                }
+            },
+            (error) => {
+                window.alert('An error occurred. Please report this issue.');
+                console.error(error);
+            }
+        );
     }
 
     public ValidateGuid(alertFunc = window.alert) {
