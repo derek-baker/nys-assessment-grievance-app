@@ -1,11 +1,11 @@
-﻿using Library.Database;
-using Library.Models;
-using Library.Models.DataTransferObjects;
+﻿using Library.Models.DataTransferObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Library.Services.Auth;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Library.Models.Entities;
+using Library.Services.Clients.Database.Repositories;
 
 namespace App.Controllers
 {
@@ -13,17 +13,14 @@ namespace App.Controllers
     [ApiController]
     public class RepresentativesController : ControllerBase
     {
-        private readonly IDocumentDatabase _db;
-        private readonly DocumentDatabaseSettings _dbSettings;
+        private readonly RepresentativesRepository _representatives;
         private readonly IAuthService _auth;
 
         public RepresentativesController(
-            IDocumentDatabase db, 
             IAuthService auth,
-            DocumentDatabaseSettings dbSettings)
+            RepresentativesRepository representatives)
         {
-            _db = db;
-            _dbSettings = dbSettings;
+            _representatives = representatives;
             _auth = auth;
         }
 
@@ -31,8 +28,7 @@ namespace App.Controllers
         [ActionName("GetAllReps")]
         public async Task<IActionResult> GetRepresentatives()
         {
-            var repsCollection = _db.GetCollection(_dbSettings.RepresentativesCollectionName);
-            var reps = await _db.GetRepresentatives(repsCollection);
+            var reps = await _representatives.GetRepresentatives();
             
             return Ok(reps ?? new List<RepGroupInfo>());
         }
@@ -41,12 +37,11 @@ namespace App.Controllers
         [ActionName("SetReps")]
         public async Task<IActionResult> SetRepresentatives([FromBody] SetRepsParams input)
         {
-            var authResult = _auth.AuthenticateAndAuthorizeUser(input.userName, input.password);
+            var authResult = await _auth.AuthenticateAndAuthorizeUser(input.userName, input.password);
             if (!authResult.IsAuthenticated)
-                return StatusCode(StatusCodes.Status403Forbidden);            
+                return StatusCode(StatusCodes.Status403Forbidden);
 
-            var repsCollection = _db.GetCollection(_dbSettings.RepresentativesCollectionName);
-            await _db.SetRepresentatives(repsCollection, input.reps);
+            await _representatives.SetRepresentatives(input.reps);
             return Ok();
         }
     }

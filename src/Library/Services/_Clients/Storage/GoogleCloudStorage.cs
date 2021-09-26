@@ -1,6 +1,6 @@
 ﻿using Google.Cloud.Storage.V1;
 using Library.Models;
-using Library.Services.Config.UserSettings;
+using Library.Services.Clients.Database.Repositories;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
@@ -17,9 +17,9 @@ namespace Library.Storage
         /// </summary>
         private readonly StorageClient _client = StorageClient.Create();
 
-        private readonly IUserSettingsService _userSettings;
+        private readonly UserSettingsRepository _userSettings;
 
-        public GoogleCloudStorage(IUserSettingsService userSettings)
+        public GoogleCloudStorage(UserSettingsRepository userSettings)
         {
             _userSettings = userSettings;
         }

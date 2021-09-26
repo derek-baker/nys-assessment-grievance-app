@@ -2,7 +2,10 @@
 using Library.Models.DataTransferObjects.Output;
 using Microsoft.AspNetCore.Mvc;
 using Library.Services.Auth;
-using System.Diagnostics.Contracts;
+using System.Threading.Tasks;
+using System.Text.Json;
+using App.Services.Auth;
+using Library.Models.Entities;
 
 namespace App.Controllers
 {
@@ -10,18 +13,28 @@ namespace App.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private readonly IAuthService _auth;
+        public AuthController(IAuthService auth)
+        {
+            _auth = auth;
+        }
+
         // POST: api/Auth
         [HttpPost]
-        //[AutoValidateAntiforgeryToken]
-        public IActionResult Post([FromBody] UserAuthInfo userInfo)
+        public async Task<IActionResult> Post([FromBody] UserAuthInfo userInfo)
         {
-            Contract.Requires(userInfo != null);
-
-            // TODO: Dependency Injection
-            var authSvc = new AuthService();
-            var authResult = authSvc.AuthenticateAndAuthorizeUser(userInfo.userName, userInfo.password);
-            var authAttemptResponse = new AuthResponse(userInfo.userName, authResult);
+            var authResult = await _auth.AuthenticateAndAuthorizeUser(userInfo.userName, userInfo.password);
             
+            var authAttemptResponse = new AuthResponse(userInfo.userName, authResult);            
+            if (authAttemptResponse.AuthResult.IsAuthenticated)
+            {
+                var cookieOptions = CookieFactoryService.BuildCookieOptions(authResult.Session.ValidUntil);
+                base.Response.Cookies.Append(
+                    nameof(Session),
+                    JsonSerializer.Serialize(authResult.Session),
+                    cookieOptions
+                );
+            }
             return Ok(authAttemptResponse);
         }
     }

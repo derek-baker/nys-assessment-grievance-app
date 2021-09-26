@@ -1,10 +1,8 @@
 ﻿using Library.Models.DataTransferObjects;
-using Library.Models.Settings;
-using Library.Services.Config.UserSettings;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Library.Services.Auth;
 using System.Threading.Tasks;
+using Library.Models.Entities;
+using Library.Services.Clients.Database.Repositories;
 
 namespace App.Controllers
 {
@@ -12,15 +10,11 @@ namespace App.Controllers
     [ApiController]
     public class UserSettingsController : ControllerBase
     {
-        private readonly IUserSettingsService _userSettings;
-        private readonly IAuthService _auth;
-
-        public UserSettingsController(
-            IUserSettingsService userSettings,
-            IAuthService auth)
+        private readonly UserSettingsRepository _userSettings;
+        
+        public UserSettingsController(UserSettingsRepository userSettings)
         {
             _userSettings = userSettings;
-            _auth = auth;
         }
 
         // GET: api/usersettings/getusersettings
@@ -33,13 +27,14 @@ namespace App.Controllers
 
         // POST: api/usersettings/setusersettings
         [HttpPost]
-        public IActionResult SetUserSettings(SetUserSettingsParams input)
+        [CustomAuth]
+        public async Task<IActionResult> SetUserSettings(SetUserSettingsParams input)
         {
-            var authResult = _auth.AuthenticateAndAuthorizeUser(input.userName, input.password);
-            if (!authResult.IsAuthenticated)
-                return StatusCode(StatusCodes.Status403Forbidden);
+            var settings = input.Settings;
+            if (settings.LevelOfAssessment is null || settings.Year is null)
+                return BadRequest();
 
-            _userSettings.SetUserSettings(input.settings);
+            await _userSettings.SetUserSettings(input.Settings);
             return Ok();
         }
     }

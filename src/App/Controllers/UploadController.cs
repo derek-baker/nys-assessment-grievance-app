@@ -13,17 +13,17 @@ using Library.Services.Time;
 using Microsoft.AspNetCore.Http.Extensions;
 using System.Collections.Immutable;
 using Library.Services.Image;
-using Library.Services.Config.UserSettings;
 using Library.Models.NoSQLDatabaseSchema;
 using Library.Storage;
 using Library.Models;
 using Library.Models.Settings;
 using Library.Email;
-using Library.Database;
 using Library.Services.Filesystem;
 using Library.Services.PDF;
 using Library.Services.Email;
 using Library.Services.Guid;
+using Library.Services.Clients.Database;
+using Library.Services.Clients.Database.Repositories;
 
 namespace App.Controllers
 {
@@ -43,7 +43,7 @@ namespace App.Controllers
         private readonly StorageSettings _storageSettings;
         private readonly EmailSettings _emailSettings;
         private readonly DocumentDatabaseSettings _dbSettings;
-        private readonly IUserSettingsService _userSettings;
+        private readonly UserSettingsRepository _userSettings;
 
         public UploadController(
             ILogger<UploadController> logger,
@@ -52,7 +52,7 @@ namespace App.Controllers
             IEmailClient email,
             IImageService img,
             IGuidService guidService,
-            IUserSettingsService userSettings,
+            UserSettingsRepository userSettings,
             StorageSettings storageSettings,
             EmailSettings emailSettings,
             DocumentDatabaseSettings dbSettings)
@@ -290,15 +290,15 @@ namespace App.Controllers
             var encodedUrl = new Uri(Request.GetEncodedUrl());
             string host = HostService.GetHostFromAmbientInfo(encodedUrl);
             
-            // TODO: Handle error if it occurs. User should know that their submission succeeded, but their confirmation email did not.
-            await _email.SendInitialSubmissionEmail(
-                userEmail: inputEmail,
-                filenames: $"{JsonSerializer.Serialize(fileNames)}",
-                guidString: grievanceId,
-                apiKey: _emailSettings.ApiKey,
-                hostForLink: host,
-                taxMapId: taxMapId
-            );
+            //// TODO: Handle error if it occurs. User should know that their submission succeeded, but their confirmation email did not.
+            //await _email.SendInitialSubmissionEmail(
+            //    userEmail: inputEmail,
+            //    filenames: $"{JsonSerializer.Serialize(fileNames)}",
+            //    guidString: grievanceId,
+            //    apiKey: _emailSettings.ApiKey,
+            //    hostForLink: host,
+            //    taxMapId: taxMapId
+            //);
             var conflicts = _dbClient.GetConflictingSubmitters(
                 _dbClient,
                 taxMapId,
@@ -318,15 +318,15 @@ namespace App.Controllers
                     ).ToImmutableList(),
                     taxMapId
                 );
-                // TODO: This should be async
-                _email.SendConflictingSubmissionsEmail(
-                    toList: distinctListOfConflictingSubmitters,
-                    bcc: _emailSettings.EmailUsedToLogActivity,
-                    subject: EmailSettings.ConflictingSubmissionsEmailSubject,
-                    html: msg,
-                    from: _emailSettings.From,
-                    apiKey: _emailSettings.ApiKey
-                );
+                //// TODO: This should be fire and forget
+                //_email.SendConflictingSubmissionsEmail(
+                //    toList: distinctListOfConflictingSubmitters,
+                //    bcc: _emailSettings.EmailUsedToLogActivity,
+                //    subject: EmailSettings.ConflictingSubmissionsEmailSubject,
+                //    html: msg,
+                //    from: _emailSettings.From,
+                //    apiKey: _emailSettings.ApiKey
+                //);
             }
             return Ok();            
         }
@@ -432,7 +432,7 @@ namespace App.Controllers
                 await _dbClient.UpdateDocumentField(
                     collection: collection,
                     documentId: inputGuid,
-                    fieldToUpdate: GrievanceDocumentFields.IncludesIncomeExpenseForms,
+                    fieldToUpdate: GrievanceDocument.Fields.IncludesIncomeExpenseForms,
                     newfieldValue: includesIncomeExpenseForms
                 );
             }
@@ -441,7 +441,7 @@ namespace App.Controllers
                 await _dbClient.UpdateDocumentField(
                     collection: collection,
                     documentId: inputGuid,
-                    fieldToUpdate: GrievanceDocumentFields.IncludesIncomeExpenseExclusion,
+                    fieldToUpdate: GrievanceDocument.Fields.IncludesIncomeExpenseExclusion,
                     newfieldValue: includesIncomeExpenseExclusion
                 );
             }
@@ -450,7 +450,7 @@ namespace App.Controllers
                 await _dbClient.UpdateDocumentField(
                     collection: collection,
                     documentId: inputGuid,
-                    fieldToUpdate: GrievanceDocumentFields.IncludesSupportingDocumentation,
+                    fieldToUpdate: GrievanceDocument.Fields.IncludesSupportingDocumentation,
                     newfieldValue: includesSupportingDocumentation
                 );
             }

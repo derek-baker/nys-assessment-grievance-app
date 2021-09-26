@@ -1,5 +1,4 @@
-﻿using Library.Services.Config.UserSettings;
-using Library.Models.Settings;
+﻿using Library.Models.Settings;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -11,14 +10,15 @@ using Library.Storage;
 using Library.Services.Crypto;
 using Library.Models;
 using Contracts;
+using Library.Services.Clients.Database.Repositories;
 
 namespace Library.Services.Filesystem
 {
     public class ZipFileService : IZipFileService
     {
-        private readonly IUserSettingsService _userSettings;
+        private readonly UserSettingsRepository _userSettings;
 
-        public ZipFileService(IUserSettingsService userSettings)
+        public ZipFileService(UserSettingsRepository userSettings)
         {
             _userSettings = userSettings;
         }

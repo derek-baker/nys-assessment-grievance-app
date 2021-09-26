@@ -2,7 +2,6 @@
 using Library.Models.DataTransfer;
 using Library.Models.NoSQLDatabaseSchema;
 using Library.Models.RP_524;
-using Library.Models.Settings;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
@@ -16,7 +15,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Library.Database
+namespace Library.Services.Clients.Database
 {
     public class MongoDatabase : IDocumentDatabase
     {
@@ -24,11 +23,11 @@ namespace Library.Database
 
         private readonly FilterDefinition<BsonDocument> _submissionNotDeletedFilter =
             Builders<BsonDocument>.Filter
-                .Ne(GrievanceDocumentFields.IsDeleted, true);
+                .Ne(GrievanceDocument.Fields.IsDeleted, true);
 
         private readonly FilterDefinition<BsonDocument> _submissionBarReviewedFilter =
             Builders<BsonDocument>.Filter
-                .Eq(GrievanceDocumentFields.BarReviewed, true);
+                .Eq(GrievanceDocument.Fields.BarReviewed, true);
 
         private readonly string _databaseName;
 
@@ -60,8 +59,8 @@ namespace Library.Database
             var projection =
                 Builders<BsonDocument>
                     .Projection
-                        .Include(GrievanceDocumentFields.GuidString)
-                        .Exclude(GrievanceDocumentFields.InternalDatabaseId);
+                        .Include(GrievanceDocument.Fields.GuidString)
+                        .Exclude(GrievanceDocument.Fields.InternalDatabaseId);
 
             var documents =
                 await grievanceCollection
@@ -84,27 +83,27 @@ namespace Library.Database
             var projection =
                 Builders<BsonDocument>
                     .Projection
-                    .Include(GrievanceDocumentFields.GuidString)
-                    .Include(GrievanceDocumentFields.TaxMapId)
-                    .Include(GrievanceDocumentFields.Complainant)
-                    .Include(GrievanceDocumentFields.AttorneyGroup)
-                    .Include(GrievanceDocumentFields.ComplainantMailAddress)
-                    .Include(GrievanceDocumentFields.CoOpUnitNum)
-                    .Include(GrievanceDocumentFields.NysRP525Tentative)
-                    .Include(GrievanceDocumentFields.ComplaintType)
-                    .Include(GrievanceDocumentFields.NysRP525Answers)
-                    .Include(GrievanceDocumentFields.BarReviewDate)
-                    .Include(GrievanceDocumentFields.Reason)
+                    .Include(GrievanceDocument.Fields.GuidString)
+                    .Include(GrievanceDocument.Fields.TaxMapId)
+                    .Include(GrievanceDocument.Fields.Complainant)
+                    .Include(GrievanceDocument.Fields.AttorneyGroup)
+                    .Include(GrievanceDocument.Fields.ComplainantMailAddress)
+                    .Include(GrievanceDocument.Fields.CoOpUnitNum)
+                    .Include(GrievanceDocument.Fields.NysRP525Tentative)
+                    .Include(GrievanceDocument.Fields.ComplaintType)
+                    .Include(GrievanceDocument.Fields.NysRP525Answers)
+                    .Include(GrievanceDocument.Fields.BarReviewDate)
+                    .Include(GrievanceDocument.Fields.Reason)
 
-                    .Exclude(GrievanceDocumentFields.InternalDatabaseId);
+                    .Exclude(GrievanceDocument.Fields.InternalDatabaseId);
 
             FilterDefinition<BsonDocument> barReviewStartDateFilter =
                 Builders<BsonDocument>.Filter
-                    .Gte(GrievanceDocumentFields.BarReviewDateUnix, TimeService.GetUnixTimestampInMilliseconds(dateFilterStart));
+                    .Gte(GrievanceDocument.Fields.BarReviewDateUnix, TimeService.GetUnixTimestampInMilliseconds(dateFilterStart));
 
             FilterDefinition<BsonDocument> barReviewEndDateFilter =
                 Builders<BsonDocument>.Filter
-                    .Lte(GrievanceDocumentFields.BarReviewDateUnix, TimeService.GetUnixTimestampInMilliseconds(dateFilterEnd));
+                    .Lte(GrievanceDocument.Fields.BarReviewDateUnix, TimeService.GetUnixTimestampInMilliseconds(dateFilterEnd));
 
             var documents =
                 collection
@@ -139,7 +138,7 @@ namespace Library.Database
 
         //    var deletedFilter = Builders<BsonDocument>
         //        .Filter
-        //        .Eq(GrievanceDocumentFields.IsDeleted, true);
+        //        .Eq(GrievanceDocument.Fields.IsDeleted, true);
 
         //    var deletedCursor = collection.Find(deletedFilter).ToCursor();
         //    foreach (var doc in deletedCursor.ToEnumerable())
@@ -175,47 +174,6 @@ namespace Library.Database
         //    }
         //}
 
-        public async Task<IEnumerable<RepGroupInfo>> GetRepresentatives(IMongoCollection<BsonDocument> collection)
-        {
-            var documents = await collection.FindAsync(doc => true);
-
-            var reps = (await documents.ToListAsync())
-                .Select(d => BsonSerializer.Deserialize<RepGroupInfoDocument>(d));
-
-            return reps.FirstOrDefault()?.Representatives;
-        }
-
-        public async Task SetRepresentatives(IMongoCollection<BsonDocument> collection, IEnumerable<RepGroupInfo> reps)
-        {
-            await collection.DeleteManyAsync(doc => true);
-
-            var document = new BsonDocument
-            {
-                { RepresentativeDocumentFields.Representatives, BuildBsonArray(reps.ToList()) }
-            };
-            await InsertDocument(collection, document);
-        }
-
-        public async Task<UserSettings> GetUserSettings(IMongoCollection<BsonDocument> collection)
-        {
-            var documents = await collection.FindAsync(doc => true);
-
-            var reps = (await documents.ToListAsync())
-                .Select(d => BsonSerializer.Deserialize<UserSettingsDocument>(d));
-
-            return reps.FirstOrDefault()?.UserSettings;
-        }
-
-        public async Task SetUserSettings(IMongoCollection<BsonDocument> collection, UserSettings settings)
-        {
-            await collection.DeleteManyAsync(doc => true);
-            var document = new BsonDocument
-            {
-                { UserSettingsDocumentFields.UserSettings, settings.ToBsonDocument() }
-            };
-            await InsertDocument(collection, document);
-        }
-
         /// <summary>
         /// TODO: Extend this with more fields so we can export more data to CSV
         /// TODO: Set max limit? And pagination?
@@ -225,50 +183,50 @@ namespace Library.Database
             var projection =
                 Builders<BsonDocument>
                     .Projection
-                    .Include(GrievanceDocumentFields.GuidString)
-                    .Include(GrievanceDocumentFields.TaxMapId)
-                    .Include(GrievanceDocumentFields.Email)
-                    .Include(GrievanceDocumentFields.SubmitDate)
+                    .Include(GrievanceDocument.Fields.GuidString)
+                    .Include(GrievanceDocument.Fields.TaxMapId)
+                    .Include(GrievanceDocument.Fields.Email)
+                    .Include(GrievanceDocument.Fields.SubmitDate)
 
-                    .Include(GrievanceDocumentFields.RequestedPersonalHearing)
-                    .Include(GrievanceDocumentFields.CompletedPersonalHearing)
+                    .Include(GrievanceDocument.Fields.RequestedPersonalHearing)
+                    .Include(GrievanceDocument.Fields.CompletedPersonalHearing)
 
-                    .Include(GrievanceDocumentFields.ComplaintType)
-                    .Include(GrievanceDocumentFields.ProposedValue)
-                    .Include(GrievanceDocumentFields.CreatorName)
+                    .Include(GrievanceDocument.Fields.ComplaintType)
+                    .Include(GrievanceDocument.Fields.ProposedValue)
+                    .Include(GrievanceDocument.Fields.CreatorName)
 
-                    .Include(GrievanceDocumentFields.Downloaded)
-                    .Include(GrievanceDocumentFields.DownloadDate)
-                    .Include(GrievanceDocumentFields.BarReviewed)
-                    .Include(GrievanceDocumentFields.BarReviewDate)
-                    .Include(GrievanceDocumentFields.DispositionEmailSent)
-                    .Include(GrievanceDocumentFields.DispositionEmailSentDate)
+                    .Include(GrievanceDocument.Fields.Downloaded)
+                    .Include(GrievanceDocument.Fields.DownloadDate)
+                    .Include(GrievanceDocument.Fields.BarReviewed)
+                    .Include(GrievanceDocument.Fields.BarReviewDate)
+                    .Include(GrievanceDocument.Fields.DispositionEmailSent)
+                    .Include(GrievanceDocument.Fields.DispositionEmailSentDate)
 
-                    .Include(GrievanceDocumentFields.IncludesConflict)
-                    .Include(GrievanceDocumentFields.IncludesResQuestionnaire)
-                    .Include(GrievanceDocumentFields.IncludesComQuestionnaire)
-                    .Include(GrievanceDocumentFields.IncludesLetterOfAuth)
-                    .Include(GrievanceDocumentFields.IncludesIncomeExpenseForms)
-                    .Include(GrievanceDocumentFields.IncludesIncomeExpenseExclusion)
-                    .Include(GrievanceDocumentFields.IncludesSupportingDocumentation)
-                    .Include(GrievanceDocumentFields.FiveSignatureType)
+                    .Include(GrievanceDocument.Fields.IncludesConflict)
+                    .Include(GrievanceDocument.Fields.IncludesResQuestionnaire)
+                    .Include(GrievanceDocument.Fields.IncludesComQuestionnaire)
+                    .Include(GrievanceDocument.Fields.IncludesLetterOfAuth)
+                    .Include(GrievanceDocument.Fields.IncludesIncomeExpenseForms)
+                    .Include(GrievanceDocument.Fields.IncludesIncomeExpenseExclusion)
+                    .Include(GrievanceDocument.Fields.IncludesSupportingDocumentation)
+                    .Include(GrievanceDocument.Fields.FiveSignatureType)
 
-                    .Include(GrievanceDocumentFields.Complainant)
-                    .Include(GrievanceDocumentFields.AttorneyGroup)
-                    .Include(GrievanceDocumentFields.AttorneyEmail)
-                    .Include(GrievanceDocumentFields.AttorneyPhone)
-                    .Include(GrievanceDocumentFields.AttorneyDataRaw)
-                    .Include(GrievanceDocumentFields.ComplainantMailAddress)
-                    .Include(GrievanceDocumentFields.CoOpUnitNum)
-                    .Include(GrievanceDocumentFields.Reason)
-                    .Include(GrievanceDocumentFields.Notes)
+                    .Include(GrievanceDocument.Fields.Complainant)
+                    .Include(GrievanceDocument.Fields.AttorneyGroup)
+                    .Include(GrievanceDocument.Fields.AttorneyEmail)
+                    .Include(GrievanceDocument.Fields.AttorneyPhone)
+                    .Include(GrievanceDocument.Fields.AttorneyDataRaw)
+                    .Include(GrievanceDocument.Fields.ComplainantMailAddress)
+                    .Include(GrievanceDocument.Fields.CoOpUnitNum)
+                    .Include(GrievanceDocument.Fields.Reason)
+                    .Include(GrievanceDocument.Fields.Notes)
 
-                    .Include(GrievanceDocumentFields.NysRP525Tentative)
-                    .Include(GrievanceDocumentFields.NysRP525IsReduced)
-                    .Include(GrievanceDocumentFields.NysRP525IsReducedValue)
-                    .Include(GrievanceDocumentFields.NysRP525Answers)
+                    .Include(GrievanceDocument.Fields.NysRP525Tentative)
+                    .Include(GrievanceDocument.Fields.NysRP525IsReduced)
+                    .Include(GrievanceDocument.Fields.NysRP525IsReducedValue)
+                    .Include(GrievanceDocument.Fields.NysRP525Answers)
 
-                    .Exclude(GrievanceDocumentFields.InternalDatabaseId);
+                    .Exclude(GrievanceDocument.Fields.InternalDatabaseId);
 
             var documents =
                 collection
@@ -285,7 +243,7 @@ namespace Library.Database
             IMongoCollection<BsonDocument> submissionsArchiveCollection)
         {
             var deletedFilter = Builders<BsonDocument>
-                .Filter.Eq(GrievanceDocumentFields.IsDeleted, true);
+                .Filter.Eq(GrievanceDocument.Fields.IsDeleted, true);
 
             var deletedDocuments = submissionsCollection
                 .Find(deletedFilter)
@@ -306,7 +264,7 @@ namespace Library.Database
 
             ProjectionDefinition<BsonDocument> projection = 
                 projectionBuilder.Exclude(
-                    GrievanceDocumentFields.InternalDatabaseId
+                    GrievanceDocument.Fields.InternalDatabaseId
                 );
 
             foreach (var field in fieldsToInclude)
@@ -325,12 +283,12 @@ namespace Library.Database
             ProjectionDefinition<BsonDocument> projection =
                 Builders<BsonDocument>
                     .Projection
-                    .Include(GrievanceDocumentFields.TaxMapId)
+                    .Include(GrievanceDocument.Fields.TaxMapId)
                     .Include("email")
                     .Include("submit_date")
-                    .Exclude(GrievanceDocumentFields.InternalDatabaseId);
+                    .Exclude(GrievanceDocument.Fields.InternalDatabaseId);
 
-            var taxIdFilter = Builders<BsonDocument>.Filter.Eq(GrievanceDocumentFields.TaxMapId, taxMapId);
+            var taxIdFilter = Builders<BsonDocument>.Filter.Eq(GrievanceDocument.Fields.TaxMapId, taxMapId);
             var filter = taxIdFilter & _submissionNotDeletedFilter;
             var cursor = collection.Find(filter).Project(projection).ToCursor();
             return cursor.ToList();
@@ -424,20 +382,37 @@ namespace Library.Database
             return cursor.ToList();
         }
 
+        public Task<IAsyncCursor<BsonDocument>> GetDocuments(
+            IMongoCollection<BsonDocument> collection,
+            ProjectionDefinition<BsonDocument> projection,
+            FilterDefinition<BsonDocument> filter)
+        {
+            return collection
+                .Find(filter)
+                .Project(projection)
+                .ToCursorAsync();            
+        }
+
+        public Task<IAsyncCursor<BsonDocument>> GetSortedDocuments(
+            IMongoCollection<BsonDocument> collection,
+            ProjectionDefinition<BsonDocument> projection,
+            FilterDefinition<BsonDocument> filter,
+            SortDefinition<BsonDocument> sort)
+        {
+            return collection
+                .Find(filter)
+                .Project(projection)
+                .Sort(sort)
+                .ToCursorAsync();
+        }
+
         public IEnumerable<GrievanceMissingRp524> GetDocumentsByField<T>(
             IMongoCollection<BsonDocument> collection,
             string field1Name,
             IEnumerable<T> values)
         {
-            //var projection = 
-            //    Builders<BsonDocument>
-            //        .Projection
-            //        .Include(GrievanceDocumentFields.GuidString)
-            //        .Include(GrievanceDocumentFields.TaxMapId)
-            //        .Exclude(GrievanceDocumentFields.InternalDatabaseId);
-
             var filter = Builders<BsonDocument>.Filter.In(field1Name, values);
-            var documents = collection.Find(filter).ToCursor().ToEnumerable(); //.Project(projection).ToCursor().ToEnumerable();
+            var documents = collection.Find(filter).ToCursor().ToEnumerable(); 
 
             var data = documents.Select(d => BsonSerializer.Deserialize<GrievanceMissingRp524>(d));
             return data;
@@ -485,12 +460,12 @@ namespace Library.Database
             string guid
         )
         {
-            var filter = Builders<BsonDocument>.Filter.Eq(GrievanceDocumentFields.GuidString, guid);
+            var filter = Builders<BsonDocument>.Filter.Eq(GrievanceDocument.Fields.GuidString, guid);
             ProjectionDefinition<BsonDocument> projection =
                 Builders<BsonDocument>
                     .Projection
-                    .Include(GrievanceDocumentFields.TaxMapId)
-                    .Exclude(GrievanceDocumentFields.InternalDatabaseId);
+                    .Include(GrievanceDocument.Fields.TaxMapId)
+                    .Exclude(GrievanceDocument.Fields.InternalDatabaseId);
             var document = collection.Find(filter).Project(projection).FirstOrDefault();
             return document;
         }
@@ -531,8 +506,8 @@ namespace Library.Database
             var collection = mongoClient.GetCollection(collectionName: settings.GrievancesCollectionName);
 
             var document = new BsonDocument {
-                { GrievanceDocumentFields.GuidString, submissionGuid },
-                { GrievanceDocumentFields.TaxMapId, taxMapId },
+                { GrievanceDocument.Fields.GuidString, submissionGuid },
+                { GrievanceDocument.Fields.TaxMapId, taxMapId },
                 { "complaint_type", complaintType },
                 { "proposed_value", proposedValue },
                 { "email", applicantEmail },
@@ -547,20 +522,20 @@ namespace Library.Database
                 { "includes_res_questionnaire", includesResQuestionnaire },
                 { "includes_com_questionnaire", includesComQuestionnaire },
                 { "includes_letter_of_auth", includesLetterOfAuth },
-                { GrievanceDocumentFields.IncludesIncomeExpenseForms, includesIncomeExpenseForms },
-                { GrievanceDocumentFields.IncludesIncomeExpenseExclusion, includesIncomeExpenseExclusion },
-                { GrievanceDocumentFields.IncludesSupportingDocumentation, includesSupportingDocumentation },
+                { GrievanceDocument.Fields.IncludesIncomeExpenseForms, includesIncomeExpenseForms },
+                { GrievanceDocument.Fields.IncludesIncomeExpenseExclusion, includesIncomeExpenseExclusion },
+                { GrievanceDocument.Fields.IncludesSupportingDocumentation, includesSupportingDocumentation },
                 { "five_signature_type", signatureType },
 
                 { "complainant", complainant },
                 { "attorney_group", attorneyGroup },
                 { "attorney_phone", attorneyPhone },
-                { GrievanceDocumentFields.AttorneyDataRaw, attorneyDataRaw },
+                { GrievanceDocument.Fields.AttorneyDataRaw, attorneyDataRaw },
                 { "complainant_mail_address", complainantMailAddress },
                 { "co_op_unit_num", coOpUnitNum },
                 { "reason", reason },
                 { "notes", notes}
-                //{ GrievanceDocumentFields.PaginationId, maxId }
+                //{ GrievanceDocument.Fields.PaginationId, maxId }
             };
             collection.InsertOne(document);        
         }
@@ -581,10 +556,10 @@ namespace Library.Database
             var submissionsArchiveCollection = GetCollection($"{dbSettings.GrievancesCollectionName}_deleted");
 
             FilterDefinition<BsonDocument> filterDef = 
-                Builders<BsonDocument>.Filter.Eq(GrievanceDocumentFields.GuidString, grievanceId);
+                Builders<BsonDocument>.Filter.Eq(GrievanceDocument.Fields.GuidString, grievanceId);
 
             UpdateDefinition<BsonDocument> updateDef =
-                new BsonDocument("$set", new BsonDocument(GrievanceDocumentFields.IsDeleted, true));
+                new BsonDocument("$set", new BsonDocument(GrievanceDocument.Fields.IsDeleted, true));
 
             await submissionsCollection.UpdateOneAsync(filterDef, updateDef);
 
@@ -600,7 +575,7 @@ namespace Library.Database
             Contract.Requires(collection != null);
             var filter =
                 Builders<BsonDocument>
-                    .Filter.Eq(GrievanceDocumentFields.GuidString, documentId);
+                    .Filter.Eq(GrievanceDocument.Fields.GuidString, documentId);
 
             var update =
                 Builders<BsonDocument>
@@ -621,7 +596,7 @@ namespace Library.Database
             Contract.Requires(collection != null);
             var filter =
                 Builders<BsonDocument>
-                    .Filter.Eq(GrievanceDocumentFields.GuidString, grievanceId);
+                    .Filter.Eq(GrievanceDocument.Fields.GuidString, grievanceId);
             
             var update =
                 Builders<BsonDocument>
@@ -640,7 +615,7 @@ namespace Library.Database
             Contract.Requires(collection != null);
             var filter =
                 Builders<BsonDocument>
-                    .Filter.Eq(GrievanceDocumentFields.GuidString, grievanceId);
+                    .Filter.Eq(GrievanceDocument.Fields.GuidString, grievanceId);
 
             var update =
                 Builders<BsonDocument>
@@ -669,7 +644,7 @@ namespace Library.Database
             Contract.Requires(collection != null);
             var filter =
                 Builders<BsonDocument>
-                    .Filter.Eq(GrievanceDocumentFields.GuidString, grievanceId);
+                    .Filter.Eq(GrievanceDocument.Fields.GuidString, grievanceId);
 
             if (includesPersonalHearing)
             {
@@ -722,7 +697,7 @@ namespace Library.Database
                 var update =
                 Builders<BsonDocument>
                     .Update
-                        .Set(GrievanceDocumentFields.IncludesIncomeExpenseForms, includesIncomeExpenseForms);
+                        .Set(GrievanceDocument.Fields.IncludesIncomeExpenseForms, includesIncomeExpenseForms);
                 collection
                     .UpdateOne(filter, update);
             }
@@ -731,7 +706,7 @@ namespace Library.Database
                 var update =
                 Builders<BsonDocument>
                     .Update
-                        .Set(GrievanceDocumentFields.IncludesIncomeExpenseExclusion, includesIncomeExpenseExclusion);
+                        .Set(GrievanceDocument.Fields.IncludesIncomeExpenseExclusion, includesIncomeExpenseExclusion);
                 collection
                     .UpdateOne(filter, update);
             }
@@ -740,7 +715,7 @@ namespace Library.Database
                 var update =
                 Builders<BsonDocument>
                     .Update
-                        .Set(GrievanceDocumentFields.IncludesSupportingDocumentation, includesSupportingDocumentation);
+                        .Set(GrievanceDocument.Fields.IncludesSupportingDocumentation, includesSupportingDocumentation);
                 collection
                     .UpdateOne(filter, update);
             }
@@ -759,7 +734,7 @@ namespace Library.Database
             Contract.Requires(collection != null);
             var filter =
                 Builders<BsonDocument>
-                    .Filter.Eq(GrievanceDocumentFields.GuidString, guid);
+                    .Filter.Eq(GrievanceDocument.Fields.GuidString, guid);
 
             // Our Cloud Run containers (based on Alpine) appear to not have timezones installed?
             // var timeUtc = DateTime.UtcNow; 
@@ -768,9 +743,9 @@ namespace Library.Database
             var update =
                 Builders<BsonDocument>
                     .Update
-                        .Set(GrievanceDocumentFields.Downloaded, reviewed)
-                        .Set(GrievanceDocumentFields.DownloadDate, (reviewed) ? DateTime.UtcNow.ToString() : "")
-                        .Set(GrievanceDocumentFields.DownloadDateUnix, (reviewed) ? DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() : -1);
+                        .Set(GrievanceDocument.Fields.Downloaded, reviewed)
+                        .Set(GrievanceDocument.Fields.DownloadDate, (reviewed) ? DateTime.UtcNow.ToString() : "")
+                        .Set(GrievanceDocument.Fields.DownloadDateUnix, (reviewed) ? DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() : -1);
 
             collection
                 .UpdateOne(filter, update);
@@ -787,7 +762,7 @@ namespace Library.Database
             var bsonDocument = GetDocumentByStringField(
                 collection, 
                 projection, 
-                fieldName: GrievanceDocumentFields.GuidString, 
+                fieldName: GrievanceDocument.Fields.GuidString, 
                 fieldValue: submissionId
             );
             var grievance = BsonSerializer.Deserialize<GrievanceApplication>(bsonDocument);
@@ -812,16 +787,16 @@ namespace Library.Database
 
             var filter =
                 Builders<BsonDocument>
-                    .Filter.Eq(GrievanceDocumentFields.GuidString, submissionId);
+                    .Filter.Eq(GrievanceDocument.Fields.GuidString, submissionId);
 
             var update =
                 Builders<BsonDocument>
                     .Update
-                        .Set(GrievanceDocumentFields.NysRP525Answers, JsonSerializer.Serialize(answers))
-                        .Set(GrievanceDocumentFields.NysRP525Tentative, answers.Admin_Rp525_Tentative)
-                        .Set(GrievanceDocumentFields.NysRP525IsReduced, answers.Admin_Rp525_Check2a)
-                        .Set(GrievanceDocumentFields.NysRP525IsReducedValue, answers.Admin_Rp525_Total)
-                        .Set(GrievanceDocumentFields.NysRP525IsNotReduced, answers.Admin_Rp525_Check2b);
+                        .Set(GrievanceDocument.Fields.NysRP525Answers, JsonSerializer.Serialize(answers))
+                        .Set(GrievanceDocument.Fields.NysRP525Tentative, answers.Admin_Rp525_Tentative)
+                        .Set(GrievanceDocument.Fields.NysRP525IsReduced, answers.Admin_Rp525_Check2a)
+                        .Set(GrievanceDocument.Fields.NysRP525IsReducedValue, answers.Admin_Rp525_Total)
+                        .Set(GrievanceDocument.Fields.NysRP525IsNotReduced, answers.Admin_Rp525_Check2b);
 
             collection
                 .UpdateOne(filter, update);
@@ -839,7 +814,7 @@ namespace Library.Database
             Contract.Requires(collection != null);
             var filter =
                 Builders<BsonDocument>
-                    .Filter.Eq(GrievanceDocumentFields.GuidString, guidString);
+                    .Filter.Eq(GrievanceDocument.Fields.GuidString, guidString);
 
             // Our Cloud Run containers (based on Alpine) appear to not have timezones installed?
             //var timeUtc = DateTime.UtcNow; 
@@ -864,7 +839,7 @@ namespace Library.Database
         {
             var filter =
                 Builders<BsonDocument>
-                    .Filter.In(GrievanceDocumentFields.GuidString, grievanceIds);
+                    .Filter.In(GrievanceDocument.Fields.GuidString, grievanceIds);
 
             // Our Cloud Run containers (based on Alpine) appear to not have timezones installed?
             //var timeUtc = DateTime.UtcNow; 
@@ -873,8 +848,8 @@ namespace Library.Database
             var update =
                 Builders<BsonDocument>
                     .Update
-                        .Set(GrievanceDocumentFields.DispositionEmailSent, setStatusToTrue)
-                        .Set(GrievanceDocumentFields.DispositionEmailSentDate, DateTime.UtcNow.ToString());
+                        .Set(GrievanceDocument.Fields.DispositionEmailSent, setStatusToTrue)
+                        .Set(GrievanceDocument.Fields.DispositionEmailSentDate, DateTime.UtcNow.ToString());
 
             await grievancesCollection
                 .UpdateManyAsync(filter, update);
@@ -887,7 +862,7 @@ namespace Library.Database
         {
             var filter =
                 Builders<BsonDocument>
-                    .Filter.Eq(GrievanceDocumentFields.GuidString, grievance.guid);
+                    .Filter.Eq(GrievanceDocument.Fields.GuidString, grievance.guid);
             
             // WARNING: This is rigid in the sense that it assumes all the data we want is public
             var dict = 
@@ -905,11 +880,11 @@ namespace Library.Database
             ).ConfigureAwait(false);
         }
 
-        private static BsonArray BuildBsonArray<T>(List<T> submissions)
+        public BsonArray BuildBsonArray<T>(List<T> objects)
         {
-            var submissionsBsonArray = new BsonArray();
-            submissions.ForEach((s) => { submissionsBsonArray.Add(s.ToBsonDocument());});
-            return submissionsBsonArray;
+            var objectsBsonArray = new BsonArray();
+            objects.ForEach((s) => { objectsBsonArray.Add(s.ToBsonDocument());});
+            return objectsBsonArray;
         }
     }
 }

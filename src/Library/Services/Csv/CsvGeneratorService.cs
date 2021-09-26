@@ -1,5 +1,6 @@
 ﻿using CsvHelper;
 using Library.Models;
+using Library.Models.Entities;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Globalization;

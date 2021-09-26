@@ -1,5 +1,4 @@
-﻿using Library.Database;
-using Library.Models;
+﻿using Library.Services.Clients.Database;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
@@ -7,19 +6,14 @@ namespace Library.Services.Guid
 {
     public class GuidService : IGuidService
     {
-        public bool TestGuidExistence(
-            IDocumentDatabase db,
-            DocumentDatabaseSettings dbSettings,
-            string guidString)
+        public bool TestGuidExistence(IDocumentDatabase db, DocumentDatabaseSettings dbSettings, string guidString)
         {
             var collection = db.GetCollection(dbSettings.GrievancesCollectionName);
             var documentAssociatedWithGuid = db.GetDocumentByGuid(collection, guidString);
-            return documentAssociatedWithGuid == null ? false : true;
+            return documentAssociatedWithGuid != null;
         }
 
-        public string GetNewGuid(
-            IDocumentDatabase db,
-            DocumentDatabaseSettings dbSettings)
+        public string GetNewGuid(IDocumentDatabase db, DocumentDatabaseSettings dbSettings)
         {
             bool uniqueGuidGenerated = false;
             string guid = "";

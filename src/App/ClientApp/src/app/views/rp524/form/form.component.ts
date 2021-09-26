@@ -41,42 +41,41 @@ export class FormComponent implements OnInit, IComponentCanDeactivate {
         //         // console.log(newVal);
         //     }
         // );
-        const cookieValue = decodeURIComponent(this.cookieService.GetCookie());
-        // The presence of the cookie should indicate that we're pre-filling a form (TODO: Use response body?)
-        if (cookieValue.length > 0) {
-            try {
-                const data = JSON.parse(cookieValue);
-                // We set this value in anticipation of an event emitted by the last child component of this.
-                this.data = data;
-                // TODO: If we don't purge the cookie, will it re-prefill?
-                this.cookieService.InvalidateCookie();
-            }
-            catch (err) {
-                console.error(err);
-                window.alert('Unable to prefill form data.');
-            }
-            return;
-        }
-        this.activatedroute.queryParams.subscribe(
-            (params) => {
-                // tslint:disable-next-line: no-string-literal
-                const key = params['key'];
-                if (key) {
-                    const data = JSON.parse(this.clientStorage.GetData(key));
-                    // NOTE: This is kind of sketchy. If all the child components render before the line below,
-                    //       the form values will be set by the event handler with incomplete or no data.
-                    this.data = data;
-                }
-            }
-        );
+
+        // const cookieValue = decodeURIComponent(this.cookieService.GetCookie());
+        // // The presence of the cookie should indicate that we're pre-filling a form (TODO: Use response body?)
+        // if (cookieValue.length > 0) {
+        //     try {
+        //         const data = JSON.parse(cookieValue);
+        //         // We set this value in anticipation of an event emitted by the last child component of this.
+        //         this.data = data;
+        //         // TODO: If we don't purge the cookie, will it re-prefill?
+        //         this.cookieService.InvalidateCookie();
+        //     }
+        //     catch (err) {
+        //         console.error(err);
+        //         window.alert('Unable to prefill form data.');
+        //     }
+        //     return;
+        // }
+
+        // this.activatedroute.queryParams.subscribe(
+        //     (params) => {
+        //         // tslint:disable-next-line: no-string-literal
+        //         const key = params['key'];
+        //         if (key) {
+        //             const data = JSON.parse(this.clientStorage.GetData(key));
+        //             // NOTE: This is kind of sketchy. If all the child components render before the line below,
+        //             //       the form values will be set by the event handler with incomplete or no data.
+        //             this.data = data;
+        //         }
+        //     }
+        // );
     }
 
     // @HostListener allows us to also guard against browser refresh, close, etc.
     @HostListener('window:beforeunload')
     public canDeactivate(): Observable<boolean> | boolean {
-        // Insert logic to check if there are pending changes here;
-        // returning true will navigate without confirmation
-        // returning false will show a confirm dialog before navigating away
         if (this.ParentForm.dirty && this.formDataService.UserWantsToSubmit === false) {
             return false;
         }

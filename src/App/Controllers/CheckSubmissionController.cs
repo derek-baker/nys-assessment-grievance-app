@@ -1,7 +1,7 @@
-﻿using Library.Database;
-using Library.Models;
+﻿using Library.Models;
 using Library.Models.DataTransferObjects;
 using Library.Models.DataTransferObjects.Output;
+using Library.Services.Clients.Database;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.Contracts;

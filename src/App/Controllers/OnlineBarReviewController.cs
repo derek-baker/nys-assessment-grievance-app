@@ -1,8 +1,6 @@
 ﻿using App.Services.Mappers;
-using Library.Database;
 using Library.Models;
 using Library.Models.Settings;
-using Library.Services.Config.UserSettings;
 using Library.Services.PDF;
 using Library.Storage;
 using Microsoft.AspNetCore.Http;
@@ -14,6 +12,9 @@ using System;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Threading.Tasks;
+using Library.Models.Entities;
+using Library.Services.Clients.Database;
+using Library.Services.Clients.Database.Repositories;
 
 namespace App.Controllers
 {
@@ -25,7 +26,7 @@ namespace App.Controllers
         private readonly IAuthService _authService;
         private readonly IStorage _storage;
         private readonly IImageService _img;
-        private readonly IUserSettingsService _userSettings;
+        private readonly UserSettingsRepository _userSettings;
         private readonly DocumentDatabaseSettings _dbSettings;
         private readonly StorageSettings _storageSettings;
 
@@ -34,7 +35,7 @@ namespace App.Controllers
             IDocumentDatabase db,
             IStorage storage,
             IImageService img,
-            IUserSettingsService userSettings,
+            UserSettingsRepository userSettings,
             DocumentDatabaseSettings dbSettings,
             StorageSettings storageSettings)
         {
@@ -65,10 +66,10 @@ namespace App.Controllers
         /// </summary>
         [HttpPost]
         [ActionName("PostBarReviewSave")]
-        public IActionResult PostBarReviewSave(NysRps525OnlineFormData answers)
+        public async Task<IActionResult> PostBarReviewSave(NysRps525OnlineFormData answers)
         {
             Contract.Requires(answers != null);
-            var authResult = _authService.AuthenticateAndAuthorizeUser(
+            var authResult = await _authService.AuthenticateAndAuthorizeUser(
                 answers.UserName,
                 answers.Password
             );
@@ -106,10 +107,10 @@ namespace App.Controllers
         public async Task<IActionResult> PostResult(NysRps525OnlineFormData answers)
         {
             Contract.Requires(answers != null);
-            var authResult = _authService.AuthenticateAndAuthorizeUser(answers.UserName, answers.Password);
+            var authResult = await _authService.AuthenticateAndAuthorizeUser(answers.UserName, answers.Password);
             if (!authResult.IsAuthenticated
                 ||
-                authResult.Authorization.UserType != AppUserType.AdvancedAdminUserWithUniquePasswords)
+                authResult.Authorization.UserType != AppUserType.AdvancedAdmin)
             {
                 return StatusCode(StatusCodes.Status403Forbidden);
             }

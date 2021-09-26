@@ -6,6 +6,7 @@
         public Database Database { get; set; }
         public Storage Storage { get; set; }
         public Email Email { get; set; }
+        public Admin Admin { get; set; }
     }
 
     public class Database
@@ -23,6 +24,8 @@
         public string DispositionQueue { get; set; }
         public string Representatives { get; set; }
         public string Settings { get; set; }
+        public string Users { get; set; }
+        public string Sessions { get; set; }
     }
 
     public class Storage
@@ -41,5 +44,10 @@
         public string ApiKey { get; set; }
         public string DefaultFrom { get; set; }
         public string DefaultCc { get; set; }
+    }
+
+    public class Admin {
+        public string DefaultUser { get; set; }
+        public string DefaultPassword { get; set; }
     }
 }

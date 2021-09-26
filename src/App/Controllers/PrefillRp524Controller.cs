@@ -32,7 +32,7 @@ namespace App.Controllers
         public RedirectResult Post([FromBody] PrefillDataParams data)
         {
             Contract.Requires(data != null);
-            var cookieOptions = CookieFactoryService.BuildCookieOptions();
+            var cookieOptions = CookieFactoryService.BuildCookieOptions(DateTime.Now.AddMinutes(5));
             base.Response.Cookies.Append(
                 data.CacheKey, 
                 JsonSerializer.Serialize(data.PrefillData), 

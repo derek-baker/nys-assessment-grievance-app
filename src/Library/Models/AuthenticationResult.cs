@@ -1,4 +1,6 @@
-﻿namespace Library.Models
+﻿using Library.Models.Entities;
+
+namespace Library.Models
 {
     public class AppAuthorization
     {
@@ -16,14 +18,24 @@
     {
         public bool IsAuthenticated { get; }
         public AppAuthorization Authorization { get; }
+        public Session Session { get; set; }
 
         public AuthenticationResult(
             bool isAuthed,
-            AppAuthorization authorization
-        )
+            AppAuthorization authorization)
         {
             IsAuthenticated = isAuthed;
             Authorization = authorization;
+        }
+
+        public AuthenticationResult(
+            bool isAuthed,
+            AppAuthorization authorization,
+            Session session)
+        {
+            IsAuthenticated = isAuthed;
+            Authorization = authorization;
+            Session = session;
         }
     }
 }

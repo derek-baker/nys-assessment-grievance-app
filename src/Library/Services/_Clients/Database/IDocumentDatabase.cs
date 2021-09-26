@@ -1,7 +1,5 @@
 ﻿using Library.Models;
 using Library.Models.DataTransfer;
-using Library.Models.Email;
-using Library.Models.Settings;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
@@ -9,10 +7,12 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Threading.Tasks;
 
-namespace Library.Database
+namespace Library.Services.Clients.Database
 {
     public interface IDocumentDatabase
     {
+        BsonArray BuildBsonArray<T>(List<T> objects);
+
         Task DeleteGrievanceSoftly(
             DocumentDatabaseSettings dbSettings,
             string grievanceId
@@ -21,13 +21,8 @@ namespace Library.Database
             IMongoCollection<BsonDocument> grievanceCollection
         );
         ProjectionDefinition<BsonDocument> BuildProjection(ImmutableList<string> fieldsToInclude);
+        
         List<BsonDocument> GetChangeList(IMongoCollection<BsonDocument> collection, DateTime dateFilterStart, DateTime dateFilterEnd);
-
-        Task<UserSettings> GetUserSettings(IMongoCollection<BsonDocument> collection);
-        Task SetUserSettings(IMongoCollection<BsonDocument> collection, UserSettings settings);
-
-        Task<IEnumerable<RepGroupInfo>> GetRepresentatives(IMongoCollection<BsonDocument> collection);
-        Task SetRepresentatives(IMongoCollection<BsonDocument> collection, IEnumerable<RepGroupInfo> reps);
 
         Task ArchiveDeletedDocs(
             IMongoCollection<BsonDocument> submissionsCollection,
@@ -44,7 +39,18 @@ namespace Library.Database
             string fieldName, 
             string fieldValue
         );
-        
+
+        Task<IAsyncCursor<BsonDocument>> GetDocuments(
+            IMongoCollection<BsonDocument> collection,
+            ProjectionDefinition<BsonDocument> projection,
+            FilterDefinition<BsonDocument> filter);
+
+        Task<IAsyncCursor<BsonDocument>> GetSortedDocuments(
+            IMongoCollection<BsonDocument> collection,
+            ProjectionDefinition<BsonDocument> projection,
+            FilterDefinition<BsonDocument> filter,
+            SortDefinition<BsonDocument> sort);
+
         IEnumerable<GrievanceMissingRp524> GetDocumentsByField<T>(
             IMongoCollection<BsonDocument> collection,
             string field1Name,

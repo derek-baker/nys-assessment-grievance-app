@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
-using Library.Database;
 using Library.Models;
 using Library.Models.Settings;
-using Library.Services.Config.UserSettings;
 using Library.Services.Csv;
 using Library.Services.Filesystem;
 using Library.Services.PDF;
@@ -14,6 +12,8 @@ using Library.Storage;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Library.Services;
+using Library.Services.Clients.Database;
+using Library.Services.Clients.Database.Repositories;
 
 namespace App.Controllers
 {
@@ -26,12 +26,12 @@ namespace App.Controllers
         
         private readonly IStorage _storageClient;
         private readonly IDocumentDatabase _db;
-        private readonly IUserSettingsService _userSettings;
+        private readonly UserSettingsRepository _userSettings;
         private readonly ICsvGeneratorService _csv;
 
         public DownloadController(
             IStorage storageClient,
-            IUserSettingsService userSettings,
+            UserSettingsRepository userSettings,
             ICsvGeneratorService csv,
             IDocumentDatabase db,
             StorageSettings storageSettings,

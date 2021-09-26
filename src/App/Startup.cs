@@ -1,11 +1,8 @@
 using App.Extensions;
 using Contracts;
-using Library.Database;
 using Library.Email;
-using Library.Models;
 using Library.Models.Settings;
 using Library.Services._Clients.Secrets;
-using Library.Services.Config.UserSettings;
 using Library.Services.Csv;
 using Library.Services.Filesystem;
 using Library.Services.Guid;
@@ -18,6 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Library.Services.Auth;
 using Library.Services.Image;
+using Library.Services.Clients.Database.Repositories;
+using Library.Services.Clients.Database;
 
 namespace App
 {
@@ -34,11 +33,17 @@ namespace App
             
             var settings = new Settings();
             _configuration.GetSection("Settings").Bind(settings);
-
             var secrets = new GcpSecretManager(settings.CloudProjectId);
+
             settings.Database.Server = secrets.GetSecret(SecretKeys.DatabaseServer);
+            settings.Database.User = secrets.GetSecret(SecretKeys.DatabaseUserName);
             settings.Database.UserPassword = secrets.GetSecret(SecretKeys.DatabaseUserPassword);
+
             settings.Email.ApiKey = secrets.GetSecret(SecretKeys.EmailApiKey);
+
+            settings.Admin.DefaultUser = secrets.GetSecret(SecretKeys.AppDefaultUserName);
+            settings.Admin.DefaultPassword = secrets.GetSecret(SecretKeys.AppDefaultUserPassword);
+
             _settings = settings;            
         }
 
@@ -52,27 +57,32 @@ namespace App
                         .AllowAnyHeader();
                 }
             ));
-            services.AddControllers().AddNewtonsoftJson();
+            services.AddControllers().AddNewtonsoftJson();            
             services.AddSpaStaticFiles(
                 (configuration) => { configuration.RootPath = $"{spaDir}/dist"; }
             );
             ConfigureDependencyInjection(services, _settings);
         }
 
-        private void ConfigureDependencyInjection(IServiceCollection services, Settings settings)
+        private static void ConfigureDependencyInjection(IServiceCollection services, Settings settings)
         {
             services.AddTransient<IDocumentDatabase>(
                 s => new MongoDatabase(
                     new DocumentDatabaseSettings(settings).ConnectionString, 
                     settings.Database.DatabaseName)
             );
+            services.AddTransient<SessionRepository>();
+            services.AddTransient<UserRepository>();
+            services.AddTransient<UserSettingsRepository>();
+            services.AddTransient<RepresentativesRepository>();
+
             services.AddTransient<IStorage, GoogleCloudStorage>();
-            services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IEmailClient, EmailClient>();
+
+            services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IZipFileService, ZipFileService>();
             services.AddTransient<IImageService, ImageService>();
             services.AddTransient<IGuidService, GuidService>();
-            services.AddTransient<IUserSettingsService, UserSettingsService>();
             services.AddTransient<ICsvGeneratorService, CsvGeneratorService>();
 
             services.AddSingleton(services => new DocumentDatabaseSettings(settings));
@@ -82,7 +92,8 @@ namespace App
 
         public void Configure(
             IApplicationBuilder app, 
-            IWebHostEnvironment env)   
+            IWebHostEnvironment env,
+            UserRepository users)   
         {
             if (env.IsDevelopment())
             {
@@ -92,6 +103,7 @@ namespace App
             {
                 app.UseHsts();
             }
+
             app.ConfigureCustomExceptionMiddleware();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -99,6 +111,7 @@ namespace App
             {
                 app.UseSpaStaticFiles();
             }
+            
             app.UseRouting();
             app.UseCors();
             app.UseEndpoints(
@@ -113,10 +126,16 @@ namespace App
             app.UseSpa(spa => {
                 spa.Options.SourcePath = spaDir;
                 if (env.IsDevelopment())
-                {
-                    spa.UseAngularCliServer(npmScript: "start");
-                }
+                    spa.UseAngularCliServer(npmScript: "start");                
             });
+
+            var defaultAdminUser = users.GetUser(_settings.Admin.DefaultUser).Result;
+            if (defaultAdminUser != null) return;
+            users.CreateUser(
+                username: _settings.Admin.DefaultUser, 
+                password: _settings.Admin.DefaultPassword,
+                forcePasswordReset: false
+            ).Wait();
         }
     }
 }

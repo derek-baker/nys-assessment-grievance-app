@@ -1,9 +1,9 @@
-﻿using Library.Models.Settings;
+﻿using Library.Models.Entities;
 
 namespace Library.Models.DataTransferObjects
 {
-    public class SetUserSettingsParams : UserAuthInfo
+    public class SetUserSettingsParams
     {
-        public UserSettings settings { get; set; }
+        public UserSettings Settings { get; set; }
     }
 }

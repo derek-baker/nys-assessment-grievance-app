@@ -13,15 +13,16 @@ using MongoDB.Bson.Serialization;
 using Library.Services.Auth;
 using Library.Services;
 using Library.Models.DataTransferObjects;
-using Library.Services.Config.UserSettings;
 using Library.Models.NoSQLDatabaseSchema;
 using Library.Models.Settings;
-using Library.Database;
 using Library.Storage;
 using Library.Models;
 using Library.Services.PDF;
 using Library.Services.Filesystem;
 using Library.Services.Guid;
+using Library.Models.Entities;
+using Library.Services.Clients.Database;
+using Library.Services.Clients.Database.Repositories;
 
 namespace App.Controllers
 {
@@ -32,7 +33,7 @@ namespace App.Controllers
         private readonly IStorage _storageClient;
         private readonly IAuthService _authSvc;
         private readonly IGuidService _guid;
-        private readonly IUserSettingsService _userSettingsService;
+        private readonly UserSettingsRepository _userSettings;
         private readonly DocumentDatabaseSettings _dbSettings;
         private readonly StorageSettings _storageSettings;
 
@@ -41,7 +42,7 @@ namespace App.Controllers
             IStorage storage,
             IAuthService auth,
             IGuidService guidSvc,
-            IUserSettingsService userSettings,
+            UserSettingsRepository userSettings,
             DocumentDatabaseSettings dbSettings,
             StorageSettings storageSettings)
         {
@@ -51,7 +52,7 @@ namespace App.Controllers
             _guid = guidSvc;
             _dbSettings = dbSettings;
             _storageSettings = storageSettings;
-            _userSettingsService = userSettings;
+            _userSettings = userSettings;
         }
 
         // GET: /api/<controller>/<action>
@@ -62,7 +63,6 @@ namespace App.Controllers
             var collection = _dbClient.GetCollection(_dbSettings.GrievancesCollectionName);
 
             var data = _dbClient.GetAllGrievances(collection);
-            // Not sure why this is manually serialized
             return Ok(JsonSerializer.Serialize(data));
         }
 
@@ -82,8 +82,7 @@ namespace App.Controllers
         }
 
         /// <summary>
-        /// For legacy reasons, the raw grievance JSON is stored in cloud BLOB storage.
-        /// TODO: Move that data to the database.
+        /// TODO: The raw grievance JSON is stored in cloud BLOB storage. Move that data to the database.
         /// GET: /api/<controller>/<action>
         /// </summary>
         [HttpPost]
@@ -92,19 +91,17 @@ namespace App.Controllers
             [FromBody] GetGrievanceFileParams parameters
         )
         {
-            Contract.Requires(parameters != null);
-            var authResult = _authSvc.AuthenticateAndAuthorizeUser(
-                parameters.userName, 
+            var authResult = await _authSvc.AuthenticateAndAuthorizeUser(
+                parameters.userName,
                 parameters.password
             );
             if (!authResult.IsAuthenticated)
-            {
                 return StatusCode(StatusCodes.Status403Forbidden);
-            }
+
             List<Google.Apis.Storage.v1.Data.Object> objects = 
                 _storageClient.ListObjectsForSubmission(parameters.SubmissionGuid, _storageSettings.BucketNameGrievances);
 
-            var year = (await _userSettingsService.GetUserSettings()).Year.ToString();
+            var year = (await _userSettings.GetUserSettings()).Year.ToString();
 
             return Ok(
                 objects.Select(
@@ -128,29 +125,19 @@ namespace App.Controllers
 
         [HttpPost]
         [ActionName("DeleteGrievanceFile")]
-        public IActionResult DeleteGrievanceFile(
-            [FromBody] DeleteFileParams parameters
-        )
+        public async Task<IActionResult> DeleteGrievanceFile([FromBody] DeleteFileParams parameters)
         {
             Contract.Requires(parameters != null);
-            var authResult = _authSvc.AuthenticateAndAuthorizeUser(
+            var authResult = await _authSvc.AuthenticateAndAuthorizeUser(
                 parameters.userName,
                 parameters.password
             );
             if (!authResult.IsAuthenticated) { return StatusCode(StatusCodes.Status403Forbidden); }
             
-            if (
-                (authResult.Authorization.UserType == AppUserType.AdvancedAdminUserWithUniquePasswords
-                ||
-                authResult.Authorization.UserType == AppUserType.BasicAdminUserWithGroup2Password)
-                == 
-                false
-            )
-            {
+            if ((authResult.Authorization.UserType == AppUserType.AdvancedAdmin) == false)
                 return StatusCode(StatusCodes.Status403Forbidden);
-            }
-
-            _storageClient.DeleteObject(
+            
+            await _storageClient.DeleteObject(
                 objectName: parameters.blobFullName, 
                 bucketName: _storageSettings.BucketNameGrievances
             );
@@ -189,7 +176,7 @@ namespace App.Controllers
         public async Task<IActionResult> PostEditGrievance([FromBody] PostGrievanceEditParams reqParams)
         {
             Contract.Requires(reqParams != null);
-            var authResult = _authSvc.AuthenticateAndAuthorizeUser(reqParams.userName, reqParams.password);
+            var authResult = await _authSvc.AuthenticateAndAuthorizeUser(reqParams.userName, reqParams.password);
             if (!authResult.IsAuthenticated)
             {
                 return StatusCode(StatusCodes.Status403Forbidden);
@@ -206,10 +193,10 @@ namespace App.Controllers
         // POST: api/<controller>/<action>
         [HttpPost]
         [ActionName("PostDownloadedStatus")]
-        public IActionResult PostDownloadedStatus([FromBody] SubmissionUpdateParams parameters)
+        public async Task<IActionResult> PostDownloadedStatus([FromBody] SubmissionUpdateParams parameters)
         {
             Contract.Requires(parameters != null);
-            var authResult = _authSvc.AuthenticateAndAuthorizeUser(parameters.userName, parameters.password);
+            var authResult = await _authSvc.AuthenticateAndAuthorizeUser(parameters.userName, parameters.password);
             if (!authResult.IsAuthenticated)
             {
                 return StatusCode(StatusCodes.Status403Forbidden);
@@ -223,10 +210,10 @@ namespace App.Controllers
         // POST: api/<controller>/<action>
         [HttpPost]
         [ActionName("PostPersonalHearingStatus")]
-        public IActionResult PostPersonalHearingStatus([FromBody] GrievanceHearingIsCompletedUpdateParams parameters)
+        public async Task<IActionResult> PostPersonalHearingStatus([FromBody] GrievanceHearingIsCompletedUpdateParams parameters)
         {
             Contract.Requires(parameters != null);
-            var authResult = _authSvc.AuthenticateAndAuthorizeUser(parameters.userName, parameters.password);
+            var authResult = await _authSvc.AuthenticateAndAuthorizeUser(parameters.userName, parameters.password);
             if (!authResult.IsAuthenticated)
             {
                 return StatusCode(StatusCodes.Status403Forbidden);
@@ -256,11 +243,10 @@ namespace App.Controllers
             [FromForm] bool includesIncomeExpenseExclusion,
             [FromForm] bool includesSupportingDocumentation)
         {
-            var authResult = _authSvc.AuthenticateAndAuthorizeUser(userName: userName, password: password);
+            var authResult = await _authSvc.AuthenticateAndAuthorizeUser(userName: userName, password: password);
             if (!authResult.IsAuthenticated)
-            {
                 return StatusCode(StatusCodes.Status403Forbidden);
-            }
+            
             Contract.Requires(files != null);
 
             var collection = _dbClient.GetCollection(_dbSettings.GrievancesCollectionName);
@@ -277,7 +263,7 @@ namespace App.Controllers
                 includesSupportingDocumentation
             );
 
-            var year = (await _userSettingsService.GetUserSettings()).Year.ToString();
+            var year = (await _userSettings.GetUserSettings()).Year.ToString();
 
             foreach (var file in files)
             {
@@ -334,7 +320,7 @@ namespace App.Controllers
             
             var parseResult = PdfDataExtractionService.TryParseRp524(pdfFilePath);
 
-            var year = (await _userSettingsService.GetUserSettings()).Year.ToString();
+            var year = (await _userSettings.GetUserSettings()).Year.ToString();
             if (parseResult.IsParsedSuccessfully)
             {
                 // Create json file
@@ -405,12 +391,12 @@ namespace App.Controllers
             [FromForm] string notes
         )
         {
-            var authResult = _authSvc.AuthenticateAndAuthorizeUser(userName, password);
+            var authResult = await _authSvc.AuthenticateAndAuthorizeUser(userName, password);
             if (!authResult.IsAuthenticated){ return StatusCode(StatusCodes.Status403Forbidden); }
             Contract.Requires(files != null);
 
             string newGuid = _guid.GetNewGuid(_dbClient, _dbSettings);
-            var year = (await _userSettingsService.GetUserSettings()).Year.ToString();
+            var year = (await _userSettings.GetUserSettings()).Year.ToString();
             foreach (var file in files)
             {
                 var fileName = ContentDispositionHeaderValue.Parse(
@@ -466,11 +452,11 @@ namespace App.Controllers
         // POST: api/<controller>/PostBarReviewStatus
         [HttpPost]
         [ActionName("PostBarReviewStatus")]
-        public IActionResult PostBarReviewStatus([FromBody] SubmissionUpdateParams parameters)
+        public async Task<IActionResult> PostBarReviewStatus([FromBody] SubmissionUpdateParams parameters)
         {
             Contract.Requires(parameters != null);
 
-            var authResult = _authSvc.AuthenticateAndAuthorizeUser(parameters.userName, parameters.password);
+            var authResult = await _authSvc.AuthenticateAndAuthorizeUser(parameters.userName, parameters.password);
             if (!authResult.IsAuthenticated)
             {
                 return StatusCode(StatusCodes.Status403Forbidden);
@@ -487,10 +473,10 @@ namespace App.Controllers
             [FromBody] GrievanceDeletionRequest req
         )
         {
-            var authResult = _authSvc.AuthenticateAndAuthorizeUser(req.userName, req.password);
+            var authResult = await _authSvc.AuthenticateAndAuthorizeUser(req.userName, req.password);
             if (!authResult.IsAuthenticated
                 ||
-                authResult.Authorization.UserType != AppUserType.AdvancedAdminUserWithUniquePasswords)
+                authResult.Authorization.UserType != AppUserType.AdvancedAdmin)
             {
                 return StatusCode(StatusCodes.Status403Forbidden);
             }
@@ -508,11 +494,11 @@ namespace App.Controllers
         /// </summary>
         [HttpPost]
         [ActionName("Post525PrefillData")]
-        public IActionResult Post525PrefillData([FromBody] RP525FormData rp525Data)
+        public async Task<IActionResult> Post525PrefillData([FromBody] RP525FormData rp525Data)
         {
             Contract.Requires(rp525Data != null);
 
-            var authResult = _authSvc.AuthenticateAndAuthorizeUser(rp525Data.userName, rp525Data.password);
+            var authResult = await _authSvc.AuthenticateAndAuthorizeUser(rp525Data.userName, rp525Data.password);
             if (!authResult.IsAuthenticated)
             {
                 return StatusCode(StatusCodes.Status403Forbidden);
@@ -552,14 +538,14 @@ namespace App.Controllers
 
             var grievanceIds = _storageClient.FindSubmissionsLackingRp524(
                _storageSettings.BucketNameGrievances,
-               (await _userSettingsService.GetUserSettings())?.Year.ToString(),
+               (await _userSettings.GetUserSettings())?.Year.ToString(),
                MagicStringsService.NysRp525StorageObjectPrefix,
                "pdf",
                submissionGuids
             );
 
             var submissionsCollection = _dbClient.GetCollection(_dbSettings.GrievancesCollectionName);
-            var data = _dbClient.GetDocumentsByField(submissionsCollection, GrievanceDocumentFields.GuidString, grievanceIds);
+            var data = _dbClient.GetDocumentsByField(submissionsCollection, GrievanceDocument.Fields.GuidString, grievanceIds);
 
             return Ok(data);
         }

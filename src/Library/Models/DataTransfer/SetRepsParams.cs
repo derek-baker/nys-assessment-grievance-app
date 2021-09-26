@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Library.Models.Entities;
+using System.Collections.Generic;
 
 namespace Library.Models.DataTransferObjects
 {
