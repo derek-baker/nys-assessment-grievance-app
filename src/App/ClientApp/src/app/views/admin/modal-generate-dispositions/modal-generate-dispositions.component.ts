@@ -14,11 +14,6 @@ import { IAttorneyPrefillData } from '../../../types/IAttorneyPrefillData';
 })
 export class ModalEmailDispositionsComponent implements OnInit {
 
-    @Input()
-    public readonly UserName: string;
-    @Input()
-    public readonly Password: string;
-
     public IsTriggeringJob: boolean = false;
 
     public EmailJobQueueData: Array<IEmailJobQueueData> = [];
@@ -203,7 +198,7 @@ export class ModalEmailDispositionsComponent implements OnInit {
     }
 
     public RefreshEmailJobQueueData() {
-        this.httpService.RefreshJobQueueData(this.UserName, this.Password)
+        this.httpService.RefreshJobQueueData()
             .subscribe(
                 (data: Array<IEmailJobQueueData>) => {
                     if (!data || data.length === 0) {
@@ -220,17 +215,7 @@ export class ModalEmailDispositionsComponent implements OnInit {
 
     }
 
-    private testEmailJobPrerequisites(
-        userName: string,
-        password: string,
-        selectedEmails: Array<string>
-    ): ITestJobPreReqsResult {
-        if (!userName || !password) {
-            return {
-                TestPassed: false,
-                Message: 'It appears you\'re not authorized to perform this request. Please log in.'
-            };
-        }
+    private testEmailJobPrerequisites(selectedEmails: Array<string>): ITestJobPreReqsResult {
         if (selectedEmails?.length < 1) {
             return {
                 TestPassed: false,
@@ -241,11 +226,7 @@ export class ModalEmailDispositionsComponent implements OnInit {
     }
 
     public SubmitJobs() {
-        const satisfied = this.testEmailJobPrerequisites(
-            this.UserName,
-            this.Password,
-            this.GetSelectedRepGroups
-        );
+        const satisfied = this.testEmailJobPrerequisites(this.GetSelectedRepGroups);
         if (satisfied.TestPassed === false) {
             window.alert(satisfied.Message);
             return;
@@ -258,11 +239,7 @@ export class ModalEmailDispositionsComponent implements OnInit {
         if (userConfirmedAction === false) { return; }
 
         this.IsTriggeringJob = true;
-        this.httpService.SubmitDispositionsJob(
-            this.UserName,
-            this.Password,
-            this.GetSelectedRepGroups
-        ).subscribe(
+        this.httpService.SubmitDispositionsJob(this.GetSelectedRepGroups).subscribe(
             () => {
                 window.alert(
                     'Your job was submitted successfully. ' +

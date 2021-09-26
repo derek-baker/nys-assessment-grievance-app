@@ -26,27 +26,7 @@ export class ClientStorageService {
     /**
      * Read data from store
      */
-    public GetData(
-        key: string,
-        storage = localStorage
-    ): string {
-        return storage.getItem(key);
-    }
-
-    
-    /** NOTE: Not currently used */
-    public SetSessionHash(
-        sessionHash: string,
-        key: string = this.sessionHashKey,
-        storage = sessionStorage
-    ): void {
-        storage.setItem(key, sessionHash);
-    }
-    /** NOTE: Not currently used */
-    public GetSessionHash(
-        key: string = this.sessionHashKey,
-        storage = sessionStorage
-    ): string | undefined {
+    public GetData(key: string, storage = localStorage): string {
         return storage.getItem(key);
     }
 }

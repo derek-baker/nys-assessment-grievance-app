@@ -1,10 +1,10 @@
-<app-modal-edit-grievance (RefreshGridEvent)="RefreshRowEventHandler($event)" [GrievanceWrapper]="SelectedGrievanceWrapper" [UserName]="UserName" [Password]="ReviewerPassword">
+<app-modal-edit-grievance (RefreshGridEvent)="RefreshRowEventHandler($event)" [GrievanceWrapper]="SelectedGrievanceWrapper">
 </app-modal-edit-grievance>
 
-<app-modal-add-files [SelectedApplication]="SelectedApplication" [UserName]="UserName" [ReviewerPassword]="ReviewerPassword">
+<app-modal-add-files [SelectedApplication]="SelectedApplication">
 </app-modal-add-files>
 
-<app-modal-create-submission (reloadGridEvent)="reloadGridEventHandler()" [UserName]="UserName" [ReviewerPassword]="ReviewerPassword">
+<app-modal-create-submission (reloadGridEvent)="reloadGridEventHandler()" [UserName]="UserName">
 </app-modal-create-submission>
 
 <app-modal-online-bar-review
@@ -12,20 +12,20 @@
     [IsArchiveDownloading]="IsArchiveDownloading">
 </app-modal-online-bar-review>
 
-<app-modal-generate-dispositions [UserName]="UserName" [Password]="ReviewerPassword">
+<app-modal-generate-dispositions>
 </app-modal-generate-dispositions>
 
-<app-modal-submission-details [UserName]="UserName" [Password]="ReviewerPassword" [SelectedGrievance]="SelectedApplication"
+<app-modal-submission-details [SelectedGrievance]="SelectedApplication"
     [DownloadFilesAssociatedWithSelectedGrievance]="DownloadFilesAssociatedWithSelectedGrievance.bind(this)"
     [IsArchiveDownloading]="IsArchiveDownloading" [GetSelectedGrievance]="GetSelectedData.bind(this)">
 </app-modal-submission-details>
 
-<app-modal-export-review [UserName]="UserName" [Password]="ReviewerPassword">
+<app-modal-export-review>
 </app-modal-export-review>
 
-<app-modal-set-representatives [UserName]="UserName" [Password]="ReviewerPassword"></app-modal-set-representatives>
+<app-modal-set-representatives></app-modal-set-representatives>
 
-<app-admin-settings [UserName]="UserName" [Password]="ReviewerPassword"></app-admin-settings>
+<app-admin-settings></app-admin-settings>
 
 <!-- TODO: Component for: Offline Bar Review Modal -->
 <div class="modal fade" id="BarReviewModal" tabindex="-1" role="dialog" aria-labelledby="BarReviewModalLabel"
@@ -198,7 +198,11 @@
         </div>
     </div>
 
-    <form (submit)="Authenticate()">
+    <div *ngIf="IsValidatingSession === true" class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+
+    <form *ngIf="IsValidatingSession === false" (submit)="Authenticate()">
         <div class="form-group">
             <label for="username">Username</label>
             <input appAutofocus [(ngModel)]="UserName" id="username" class="form-control" name="username" type="text" placeholder="Enter your username">
@@ -206,7 +210,7 @@
         </div>
         <div class="form-group">
             <label for="password">Password</label>
-            <input [(ngModel)]="ReviewerPassword" id="password" name="password" type="password" class="form-control" placeholder="Enter the password">
+            <input [(ngModel)]="Password" name="password" type="password" class="form-control" placeholder="Enter the password">
             <small class="text-muted">This field <u>is</u> case-sensitive</small>
         </div>
 

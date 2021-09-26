@@ -2,9 +2,6 @@
 {
     public class NysRps525OnlineFormData
     {
-        public string Password { get; set; }
-        public string UserName { get; set; }
-
         public string Admin_Rp5256a2ii { get; set; }
         public string Admin_Rp525_3a { get; set; }
         public string Admin_Rp525_3a1 { get; set; }

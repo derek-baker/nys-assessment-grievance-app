@@ -11,11 +11,6 @@ import { AdminComponent } from '../admin.component';
 export class ModalAddFilesComponent implements OnInit {
 
     @Input()
-    public readonly UserName: string;
-    @Input()
-    public readonly ReviewerPassword: string;
-
-    @Input()
     public readonly SelectedApplication: ISelectedGrievance;
 
     public includesPersonalHearing: boolean;

@@ -45,6 +45,18 @@ namespace Library.Services.Auth
             return buildNoAuthResult(userNameClean);
         }
 
+        private static bool IsInvalidSession(Session session) 
+            => session is null || session.ValidUntil <= DateTime.UtcNow;
+
+        public async Task<bool> ValidateSession(Session sessionFromCookie)
+        {
+            var sessionFromDb = await _sessions.GetUserSession(
+                sessionFromCookie.UserId,
+                sessionFromCookie.SessionId);
+
+            return !IsInvalidSession(sessionFromDb);
+        }
+
         public async Task<bool> ValidateSession(string cookieData)
         {
             var sessionFromCookie = JsonSerializer.Deserialize<Session>(cookieData);
@@ -52,10 +64,7 @@ namespace Library.Services.Auth
                 sessionFromCookie.UserId,
                 sessionFromCookie.SessionId);
 
-            if (sessionFromDb is null || sessionFromDb.ValidUntil <= DateTime.UtcNow) 
-                return false;
-
-            return true;
+            return !IsInvalidSession(sessionFromDb);
         }
 
         private static AuthenticationResult buildNoAuthResult(string user)

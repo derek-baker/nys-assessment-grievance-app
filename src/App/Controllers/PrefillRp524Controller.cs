@@ -15,17 +15,8 @@ namespace App.Controllers
     [Route("api/[controller]")]
     public class PrefillRp524Controller : ControllerBase
     {
-        private readonly ILogger<PrefillRp524Controller> _logger;
-
-        public PrefillRp524Controller(ILogger<PrefillRp524Controller> logger)
-        {
-            _logger = logger;
-        }
-
         /// <summary>
         /// Redirect to the front-end app, and send data in a cookie.
-        /// COOKIE DOCS: https://docs.microsoft.com/en-us/aspnet/core/security/samesite?view=aspnetcore-3.1#net-core-support-for-the-samesite-attribute
-        /// CACHE DOCS: https://docs.microsoft.com/en-us/aspnet/core/performance/caching/memory?view=aspnetcore-3.1
         /// </summary>   
         [EnableCors("ApiPolicy")]
         [HttpPost]
@@ -38,7 +29,6 @@ namespace App.Controllers
                 JsonSerializer.Serialize(data.PrefillData), 
                 cookieOptions
             );
-            _logger.LogInformation(JsonSerializer.Serialize(data.PrefillData));
 
             Uri encodedUrl = new Uri(Request.GetEncodedUrl());
             string host = HostService.GetHostFromAmbientInfo(encodedUrl);

@@ -19,10 +19,9 @@ using Library.Models;
 using Library.Services.PDF;
 using Library.Services.Filesystem;
 using Library.Services.Guid;
-using Library.Models.Entities;
 using Library.Services.Clients.Database;
 using Library.Services.Clients.Database.Repositories;
-using Library.Services._Clients.Storage;
+using Library.Services.Clients.Storage;
 
 namespace App.Controllers
 {
@@ -31,7 +30,6 @@ namespace App.Controllers
     {
         private readonly IDocumentDatabase _dbClient;
         private readonly IStorage _storageClient;
-        private readonly IAuthService _authSvc;
         private readonly IGuidService _guid;
         private readonly UserSettingsRepository _userSettings;
         private readonly DocumentDatabaseSettings _dbSettings;
@@ -40,7 +38,6 @@ namespace App.Controllers
         public AdminController(
             IDocumentDatabase dbClient,
             IStorage storage,
-            IAuthService auth,
             IGuidService guidSvc,
             UserSettingsRepository userSettings,
             DocumentDatabaseSettings dbSettings,
@@ -48,7 +45,6 @@ namespace App.Controllers
         {
             _dbClient = dbClient;
             _storageClient = storage; 
-            _authSvc = auth;
             _guid = guidSvc;
             _dbSettings = dbSettings;
             _storageSettings = storageSettings;
@@ -67,6 +63,7 @@ namespace App.Controllers
         }
 
         // GET: /api/<controller>/<action>
+        [CustomAuth]
         [HttpGet]
         public IActionResult GetChangeReport(DateTime start, DateTime end)
         {
@@ -85,19 +82,11 @@ namespace App.Controllers
         /// TODO: The raw grievance JSON is stored in cloud BLOB storage. Move that data to the database.
         /// GET: /api/<controller>/<action>
         /// </summary>
+        [CustomAuth]
         [HttpPost]
         [ActionName("GetGrievanceFiles")]
-        public async Task<IActionResult> GetGrievanceFiles(
-            [FromBody] GetGrievanceFileParams parameters
-        )
+        public async Task<IActionResult> GetGrievanceFiles([FromBody] GetGrievanceFileParams parameters)
         {
-            var authResult = await _authSvc.AuthenticateAndAuthorizeUser(
-                parameters.userName,
-                parameters.password
-            );
-            if (!authResult.IsAuthenticated)
-                return StatusCode(StatusCodes.Status403Forbidden);
-
             List<Google.Apis.Storage.v1.Data.Object> objects = 
                 _storageClient.ListObjectsForSubmission(parameters.SubmissionGuid, _storageSettings.BucketNameGrievances);
 
@@ -123,20 +112,11 @@ namespace App.Controllers
             }
         }
 
+        [CustomAuth]
         [HttpPost]
         [ActionName("DeleteGrievanceFile")]
         public async Task<IActionResult> DeleteGrievanceFile([FromBody] DeleteFileParams parameters)
         {
-            Contract.Requires(parameters != null);
-            var authResult = await _authSvc.AuthenticateAndAuthorizeUser(
-                parameters.userName,
-                parameters.password
-            );
-            if (!authResult.IsAuthenticated) { return StatusCode(StatusCodes.Status403Forbidden); }
-            
-            if ((authResult.Authorization.UserType == AppUserType.AdvancedAdmin) == false)
-                return StatusCode(StatusCodes.Status403Forbidden);
-            
             await _storageClient.DeleteObject(
                 objectName: parameters.blobFullName, 
                 bucketName: _storageSettings.BucketNameGrievances
@@ -145,14 +125,14 @@ namespace App.Controllers
             return Ok();
         }
 
+        [CustomAuth]
         [HttpGet]
         [ActionName("GetGrievanceJson")]
         public async Task<IActionResult> GetGrievanceJson([FromQuery] string guidString)
         {
             if (string.IsNullOrEmpty(guidString))
-            {
                 return StatusCode(StatusCodes.Status400BadRequest);
-            }
+            
             var objects = _storageClient.ListObjectsForSubmission(guidString, _storageSettings.BucketNameGrievances);
                 
             var storageObj = objects.Where(
@@ -171,17 +151,11 @@ namespace App.Controllers
             return Ok(json);
         }
 
+        [CustomAuth]
         [HttpPost]
         [ActionName("PostEditGrievance")]
         public async Task<IActionResult> PostEditGrievance([FromBody] PostGrievanceEditParams reqParams)
         {
-            Contract.Requires(reqParams != null);
-            var authResult = await _authSvc.AuthenticateAndAuthorizeUser(reqParams.userName, reqParams.password);
-            if (!authResult.IsAuthenticated)
-            {
-                return StatusCode(StatusCodes.Status403Forbidden);
-            }
-
             var collection = _dbClient.GetCollection(_dbSettings.GrievancesCollectionName);
             await _dbClient.UpdateGrievance(
                 collection,
@@ -191,33 +165,23 @@ namespace App.Controllers
         }
 
         // POST: api/<controller>/<action>
+        [CustomAuth]
         [HttpPost]
         [ActionName("PostDownloadedStatus")]
-        public async Task<IActionResult> PostDownloadedStatus([FromBody] SubmissionUpdateParams parameters)
+        public IActionResult PostDownloadedStatus([FromBody] SubmissionUpdateParams parameters)
         {
-            Contract.Requires(parameters != null);
-            var authResult = await _authSvc.AuthenticateAndAuthorizeUser(parameters.userName, parameters.password);
-            if (!authResult.IsAuthenticated)
-            {
-                return StatusCode(StatusCodes.Status403Forbidden);
-            }
-            if (parameters.guid == null) { throw new Exception("Guid param is null"); }
+            if (parameters.guid is null) { throw new Exception("Guid param is null"); }
             var collection = _dbClient.GetCollection(collectionName: _dbSettings.GrievancesCollectionName);
             _dbClient.UpdateReviewStatus(collection, parameters.guid, parameters.isReviewed);
             return Ok();            
         }
 
         // POST: api/<controller>/<action>
+        [CustomAuth]
         [HttpPost]
         [ActionName("PostPersonalHearingStatus")]
-        public async Task<IActionResult> PostPersonalHearingStatus([FromBody] GrievanceHearingIsCompletedUpdateParams parameters)
+        public IActionResult PostPersonalHearingStatus([FromBody] GrievanceHearingIsCompletedUpdateParams parameters)
         {
-            Contract.Requires(parameters != null);
-            var authResult = await _authSvc.AuthenticateAndAuthorizeUser(parameters.userName, parameters.password);
-            if (!authResult.IsAuthenticated)
-            {
-                return StatusCode(StatusCodes.Status403Forbidden);
-            }
             if (parameters.guid == null) { throw new Exception("Guid param is null"); }
             var collection = _dbClient.GetCollection(_dbSettings.GrievancesCollectionName);
             _dbClient.UpdateCompletedPersonalHearing(collection, parameters.guid, parameters.isHearingCompleted);
@@ -227,13 +191,12 @@ namespace App.Controllers
         /// <summary>
         /// POST: api/<controller>/PostAddDocsToSubmission
         /// </summary>        
+        [CustomAuth]
         [HttpPost]
         [ActionName("PostAddDocsToSubmission")]
         public async Task<IActionResult> PostAddDocsToSubmission(
             [FromForm] List<IFormFile> files,
             [FromForm] string submissionGuid,
-            [FromForm] string userName,
-            [FromForm] string password,
             [FromForm] bool includesPersonalHearing,
             [FromForm] bool includesConflictOfInterest,
             [FromForm] bool includesResQuestionnaire,
@@ -243,12 +206,6 @@ namespace App.Controllers
             [FromForm] bool includesIncomeExpenseExclusion,
             [FromForm] bool includesSupportingDocumentation)
         {
-            var authResult = await _authSvc.AuthenticateAndAuthorizeUser(userName: userName, password: password);
-            if (!authResult.IsAuthenticated)
-                return StatusCode(StatusCodes.Status403Forbidden);
-            
-            Contract.Requires(files != null);
-
             var collection = _dbClient.GetCollection(_dbSettings.GrievancesCollectionName);
             _dbClient.UpdateIncludesFileTypeFields(
                 collection,
@@ -361,7 +318,8 @@ namespace App.Controllers
         /// <summary>
         /// TODO: Object for params
         /// POST: api/<controller>/PostCreateSubmission
-        /// </summary>        
+        /// </summary>      
+        [CustomAuth]
         [HttpPost]
         [ActionName("PostCreateSubmission")]
         public async Task<IActionResult> PostCreateSubmission(
@@ -369,8 +327,6 @@ namespace App.Controllers
             [FromForm] string taxMapId,
             [FromForm] string applicantEmail,
             [FromForm] string creatorName,
-            [FromForm] string userName,
-            [FromForm] string password,
             [FromForm] string complaintType,
             [FromForm] string proposedValue,
             [FromForm] bool includesPersonalHearing,
@@ -391,10 +347,6 @@ namespace App.Controllers
             [FromForm] string notes
         )
         {
-            var authResult = await _authSvc.AuthenticateAndAuthorizeUser(userName, password);
-            if (!authResult.IsAuthenticated){ return StatusCode(StatusCodes.Status403Forbidden); }
-            Contract.Requires(files != null);
-
             string newGuid = _guid.GetNewGuid(_dbClient, _dbSettings);
             var year = (await _userSettings.GetUserSettings()).Year.ToString();
             foreach (var file in files)
@@ -450,41 +402,23 @@ namespace App.Controllers
         }
 
         // POST: api/<controller>/PostBarReviewStatus
+        [CustomAuth]
         [HttpPost]
         [ActionName("PostBarReviewStatus")]
-        public async Task<IActionResult> PostBarReviewStatus([FromBody] SubmissionUpdateParams parameters)
+        public IActionResult PostBarReviewStatus([FromBody] SubmissionUpdateParams parameters)
         {
-            Contract.Requires(parameters != null);
-
-            var authResult = await _authSvc.AuthenticateAndAuthorizeUser(parameters.userName, parameters.password);
-            if (!authResult.IsAuthenticated)
-            {
-                return StatusCode(StatusCodes.Status403Forbidden);
-            }
             if (parameters.guid == null) { throw new Exception("Guid param is null"); }
             var collection = _dbClient.GetCollection(_dbSettings.GrievancesCollectionName);
             _dbClient.UpdateBarReviewStatus(collection, parameters.guid, parameters.isReviewed);
             return Ok();            
         }
 
+        [CustomAuth]
         [HttpPost]
         [ActionName("PostGrievanceDeleteRequest")]
-        public async Task<IActionResult> PostGrievanceDeleteRequest(
-            [FromBody] GrievanceDeletionRequest req
-        )
+        public async Task<IActionResult> PostGrievanceDeleteRequest([FromBody] GrievanceDeletionRequest req)
         {
-            var authResult = await _authSvc.AuthenticateAndAuthorizeUser(req.userName, req.password);
-            if (!authResult.IsAuthenticated
-                ||
-                authResult.Authorization.UserType != AppUserType.AdvancedAdmin)
-            {
-                return StatusCode(StatusCodes.Status403Forbidden);
-            }
-
-            await _dbClient.DeleteGrievanceSoftly(
-                _dbSettings, 
-                req.grievanceId
-            ).ConfigureAwait(false);
+            await _dbClient.DeleteGrievanceSoftly(_dbSettings, req.grievanceId);
             return Ok();
         }
 
@@ -492,22 +426,14 @@ namespace App.Controllers
         /// POST: api/<controller>/Post525PrefillData
         /// Used by client to allow admin users to download a copy for offline use
         /// </summary>
+        [CustomAuth]
         [HttpPost]
         [ActionName("Post525PrefillData")]
-        public async Task<IActionResult> Post525PrefillData([FromBody] RP525FormData rp525Data)
+        public IActionResult Post525PrefillData([FromBody] RP525FormData rp525Data)
         {
-            Contract.Requires(rp525Data != null);
-
-            var authResult = await _authSvc.AuthenticateAndAuthorizeUser(rp525Data.userName, rp525Data.password);
-            if (!authResult.IsAuthenticated)
-            {
-                return StatusCode(StatusCodes.Status403Forbidden);
-            }
             if (string.IsNullOrEmpty(rp525Data.serializedData)) 
-            { 
                 throw new Exception("A necessary param is null"); 
-            }
-
+            
             // Get path to file
             var nysRp525FilePath = PdfFillService.GetPathToBlankNysRp525();
             var tempFilePath = PdfFillService.GetPathForTempNysRp525();

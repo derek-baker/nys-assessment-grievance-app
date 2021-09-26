@@ -12,14 +12,12 @@ import { HttpPublicService } from 'src/app/services/http.service.public';
 })
 export class ModalCreateSubmissionComponent implements OnInit, AfterViewChecked {
 
+    @Input()
+    public UserName: string;
+
     /** Should be used to emit an event that will trigger desired behavior */
     @Output()
     private reloadGridEvent = new EventEmitter<string>();
-
-    @Input()
-    public readonly UserName: string;
-    @Input()
-    public readonly ReviewerPassword: string;
 
     public Attorneys: Array<IAttorneyPrefillData> = [];
 
@@ -232,9 +230,6 @@ export class ModalCreateSubmissionComponent implements OnInit, AfterViewChecked 
             this.ApplicantEmail.includes('.') === false
             ||
             this.TaxMapId.length === 0
-            ||
-            // this.CreatorName.length === 0
-            this.UserName.length === 0
         ) {
             window.alert(
                 'Grievance not created. \n\n' +

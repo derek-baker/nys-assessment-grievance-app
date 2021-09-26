@@ -14,6 +14,7 @@ namespace App.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _auth;
+
         public AuthController(IAuthService auth)
         {
             _auth = auth;
@@ -36,6 +37,13 @@ namespace App.Controllers
                 );
             }
             return Ok(authAttemptResponse);
+        }
+
+        [HttpPost("ValidateSession")]
+        public async Task<IActionResult> ValidateSession([FromBody] Session session)
+        {
+            var isValidSession = await _auth.ValidateSession(session);
+            return Ok(new { IsValid = isValidSession });
         }
     }
 }

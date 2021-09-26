@@ -2,9 +2,7 @@
 using Library.Models.DataTransferObjects;
 using Library.Models.DataTransferObjects.Output;
 using Library.Services.Clients.Database;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics.Contracts;
 
 namespace App.Controllers
 {
@@ -28,12 +26,9 @@ namespace App.Controllers
         /// </summary>        
         [HttpPost]
         [ActionName("PostCheckForPreviousSubmission")]
-        [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status200OK)]
         public IActionResult PostCheckForPreviousSubmission(
-            [FromBody] GrievanceProperties grievanceProps
-        )
+            [FromBody] GrievanceProperties grievanceProps)
         {
-            Contract.Requires(grievanceProps != null);
             ConflictingSubmittersInfo conflicts = _dbClient.GetConflictingSubmitters(
                 _dbClient,
                 grievanceProps.taxMapId,

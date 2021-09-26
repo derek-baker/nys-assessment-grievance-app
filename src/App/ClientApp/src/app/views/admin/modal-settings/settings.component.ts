@@ -10,11 +10,6 @@ import { UserSettings } from 'src/app/types/UserSettings';
 })
 export class AdminSettingsComponent implements OnInit {
 
-    @Input()
-    public readonly UserName: string;
-    @Input()
-    public readonly Password: string;
-
     public Settings: UserSettings = new UserSettings();
 
     constructor(
@@ -41,7 +36,7 @@ export class AdminSettingsComponent implements OnInit {
     }
 
     public SaveSettings() {
-        this.httpAdmin.SetUserSettings(this.UserName, this.Password, this.Settings).subscribe(
+        this.httpAdmin.SetUserSettings(this.Settings).subscribe(
             () => {
                 window.alert('Settings saved successfully');
             },

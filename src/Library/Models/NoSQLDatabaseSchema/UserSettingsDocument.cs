@@ -1,5 +1,4 @@
 ﻿using Library.Models.Entities;
-using Library.Models.Settings;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Library.Models

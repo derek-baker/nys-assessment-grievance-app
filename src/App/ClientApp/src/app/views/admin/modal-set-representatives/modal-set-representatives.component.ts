@@ -12,11 +12,6 @@ import { HttpAdminService } from 'src/app/services/http.service.admin';
 })
 export class ModalSetRepresentativesComponent implements OnInit {
 
-    @Input()
-    public readonly UserName: string;
-    @Input()
-    public readonly Password: string;
-
     public IsMakingNetworkRequest: boolean = false;
 
     private uploadedReps: Array<any>;
@@ -89,7 +84,7 @@ export class ModalSetRepresentativesComponent implements OnInit {
             repObjects.push(repObj);
         }
 
-        this.httpAdmin.SetRepresentatives(this.UserName, this.Password, repObjects).subscribe(
+        this.httpAdmin.SetRepresentatives(repObjects).subscribe(
             () => {
                 this.IsMakingNetworkRequest = false;
 

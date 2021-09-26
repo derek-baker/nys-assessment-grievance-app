@@ -1,6 +1,6 @@
 ﻿using Google.Apis.Storage.v1.Data;
 using Library.Models;
-using Library.Models.Settings;
+using Library.Services.Clients.Storage;
 using Library.Storage;
 using System.Collections.Generic;
 using System.Threading.Tasks;

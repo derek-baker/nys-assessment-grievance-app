@@ -1,6 +1,5 @@
 ﻿using App.Services.Mappers;
 using Library.Models;
-using Library.Models.Settings;
 using Library.Services.PDF;
 using Library.Storage;
 using Microsoft.AspNetCore.Http;
@@ -15,6 +14,7 @@ using System.Threading.Tasks;
 using Library.Models.Entities;
 using Library.Services.Clients.Database;
 using Library.Services.Clients.Database.Repositories;
+using Library.Services.Clients.Storage;
 
 namespace App.Controllers
 {
@@ -23,7 +23,6 @@ namespace App.Controllers
     public class OnlineBarReviewController : ControllerBase
     {
         private readonly IDocumentDatabase _db;
-        private readonly IAuthService _authService;
         private readonly IStorage _storage;
         private readonly IImageService _img;
         private readonly UserSettingsRepository _userSettings;
@@ -31,7 +30,6 @@ namespace App.Controllers
         private readonly StorageSettings _storageSettings;
 
         public OnlineBarReviewController(
-            IAuthService authService,
             IDocumentDatabase db,
             IStorage storage,
             IImageService img,
@@ -40,7 +38,6 @@ namespace App.Controllers
             StorageSettings storageSettings)
         {
             _db = db;
-            _authService = authService;
             _storage = storage;
             _img = img;
             _userSettings = userSettings;
@@ -49,6 +46,7 @@ namespace App.Controllers
             _storageSettings = storageSettings;
         }
 
+        [CustomAuth]
         [HttpGet]
         [ActionName("GetBarReview")]
         public IActionResult GetBarReview(string submissionGuid)
@@ -64,21 +62,11 @@ namespace App.Controllers
         /// <summary>
         /// POST: api/<controller>/PostBarReviewSave
         /// </summary>
+        [CustomAuth]
         [HttpPost]
         [ActionName("PostBarReviewSave")]
         public async Task<IActionResult> PostBarReviewSave(NysRps525OnlineFormData answers)
         {
-            Contract.Requires(answers != null);
-            var authResult = await _authService.AuthenticateAndAuthorizeUser(
-                answers.UserName,
-                answers.Password
-            );
-
-            if (!authResult.IsAuthenticated)
-            {
-                return StatusCode(StatusCodes.Status403Forbidden);
-            }
-
             static void addAnswersToDb(
                 IDocumentDatabase db,
                 DocumentDatabaseSettings dbSettings,
@@ -102,19 +90,11 @@ namespace App.Controllers
         /// <summary>
         /// POST: api/<controller>/PostBarReviewResult
         /// </summary>
+        [CustomAuth]
         [HttpPost]
         [ActionName("PostBarReviewResult")]
         public async Task<IActionResult> PostResult(NysRps525OnlineFormData answers)
         {
-            Contract.Requires(answers != null);
-            var authResult = await _authService.AuthenticateAndAuthorizeUser(answers.UserName, answers.Password);
-            if (!authResult.IsAuthenticated
-                ||
-                authResult.Authorization.UserType != AppUserType.AdvancedAdmin)
-            {
-                return StatusCode(StatusCodes.Status403Forbidden);
-            }
-
             var answersOnly = PropMapper<NysRps525OnlineFormData, NysRps525OnlineFormAnswers>.From(answers);
             addAnswersToDb(_db, _dbSettings, answersOnly);
             var year = (await _userSettings.GetUserSettings()).Year.ToString();

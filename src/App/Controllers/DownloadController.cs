@@ -46,23 +46,24 @@ namespace App.Controllers
             _db = db;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Get()
+        [HttpGet("getRp524Pdf")]
+        public async Task<IActionResult> GetRp524Pdf()
         {
             var fillableRp524FilePath = FilenameService.GetPathToFillableRp524();
             var fillableRp524Bytes = await System.IO.File.ReadAllBytesAsync(
                 fillableRp524FilePath
-            ).ConfigureAwait(false);
+            );
 
             return File(fillableRp524Bytes, "application/pdf");
         }
 
         /// <summary>
-        /// GET: api/Download/{guidStr}
+        /// GET: api/download/getGrievanceFiles?id={guidStr}
         /// Used to download .ZIP of all files associated with grievance.
-        /// </summary>        
-        [HttpGet("{guidStr}", Name = "Get")]
-        public async Task<IActionResult> Get(string guidStr)
+        /// </summary>       
+        [CustomAuth]
+        [HttpGet("getGrievanceFiles")]
+        public async Task<IActionResult> GetGrievanceFiles([FromQuery] string guidStr)
         {
             // TODO: Refactor to use service method
             var zipOutputStream = new MemoryStream();
@@ -102,6 +103,7 @@ namespace App.Controllers
             return File(zipBytes, "application/octet-stream");            
         }
 
+        [CustomAuth]
         [HttpGet("ExportGrievancesCsv")]
         public async Task<IActionResult> ExportGrievancesCsv()
         {
@@ -117,8 +119,8 @@ namespace App.Controllers
         /// CORS is enabled to allow IMO request a prefilled NYS RP-525 
         /// </summary>   
         [EnableCors("ApiPolicy")]
-        [HttpPost]
-        public IActionResult Post(
+        [HttpPost("prefilledRp525")]
+        public IActionResult DownloadPrefilledRp525(
             [FromForm] string Muni,
             [FromForm] string OwnerNameLine1,
             [FromForm] string OwnerNameLine2,
@@ -130,8 +132,7 @@ namespace App.Controllers
             [FromForm] string LocationVillage,
             [FromForm] string LocationCityTown,
             [FromForm] string LocationCounty,
-            [FromForm] string TotalVal
-        )
+            [FromForm] string TotalVal)
         {
             var rp525Data = new NysRp525PrefillData()
             {

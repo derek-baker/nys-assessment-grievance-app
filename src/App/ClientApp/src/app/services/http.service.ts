@@ -58,34 +58,30 @@ export class HttpService extends HttpServiceBase {
 
     public GetGrievanceFiles(
         guid: string,
-        userName: string,
-        password: string,
         endpoint: string = `/api/admin/GetGrievanceFiles`
     ): Observable<Array<IGetFilesListResponse>> {
         const headers = (new HttpHeaders()).set('Content-Type', 'application/json');
         return this.http.post<any>(
             endpoint,
-            { userName, password, SubmissionGuid: guid },
+            { SubmissionGuid: guid },
             { headers }
         );
     }
 
     public DeleteGrievanceFile(
         blobFullName: string,
-        userName: string,
-        password: string,
         endpoint: string = `/api/admin/DeleteGrievanceFile`
     ) {
         const headers = (new HttpHeaders()).set('Content-Type', 'application/json');
         return this.http.post<any>(
             endpoint,
-            { userName, password, blobFullName },
+            { blobFullName },
             { headers }
         );
     }
 
     public GetNysRp524WithFillableBoardOnly(
-        endpoint: string = '/api/download'
+        endpoint: string = '/api/download/getRp524Pdf'
     ) {
         return this.http.get(
             endpoint,
@@ -94,16 +90,11 @@ export class HttpService extends HttpServiceBase {
     }
 
     public GetRemoteRp525PrefillData(
-        userName: string,
-        password: string,
         taxMapId: string,
-        // TODO: This should come from IMO
         endpoint: string = '/api/PrefillRp525'
     ): Observable<any> {
         const headers = (new HttpHeaders()).set('Content-Type', 'application/json');
         const reqParams = {
-            userName,
-            password,
             taxMapId
         };
         return this.http.post(
@@ -133,28 +124,24 @@ export class HttpService extends HttpServiceBase {
     public SetIsDownloadedStatus(
         guid: string,
         isReviewed: boolean,
-        userName: string,
-        reviewerPassword: string,
         endpoint: string = '/api/admin/PostDownloadedStatus'
     ): Observable<any> {
         const headers = (new HttpHeaders()).set('Content-Type', 'application/json');
         return this.http.post<any>(
             endpoint,
-            { guid, isReviewed, userName, password: reviewerPassword },
+            { guid, isReviewed },
             { headers }
         );
     }
 
     public UpdateGrievance(
-        userName: string,
-        password: string,
         grievance: IAssessmentGrievance,
         endpoint: string = '/api/admin/PostEditGrievance'
     ) {
         const headers = (new HttpHeaders()).set('Content-Type', 'application/json');
         return this.http.post<any>(
             endpoint,
-            { userName, password, grievance },
+            { grievance },
             { headers }
         );
     }
@@ -201,14 +188,12 @@ export class HttpService extends HttpServiceBase {
     public SetBarReviewStatus(
         guid: string,
         isBarReviewed: boolean,
-        userName: string,
-        reviewerPassword: string,
         endpoint: string = '/api/admin/PostBarReviewStatus'
     ): Observable<any> {
         const headers = (new HttpHeaders()).set('Content-Type', 'application/json');
         return this.http.post<any>(
             endpoint,
-            { guid, isReviewed: isBarReviewed, userName, password: reviewerPassword },
+            { guid, isReviewed: isBarReviewed },
             { headers }
         );
     }
@@ -216,14 +201,12 @@ export class HttpService extends HttpServiceBase {
     public SetHearingCompletedStatus(
         guid: string,
         isHearingCompleted: boolean,
-        userName: string,
-        reviewerPassword: string,
         endpoint: string = '/api/admin/PostPersonalHearingStatus'
     ): Observable<any> {
         const headers = (new HttpHeaders()).set('Content-Type', 'application/json');
         return this.http.post<any>(
             endpoint,
-            { guid, isReviewed: isHearingCompleted, userName, password: reviewerPassword },
+            { guid, isReviewed: isHearingCompleted },
             { headers }
         );
     }
@@ -231,7 +214,7 @@ export class HttpService extends HttpServiceBase {
     /** TODO: Auth */
     public DownloadFilesForReview(
         guid: string,
-        endpoint: string = `/api/download/${guid}`
+        endpoint: string = `/api/download/getGrievanceFiles?id=${guid}`
     ) {
         return this.http.get(
             endpoint,
@@ -240,82 +223,48 @@ export class HttpService extends HttpServiceBase {
     }
 
     public DownloadPrefilledRp525(
-        userName: string,
-        password: string,
         data: any,
         endpoint: string = `/api/admin/Post525PrefillData`
     ) {
         const headers = (new HttpHeaders()).set('Content-Type', 'application/json');
         return this.http.post(
             endpoint,
-            { userName, password, serializedData: JSON.stringify(data) },
+            { serializedData: JSON.stringify(data) },
             { headers, responseType: 'blob' }
         );
     }
 
     public SubmitDispositionsJob(
-        userName: string,
-        password: string,
         emailsToTarget: Array<string>,
-        // muniEmailForCc: string,
-        // isTest: boolean,
         endpoint: string = `/api/email/PostDispositionJobInput`
     ) {
         const headers = (new HttpHeaders()).set('Content-Type', 'application/json');
         return this.http.post(
             endpoint,
-            { userName, password, emailsToTarget}, // muniEmailForCc, isTest },
+            { emailsToTarget},
             { headers }
         );
     }
 
     public DeleteGrievanceSoftly(
-        userName: string,
-        password: string,
         grievanceId: string,
         endpoint: string = '/api/admin/PostGrievanceDeleteRequest'
     ) {
         const headers = (new HttpHeaders()).set('Content-Type', 'application/json');
         return this.http.post(
             endpoint,
-            { userName, password, grievanceId },
-            { headers }
-        );
-    }
-
-    public SendApiKeyRequest(
-        group: string,
-        email: string,
-        phone: string,
-        address: string,
-        site: string,
-        uploadCountEstimate: number,
-        endpoint: string = '/api/email/PostBulkUploadKeyRequest'
-    ) {
-        const headers = (new HttpHeaders()).set('Content-Type', 'application/json');
-        return this.http.post(
-            endpoint,
-            {
-                Group: group,
-                Email: email,
-                Phone: phone,
-                Address: address,
-                Site: site,
-                UploadCountEstimate: uploadCountEstimate
-            },
+            { grievanceId },
             { headers }
         );
     }
 
     public RefreshJobQueueData(
-        userName: string,
-        password: string,
         endpoint: string = '/api/admin/ViewDispositionGenerationQueue',
         headers: HttpHeaders = (new HttpHeaders()).set('Content-Type', 'application/json')
     ): Observable<any> {
         return this.http.post(
             endpoint,
-            { userName, password },
+            { },
             { headers }
         );
     }

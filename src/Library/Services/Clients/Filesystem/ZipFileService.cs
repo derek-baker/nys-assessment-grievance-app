@@ -1,5 +1,4 @@
-﻿using Library.Models.Settings;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
@@ -11,6 +10,7 @@ using Library.Services.Crypto;
 using Library.Models;
 using Contracts;
 using Library.Services.Clients.Database.Repositories;
+using Library.Services.Clients.Storage;
 
 namespace Library.Services.Filesystem
 {

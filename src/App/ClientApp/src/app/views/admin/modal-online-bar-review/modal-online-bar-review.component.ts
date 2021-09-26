@@ -65,13 +65,9 @@ export class ModalOnlineBarReviewComponent implements OnInit {
         private readonly formData: FormDataService,
         private readonly http: HttpService
     ) {
-        const validators = [
-            Validators.required
-            // Validators.minLength(4)
-        ];
+        const validators = [Validators.required];
         this.NysRp525 = new FormGroup({
             UserName: new FormControl('', validators),
-            Password: new FormControl('', validators),
             SubmissionGuid: new FormControl('', validators),
             TaxMapId: new FormControl('', validators),
             SubmitterEmail: new FormControl('', validators),
@@ -89,7 +85,6 @@ export class ModalOnlineBarReviewComponent implements OnInit {
 
             // Take this opportunity to refresh the creds
             this.NysRp525.controls.UserName.setValue(this.parent.UserName);
-            this.NysRp525.controls.Password.setValue(this.parent.ReviewerPassword);
 
             // Figure out which submission the user selected before the modal opened
             this.NysRp525.controls.SubmissionGuid.setValue(selected.Guid);
@@ -218,11 +213,7 @@ export class ModalOnlineBarReviewComponent implements OnInit {
         // NOTE: We don't have to check the truthiness of the the TaxMapId below
         // because it's part of a hidden form set up from user's previous actions.
         this.IsFetchingPrefillData = true;
-        this.http.GetRemoteRp525PrefillData(
-            this.NysRp525.controls.UserName.value,
-            this.NysRp525.controls.Password.value,
-            this.NysRp525.controls.TaxMapId.value
-        ).subscribe(
+        this.http.GetRemoteRp525PrefillData(this.NysRp525.controls.TaxMapId.value).subscribe(
             (res: IExternalService525PrefillData) => {
                 console.warn(res);
                 this.rp524Data.LocationCityTown = res.LocationCityTown;

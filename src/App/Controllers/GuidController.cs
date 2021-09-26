@@ -26,11 +26,11 @@ namespace App.Controllers
         }
 
         /// <summary>
-        /// Can be used to determine GUID validity.
+        /// Can be used to determine validity of a publicly-submitted guid.
         /// </summary>
         [HttpGet("{guidString}")]
-        [ActionName("TestGuidExistence")]
-        public GuidTestResult TestGuidExistence(string guidString)
+        [ActionName("TestGrievanceIdExistence")]
+        public GuidTestResult TestGrievanceIdExistence(string guidString)
         {
             var isValid = _guid.TestGuidExistence(_db, _dbSettings, guidString);
             

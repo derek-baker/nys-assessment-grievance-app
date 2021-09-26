@@ -13,11 +13,6 @@ import { ILabelledvalue } from 'src/app/types/ILabelledValue';
 export class ModalSubmissionFilesComponent implements OnInit {
 
     @Input()
-    public readonly UserName: string;
-    @Input()
-    public readonly Password: string;
-
-    @Input()
     public readonly SelectedGrievance: ISelectedGrievance;
 
     @Input()
@@ -90,11 +85,7 @@ export class ModalSubmissionFilesComponent implements OnInit {
 
     public RefreshSubmissionFilesList() {
         this.IsRefreshingFilesList = true;
-        this.http.GetGrievanceFiles(
-            this.SelectedGrievance.Guid,
-            this.UserName,
-            this.Password
-        ).subscribe(
+        this.http.GetGrievanceFiles(this.SelectedGrievance.Guid).subscribe(
             (fileList) => {
                 this.FileList = fileList;
                 this.IsRefreshingFilesList = false;
@@ -118,11 +109,7 @@ export class ModalSubmissionFilesComponent implements OnInit {
 
         this.IsRefreshingFilesList = true;
 
-        this.http.DeleteGrievanceFile(
-            this.FileList[fileIndex].fullName,
-            this.UserName,
-            this.Password
-        ).subscribe(
+        this.http.DeleteGrievanceFile(this.FileList[fileIndex].fullName).subscribe(
             (fileList) => {
                 this.FileList = fileList;
                 this.RefreshSubmissionFilesList();

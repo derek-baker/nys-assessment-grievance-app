@@ -26,11 +26,6 @@ interface IChangeReport {
 })
 export class ModalExportReviewComponent implements OnInit {
 
-    @Input()
-    public readonly UserName: string;
-    @Input()
-    public readonly Password: string;
-
     public LevelOfAssessment: number;
     public IsGeneratingChangeReport: boolean = false;
     public DateFilterStart: string;

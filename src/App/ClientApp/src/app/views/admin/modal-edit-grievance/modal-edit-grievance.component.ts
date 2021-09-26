@@ -10,11 +10,6 @@ import { AssessmentGrievance } from 'src/app/types/AssessmentGrievance';
 export class ModalEditGrievanceComponent implements OnInit {
 
     @Input()
-    public readonly UserName: string;
-    @Input()
-    public readonly Password: string;
-
-    @Input()
     public GrievanceWrapper: { Grievance: AssessmentGrievance };
 
     /** Should be used to emit an event that will trigger desired behavior */
@@ -31,11 +26,7 @@ export class ModalEditGrievanceComponent implements OnInit {
 
     public async EditGrievance() {
         this.IsEditing = true;
-        this.http.UpdateGrievance(
-            this.UserName,
-            this.Password,
-            this.GrievanceWrapper.Grievance
-        ).subscribe(
+        this.http.UpdateGrievance(this.GrievanceWrapper.Grievance).subscribe(
             () => {
                 this.IsEditing = false;
                 this.RefreshGridEvent.emit(JSON.stringify(this.GrievanceWrapper.Grievance));

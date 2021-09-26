@@ -17,6 +17,8 @@ import { AssessmentGrievance } from 'src/app/types/AssessmentGrievance';
 import { HttpAdminService } from 'src/app/services/http.service.admin';
 import { FileDownloadService } from 'src/app/services/file-download-service';
 import { HttpPublicService } from 'src/app/services/http.service.public';
+import { CookieService } from 'src/app/services/cookie.service';
+import { ISession } from 'src/app/types/ISession';
 
 @Component({
     selector: 'app-admin',
@@ -43,13 +45,11 @@ export class AdminComponent implements OnInit {
         'You are not authorized to perform this action. \n' +
         'Please request assistance from a user with the necessary authorizations.';
 
-    /**
-     * Ag-Grid jacks into this via a directive to get its data.
-     */
+    /** Ag-Grid jacks into this via a directive to get its data. */
     public GrievanceStatuses: Array<IAssessmentGrievance> = [];
 
     public UserName: string = '';
-    public ReviewerPassword: string = '';
+    public Password: string = '';
     public UserAuthenticated: boolean = false;
 
     public IsFetchingData = false;
@@ -63,6 +63,7 @@ export class AdminComponent implements OnInit {
     public IsFetchingReviewData = false;
     public IsDeletingGrievance = false;
     public IsLoadingDispositionsModal = false;
+    public IsValidatingSession = false;
     public IsAppConfigured = true;
 
     public CanPrefillBarReview: boolean = true;
@@ -152,7 +153,8 @@ export class AdminComponent implements OnInit {
         private readonly clientStorage: ClientStorageService,
         private readonly browserSniffer: BrowserSnifferService,
         private readonly fileDownloadService: FileDownloadService,
-        private readonly router: Router
+        private readonly router: Router,
+        private readonly cookieService: CookieService
     ) {}
 
     /** Intended to auto-switch tabs when user highlights a row */
@@ -192,6 +194,27 @@ export class AdminComponent implements OnInit {
     }
 
     public ngOnInit(): void {
+        const sessionEncoded = this.cookieService.GetCookie(this.cookieService.CookieNames.session);
+        if (sessionEncoded) {
+            this.IsValidatingSession = true;
+            const session: ISession = JSON.parse(decodeURIComponent(sessionEncoded));
+            this.httpPublic.ValidateSession(session).subscribe(
+                (result) => {
+                    if (result.isValid === true) {
+                        this.UserAuthenticated = true;
+                    }
+                },
+                (err) => {
+                    console.error(err);
+                    window.alert('An error occurred.');
+                },
+                () => {
+                    this.IsValidatingSession = false;
+                }
+            )
+        }
+
+
         if (this.browserSniffer.TestBrowserValidity() === false) {
             this.router.navigate(['/warning']);
         }
@@ -332,7 +355,7 @@ export class AdminComponent implements OnInit {
     public async Authenticate(alertFunc = window.alert) {
         try {
             const userName: string = this.UserName.trim().toLowerCase();
-            const password: string = this.ReviewerPassword.trim();
+            const password: string = this.Password.trim();
             if (!password || password.length === 0) {
                 return alertFunc('Please input a password');
             }
@@ -341,9 +364,6 @@ export class AdminComponent implements OnInit {
                 userName,
                 password
             );
-
-            // TODO: Allow the user to have sessions.
-            this.clientStorage.SetSessionHash(authResult.sessionHash);
 
             if (authResult.authResult.isAuthenticated === true) {
                 this.UserAuthenticated = true;
@@ -386,11 +406,7 @@ export class AdminComponent implements OnInit {
         }
         const taxMapId = selectedData[0].tax_map_id;
         this.IsDownloadingPrefilled525 = true;
-        this.httpService.DownloadPrefilledRp525(
-            this.UserName,
-            this.ReviewerPassword,
-            data
-        ).subscribe(
+        this.httpService.DownloadPrefilledRp525(data).subscribe(
             (response) => {
                 try {
                     // TODO: Refactor to method
@@ -628,12 +644,7 @@ export class AdminComponent implements OnInit {
                         link.click();
                         link.remove();
 
-                        this.httpService.SetIsDownloadedStatus(
-                            selectedData[0].guid,
-                            true,
-                            this.UserName,
-                            this.ReviewerPassword
-                        ).subscribe(
+                        this.httpService.SetIsDownloadedStatus(selectedData[0].guid, true).subscribe(
                             () => {
                                 const dataUpdater = (rowToUpdate: IAssessmentGrievance) => {
                                     rowToUpdate.downloaded = true;
@@ -680,11 +691,7 @@ export class AdminComponent implements OnInit {
 
         this.IsDeletingGrievance = true;
 
-        this.httpService.DeleteGrievanceSoftly(
-            this.UserName,
-            this.ReviewerPassword,
-            selectedData[0].guid
-        ).subscribe(
+        this.httpService.DeleteGrievanceSoftly(selectedData[0].guid).subscribe(
             () => {
                 this.IsDeletingGrievance = false;
                 this.PopulateGridWithData();
@@ -703,7 +710,7 @@ export class AdminComponent implements OnInit {
 
     public ExportAllGrievancesToCsv(filename = `AllGrievances`): void {
         this.IsExportingAllGrievances = true;
-        this.httpAdminService.GetGrievancesCsv(this.UserName, this.ReviewerPassword).subscribe(
+        this.httpAdminService.GetGrievancesCsv().subscribe(
             (data) => {
                 this.fileDownloadService.DownloadCsv(data, filename);
             },

@@ -20,37 +20,23 @@ export class HttpAdminService extends HttpServiceBase {
         return this.http.get<Array<IGetGrievancesMissingRP524>>(endpoint);
     }
 
-    public SetRepresentatives(
-        userName,
-        password,
-        reps: Array<any>,
-        endpoint = '/api/representatives/SetReps'
-    ) {
+    public SetRepresentatives(reps: Array<any>, endpoint = '/api/representatives/SetReps') {
         return this.http.post(
             endpoint,
-            { userName, password, reps },
+            { reps },
             { headers: this.headers }
         );
     }
 
-    public SetUserSettings(
-        userName,
-        password,
-        settings: UserSettings,
-        endpoint = '/api/usersettings/setusersettings'
-    ) {
+    public SetUserSettings(settings: UserSettings, endpoint = '/api/usersettings/setusersettings') {
         return this.http.post(
             endpoint,
-            { userName, password, settings },
+            { settings },
             { headers: this.headers }
         );
     }
 
-    public GetGrievancesCsv(
-        userName,
-        password,
-        endpoint: string = '/api/download/ExportGrievancesCsv'
-    ) {
+    public GetGrievancesCsv(endpoint: string = '/api/download/ExportGrievancesCsv') {
         return this.http.get(
             endpoint,
             { responseType: 'blob' }
