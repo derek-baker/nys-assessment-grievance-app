@@ -16,7 +16,6 @@ using Library.Services.Image;
 using Library.Models.NoSQLDatabaseSchema;
 using Library.Storage;
 using Library.Models;
-using Library.Models.Settings;
 using Library.Email;
 using Library.Services.Filesystem;
 using Library.Services.PDF;
@@ -24,6 +23,8 @@ using Library.Services.Email;
 using Library.Services.Guid;
 using Library.Services.Clients.Database;
 using Library.Services.Clients.Database.Repositories;
+using Library.Services.Clients.Storage;
+using Library.Services.Clients.Email;
 
 namespace App.Controllers
 {

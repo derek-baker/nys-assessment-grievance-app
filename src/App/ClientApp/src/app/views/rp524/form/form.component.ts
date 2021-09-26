@@ -26,8 +26,6 @@ export class FormComponent implements OnInit, IComponentCanDeactivate {
         private readonly formBuilder: FormBuilder,
         private readonly formDataService: FormDataService,
         private readonly cookieService: CookieService,
-        private readonly activatedroute: ActivatedRoute,
-        private readonly clientStorage: ClientStorageService,
         private readonly changeDetector: ChangeDetectorRef
     ) {
         this.ParentForm = this.formBuilder.group({});
@@ -58,19 +56,6 @@ export class FormComponent implements OnInit, IComponentCanDeactivate {
         //     }
         //     return;
         // }
-
-        // this.activatedroute.queryParams.subscribe(
-        //     (params) => {
-        //         // tslint:disable-next-line: no-string-literal
-        //         const key = params['key'];
-        //         if (key) {
-        //             const data = JSON.parse(this.clientStorage.GetData(key));
-        //             // NOTE: This is kind of sketchy. If all the child components render before the line below,
-        //             //       the form values will be set by the event handler with incomplete or no data.
-        //             this.data = data;
-        //         }
-        //     }
-        // );
     }
 
     // @HostListener allows us to also guard against browser refresh, close, etc.
@@ -91,8 +76,7 @@ export class FormComponent implements OnInit, IComponentCanDeactivate {
             this.ParentForm.controls.three_three_text.setValue(this.ParentForm.controls.MarketValueEstimate.value);
             this.ParentForm.controls.three_b_1_b_text.setValue(this.ParentForm.controls.MarketValueEstimate.value);
         };
-        // Manually trigger event that triggers currency currency formatting
-        // (so that POSTed data gets formatted)
+        // Manually trigger event that triggers currency currency formatting (so that POSTed data gets formatted)
         const event = new Event('input', { bubbles: true, cancelable: true });
         Array.from(document.getElementsByTagName('app-text-input'))
             .forEach(
