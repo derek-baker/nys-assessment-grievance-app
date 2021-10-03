@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace App
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1018:Mark attributes with AttributeUsageAttribute", Justification = "<Pending>")]
     public class CustomAuthAttribute : Attribute, IAsyncAuthorizationFilter
     {
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)

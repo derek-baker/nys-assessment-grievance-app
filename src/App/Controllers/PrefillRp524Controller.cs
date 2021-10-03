@@ -2,12 +2,11 @@
 using System.Diagnostics.Contracts;
 using System.Text.Json;
 using App.Services.Auth;
-using Library.Models.DataTransferObjects;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Library.Services;
+using Library.Models;
 
 namespace App.Controllers
 {
@@ -16,24 +15,27 @@ namespace App.Controllers
     public class PrefillRp524Controller : ControllerBase
     {
         /// <summary>
-        /// Redirect to the front-end app, and send data in a cookie.
+        /// Redirect to the front-end app, and includes prefill data in a cookie.
         /// </summary>   
-        [EnableCors("ApiPolicy")]
+        [EnableCors("PublicApiOpenCorsPolicy")]
         [HttpPost]
-        public RedirectResult Post([FromBody] PrefillDataParams data)
+        public RedirectResult Post([FromForm] Rp524PrefillData data)
         {
+            var cacheKey = "Rp524PrefillData";
+            var clientCallbackRoute = "rp524";
+
             Contract.Requires(data != null);
-            var cookieOptions = CookieFactoryService.BuildCookieOptions(DateTime.Now.AddMinutes(5));
+            var cookieOptions = CookieFactoryService.BuildCookieOptions(DateTime.UtcNow.AddSeconds(20));
             base.Response.Cookies.Append(
-                data.CacheKey, 
-                JsonSerializer.Serialize(data.PrefillData), 
+                cacheKey, 
+                JsonSerializer.Serialize(data), 
                 cookieOptions
             );
 
             Uri encodedUrl = new Uri(Request.GetEncodedUrl());
             string host = HostService.GetHostFromAmbientInfo(encodedUrl);
 
-            return Redirect($"{host}/{data.ClientCallbackRoute}");
+            return Redirect($"{host}/{clientCallbackRoute}");
         }
     }
 }

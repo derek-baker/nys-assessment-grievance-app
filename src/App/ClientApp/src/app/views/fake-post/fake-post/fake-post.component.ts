@@ -15,8 +15,7 @@ export class FakePostComponent implements OnInit {
     }
 
     /**
-     * Only here for demo purposes.
-     * DOCS: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+     * Only here for demo/testing purposes.
      */
     public async TriggerFakeNysRp524Prefill() {
         // @ts-ignore

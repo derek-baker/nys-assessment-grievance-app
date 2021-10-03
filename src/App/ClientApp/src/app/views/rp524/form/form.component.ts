@@ -40,22 +40,22 @@ export class FormComponent implements OnInit, IComponentCanDeactivate {
         //     }
         // );
 
-        // const cookieValue = decodeURIComponent(this.cookieService.GetCookie());
-        // // The presence of the cookie should indicate that we're pre-filling a form (TODO: Use response body?)
-        // if (cookieValue.length > 0) {
-        //     try {
-        //         const data = JSON.parse(cookieValue);
-        //         // We set this value in anticipation of an event emitted by the last child component of this.
-        //         this.data = data;
-        //         // TODO: If we don't purge the cookie, will it re-prefill?
-        //         this.cookieService.InvalidateCookie();
-        //     }
-        //     catch (err) {
-        //         console.error(err);
-        //         window.alert('Unable to prefill form data.');
-        //     }
-        //     return;
-        // }
+        const cookieValue = this.cookieService.GetCookie(this.cookieService.CookieNames.prefill);
+        // The presence of the cookie should indicate that we're pre-filling a form (TODO: Use response body?)
+        if (cookieValue && cookieValue.length > 0) {
+            try {
+                const data = JSON.parse(decodeURIComponent(cookieValue));
+                // TODO: invalidate transport cookie?
+
+                // We set this value in anticipation of an event emitted by the youngest/last child component of this.
+                this.data = data;
+            }
+            catch (err) {
+                console.error(err);
+                window.alert('Unable to prefill form data.');
+            }
+            return;
+        }
     }
 
     // @HostListener allows us to also guard against browser refresh, close, etc.

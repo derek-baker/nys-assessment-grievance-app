@@ -52,7 +52,7 @@ namespace App
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors(o => o.AddPolicy(
-                "ApiPolicy", builder => {
+                "PublicApiOpenCorsPolicy", builder => {
                     builder
                         .AllowAnyOrigin()
                         .AllowAnyMethod()
@@ -72,21 +72,22 @@ namespace App
                 s => new MongoDatabase(
                     new DocumentDatabaseSettings(settings).ConnectionString, 
                     settings.Database.DatabaseName));
+
             services.AddTransient<SessionRepository>();
             services.AddTransient<UserRepository>();
             services.AddTransient<UserSettingsRepository>();
             services.AddTransient<RepresentativesRepository>();
 
             services.AddTransient<IStorage, GoogleCloudStorage>();
-            services.AddTransient<IEmailClient, EmailClient>();
-
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IZipFileService, ZipFileService>();
             services.AddTransient<IImageService, ImageService>();
             services.AddTransient<IGuidService, GuidService>();
             services.AddTransient<ICsvGeneratorService, CsvGeneratorService>();
+            
             services.AddTransient<ISendGridClient>(
                 s => new SendGridClient(settings.Email.ApiKey));
+            services.AddTransient<IEmailClient, EmailClient>();
 
             services.AddSingleton(services => new DocumentDatabaseSettings(settings));
             services.AddSingleton(services => new StorageSettings(settings));

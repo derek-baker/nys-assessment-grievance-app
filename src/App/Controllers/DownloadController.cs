@@ -118,7 +118,7 @@ namespace App.Controllers
         /// POST: api/Download
         /// CORS is enabled to allow IMO request a prefilled NYS RP-525 
         /// </summary>   
-        [EnableCors("ApiPolicy")]
+        [EnableCors("PublicApiOpenCorsPolicy")]
         [HttpPost("prefilledRp525")]
         public IActionResult DownloadPrefilledRp525(
             [FromForm] string Muni,
