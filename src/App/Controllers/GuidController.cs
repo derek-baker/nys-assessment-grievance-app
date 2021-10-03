@@ -28,7 +28,7 @@ namespace App.Controllers
         /// <summary>
         /// Can be used to determine validity of a publicly-submitted guid.
         /// </summary>
-        [HttpGet("{guidString}")]
+        [HttpGet]
         [ActionName("TestGrievanceIdExistence")]
         public GuidTestResult TestGrievanceIdExistence(string guidString)
         {

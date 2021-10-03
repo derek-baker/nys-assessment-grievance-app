@@ -290,16 +290,17 @@ namespace App.Controllers
 
             var encodedUrl = new Uri(Request.GetEncodedUrl());
             string host = HostService.GetHostFromAmbientInfo(encodedUrl);
-            
-            //// TODO: Handle error if it occurs. User should know that their submission succeeded, but their confirmation email did not.
-            //await _email.SendInitialSubmissionEmail(
-            //    userEmail: inputEmail,
-            //    filenames: $"{JsonSerializer.Serialize(fileNames)}",
-            //    guidString: grievanceId,
-            //    apiKey: _emailSettings.ApiKey,
-            //    hostForLink: host,
-            //    taxMapId: taxMapId
-            //);
+
+            // TODO: Handle error if it occurs. User should know that their submission succeeded, but their confirmation email did not.
+            await _email.SendInitialSubmissionEmail(
+                to: inputEmail,
+                from: _emailSettings.From,
+                filenames: $"{JsonSerializer.Serialize(fileNames)}",
+                guidString: grievanceId,
+                hostForLink: host,
+                taxMapId: taxMapId
+            );
+
             var conflicts = _dbClient.GetConflictingSubmitters(
                 _dbClient,
                 taxMapId,
@@ -319,15 +320,12 @@ namespace App.Controllers
                     ).ToImmutableList(),
                     taxMapId
                 );
-                //// TODO: This should be fire and forget
-                //_email.SendConflictingSubmissionsEmail(
-                //    toList: distinctListOfConflictingSubmitters,
-                //    bcc: _emailSettings.EmailUsedToLogActivity,
-                //    subject: EmailSettings.ConflictingSubmissionsEmailSubject,
-                //    html: msg,
-                //    from: _emailSettings.From,
-                //    apiKey: _emailSettings.ApiKey
-                //);
+                
+                _email.SendConflictingSubmissionsEmail(
+                    toList: distinctListOfConflictingSubmitters,
+                    from: _emailSettings.From,
+                    subject: EmailSettings.ConflictingSubmissionsEmailSubject,
+                    html: msg);
             }
             return Ok();            
         }
@@ -475,7 +473,7 @@ namespace App.Controllers
                     currentYear: userSettings.Year.ToString(),
                     submissionGuid: inputGuid,
                     fileName: cleanFilename,
-                    bucketName: _storageSettings.BucketNameDispositions
+                    bucketName: _storageSettings.BucketNameGrievances
                 );
             }
 
@@ -483,10 +481,10 @@ namespace App.Controllers
             string host = HostService.GetHostFromAmbientInfo(encodedUrl);
 
             await _email.SendSupportingDocsEmail(
-                userEmail: inputEmail,
+                to: inputEmail,
+                from: _emailSettings.From,
                 filenames: $"{JsonSerializer.Serialize(fileNames)}",
                 guidString: inputGuid,
-                apiKey: _emailSettings.ApiKey,
                 hostForLink: host,
                 taxMapId: inputTaxMapId
             );                

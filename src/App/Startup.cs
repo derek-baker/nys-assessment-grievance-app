@@ -18,6 +18,7 @@ using Library.Services.Clients.Database.Repositories;
 using Library.Services.Clients.Database;
 using Library.Services.Clients.Storage;
 using Library.Services.Clients.Email;
+using SendGrid;
 
 namespace App
 {
@@ -70,8 +71,7 @@ namespace App
             services.AddTransient<IDocumentDatabase>(
                 s => new MongoDatabase(
                     new DocumentDatabaseSettings(settings).ConnectionString, 
-                    settings.Database.DatabaseName)
-            );
+                    settings.Database.DatabaseName));
             services.AddTransient<SessionRepository>();
             services.AddTransient<UserRepository>();
             services.AddTransient<UserSettingsRepository>();
@@ -85,6 +85,8 @@ namespace App
             services.AddTransient<IImageService, ImageService>();
             services.AddTransient<IGuidService, GuidService>();
             services.AddTransient<ICsvGeneratorService, CsvGeneratorService>();
+            services.AddTransient<ISendGridClient>(
+                s => new SendGridClient(settings.Email.ApiKey));
 
             services.AddSingleton(services => new DocumentDatabaseSettings(settings));
             services.AddSingleton(services => new StorageSettings(settings));

@@ -8,7 +8,7 @@ export class CookieService {
     public readonly CookieNames = Object.freeze({
         prefill: '_cacheKey',
         session: 'Session'
-    })
+    });
 
     constructor() { }
 
@@ -16,10 +16,10 @@ export class CookieService {
         cookieKey: string,
         cookiesString: string = document.cookie
     ): string {
-        if (!cookiesString) return undefined;
+        if (!cookiesString) { return undefined; }
 
         const cookies = cookiesString.split('; ');
-        const sessionCookie = cookies?.find(row => row.startsWith(cookieKey));
+        const sessionCookie = cookies?.find((row) => row.startsWith(cookieKey));
         const sessionCookieValue = sessionCookie && sessionCookie.includes('=') ? sessionCookie.split('=')[1] : undefined;
 
         return sessionCookieValue;

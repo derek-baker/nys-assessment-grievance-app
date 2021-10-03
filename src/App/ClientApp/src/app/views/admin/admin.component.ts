@@ -211,9 +211,8 @@ export class AdminComponent implements OnInit {
                 () => {
                     this.IsValidatingSession = false;
                 }
-            )
+            );
         }
-
 
         if (this.browserSniffer.TestBrowserValidity() === false) {
             this.router.navigate(['/warning']);
@@ -228,10 +227,6 @@ export class AdminComponent implements OnInit {
                 for (const propName in settings) {
                     if (!settings[propName]) {
                         this.IsAppConfigured = false;
-
-                        console.log(propName)
-                        console.log(settings[propName])
-
                         return;
                     }
                 }

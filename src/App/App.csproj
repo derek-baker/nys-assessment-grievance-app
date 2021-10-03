@@ -17,13 +17,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.7" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
     <PackageReference Include="MongoDB.Bson" Version="2.11.5" />
     <PackageReference Include="MongoDB.Driver" Version="2.11.5" />
+    <PackageReference Include="SendGrid" Version="9.24.3" />
     <PackageReference Include="System.IO.Abstractions" Version="12.1.1" />
   </ItemGroup>
   
@@ -89,6 +86,9 @@
     <Content Include="Assets\BOARD_ONLY_PAGE.pdf" />
     <Content Include="Assets\NYS_BOARD_ONLY_PAGE.pdf" />
     <Content Include="Assets\NYS_RP525.pdf" />
+    <None Include="Assets\NYS_RP524.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Assets\NYS_RP524_WithSignatureButtons_WithFillableBoardOnly.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -34,9 +34,7 @@ export class SubmissionContinueComponent implements OnInit {
         private readonly router: Router,
         private readonly timeline: TimelineValidationService,
         private readonly browserSniffer: BrowserSnifferService
-    ) {
-        //
-    }
+    ) {}
 
     public ngOnInit(): void {
         if (this.browserSniffer.TestBrowserValidity() === false) {

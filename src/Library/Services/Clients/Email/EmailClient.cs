@@ -1,20 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Text.Json;
+using System.Linq;
 using System.Threading.Tasks;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
 namespace Library.Email
 {
     public class EmailClient : IEmailClient
     {
+        // TO DO: should be config value
         const string LINK_ROUTE = "continue-submission";
         
+        private readonly ISendGridClient _email;
+        
+        public EmailClient(ISendGridClient email)
+        {
+            _email = email;
+        }
+
         public async Task SendInitialSubmissionEmail(
-            string userEmail,
+            string to,
+            string from,
             string filenames,
             string guidString,
-            string key,
             string hostForLink,
             string taxMapId)
         {
@@ -31,24 +40,20 @@ namespace Library.Email
                 "you can use the URL below in concert with the ID above to link the documents to your original submission. \n\n" +
                 $"{hostForLink}/{LINK_ROUTE} \n\n";
 
-            var data = JsonSerializer.Serialize(
-                new
-                {
-                    emailTo = userEmail,
-                    emailSubject = $"Do Not Reply - Grievance Application Submission Confirmation (NYS RP-524) - {taxMapId} - {guidString}",
-                    emailMessage,
-                    key
-                }
-            );
-            throw new NotImplementedException();
-            
+            var message = BuildEmailInputs(
+                to,
+                from,
+                $"Do Not Reply - Grievance Application Submission Confirmation (NYS RP-524) - {taxMapId} - {guidString}",
+                emailMessage);
+
+            await _email.SendEmailAsync(message);
         }
 
         public async Task SendSupportingDocsEmail(
-            string userEmail,
+            string to,
+            string from,
             string filenames,
             string guidString,
-            string apiKey,
             string hostForLink,
             string taxMapId)
         {
@@ -60,45 +65,33 @@ namespace Library.Email
                 "you can use the URL below in concert with the ID above to link more documents to your original submission. \n\n" +
                 $"{hostForLink}/{LINK_ROUTE} \n\n";
 
-            var data = JsonSerializer.Serialize(
-                new
-                {
-                    emailTo = userEmail,
-                    emailSubject = $"Do Not Reply - Grievance Application Supporting Documents Submission Confirmation - {taxMapId} - {guidString}",
-                    emailMessage,
-                    apiKey
-                }
-            );
-            throw new NotImplementedException();
+            var message = BuildEmailInputs(
+                to,
+                from,
+                $"Do Not Reply - Grievance Application Supporting Documents Submission Confirmation - {taxMapId} - {guidString}",
+                emailMessage);
+
+            await _email.SendEmailAsync(message);
         }
 
-        public async void SendConflictingSubmissionsEmail(
-            List<string> toList, 
-            string bcc, 
-            string html, 
-            string subject, 
+        public void SendConflictingSubmissionsEmail(
+            IEnumerable<string> toList, 
             string from,
-            string apiKey)
+            string html, 
+            string subject)
         {
-            Contract.Requires(toList != null);
+            var message = BuildEmailInputs(
+                toList,
+                from,
+                $"{subject} - {DateTime.Now}",
+                html);
 
-            var data = JsonSerializer.Serialize(
-                new
-                {
-                    to = toList,
-                    from,
-                    bcc,
-                    subject = $"{subject} - {DateTime.Now}",
-                    html,
-                    key = apiKey
-                }
-            );
-            throw new NotImplementedException();
+            _email.SendEmailAsync(message);
         }
 
         public async Task SendAlertEmail(
-            string userEmail,
-            string apiKey,
+            string to,
+            string from,
             string subject,
             string error)
         {
@@ -107,17 +100,35 @@ namespace Library.Email
                 $"{subject} \n\n" +
                 $"{error} \n\n";
 
-            var data = JsonSerializer.Serialize(
-                new
-                {
-                    emailTo = userEmail,
-                    emailSubject = subject,
-                    emailMessage,
-                    apiKey
-                }
-            );
-
             throw new NotImplementedException();
+        }
+
+        private SendGridMessage BuildEmailInputs(
+            string to,
+            string from,
+            string emailSubject,
+            string bodyPlainText)
+        {
+            return MailHelper.CreateSingleEmail(
+                to: new EmailAddress(to),
+                from: new EmailAddress(from),
+                subject: emailSubject,
+                plainTextContent: bodyPlainText,
+                htmlContent: "");
+        }
+
+        private SendGridMessage BuildEmailInputs(
+            IEnumerable<string> toList,
+            string from,
+            string emailSubject,
+            string bodyHtml)
+        {
+            return MailHelper.CreateSingleEmailToMultipleRecipients(
+                tos: toList.Select(to => new EmailAddress(to)).ToList(),
+                from: new EmailAddress(from),
+                subject: emailSubject,
+                plainTextContent: "",
+                htmlContent: bodyHtml);
         }
     }
 }

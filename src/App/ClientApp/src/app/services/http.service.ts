@@ -106,7 +106,7 @@ export class HttpService extends HttpServiceBase {
 
     public ValidateGuid(
         guidString: string,
-        endpoint: string = `/api/guid/TestGuidExistence/${guidString}`
+        endpoint: string = `/api/guid/TestGrievanceIdExistence?guidstring=${guidString}`
     ): Observable<{isValid: boolean, taxMapId: string}> {
         return this.http.get<any>(endpoint);
     }
@@ -211,7 +211,6 @@ export class HttpService extends HttpServiceBase {
         );
     }
 
-    /** TODO: Auth */
     public DownloadFilesForReview(
         guid: string,
         endpoint: string = `/api/download/getGrievanceFiles?id=${guid}`
