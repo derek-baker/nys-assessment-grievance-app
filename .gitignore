@@ -353,4 +353,4 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 /_storage_svc_acct_key.json
-/src/Dist/App/ClientApp/dist
+/src/Dist

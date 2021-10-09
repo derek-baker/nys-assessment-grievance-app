@@ -1,3 +1,8 @@
+# gcloud config list
+# gcloud auth login
+# gcloud config set core/project assessment-grievance-app
+
+
 # TODO: This should build a .CSPROJ instead of a .SLN
 # NOTE: Script assumes that gcloud CLI tool is installed and on PATH
 param(
@@ -8,7 +13,7 @@ param(
     [string] $env = "Staging",
     [string] $dotnetEnvVar = "ASPNETCORE_ENVIRONMENT=$env",
     [string] $deployedServiceName = "assessment-grievances-$($env.ToLower())",
-    [string[]] $buildSources = @("$workDir\App.sln", "$workDir\Dockerfile", "$workDir\Library", "$workDir\App"),
+    [string[]] $buildSources = @("$workDir\App.sln", "$workDir\Dockerfile", "$workDir\Library", "$workDir\App", "$workDir\Contracts", "$workDir\UnitTests"),
     [string] $excludeRegex = (@('bin', 'obj', 'e2e', 'node_modules', '__Docs') | ForEach-Object { [Regex]::Escape($_) }) -join '|'
 )
 
@@ -18,7 +23,7 @@ Import-Module -Name "$((Get-Item $PSScriptRoot).Parent.FullName)\_Deploy.Module.
 
 try {
     RunClientAppUnitTests -packageJsonParentDir "$workDir\App\ClientApp"
-    RunDotnetUnitTests -unitTestProjectDir "$workDir\App\Tests.Unit"
+    RunDotnetUnitTests -unitTestProjectDir "$workDir\UnitTests"
     
     $dist = "$workDir\Dist"
     if ((Test-Path -Path $dist) -eq $false) {
@@ -27,13 +32,14 @@ try {
     else {
         Get-ChildItem -Path $dist -Recurse | ForEach-Object { Remove-Item $_.FullName -Recurse -Force -Verbose }
     }
-
+    
     PopulateDistDir `
         -buildSources $buildSources `
         -excludeRegex $excludeRegex `
         -dist $dist `
         -workDir $workDir
     
+
     $buildArgs = @{ 
         project = $projectId
         buildTag = $serviceName 

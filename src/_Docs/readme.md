@@ -16,6 +16,11 @@
 ## You can use this command if you need to run the container, but you usually shouldn't need to. (Run the app from VS or via CLI instead)
 `docker run --publish 8000:8080 --interactive --name asgr asgr:1.0`
 
+## To interactively and transiently start the container with a shell (optional: --e GOOGLE_APPLICATION_CREDENTIALS=/key.json)
+`docker rm asgr; docker run -e 'GOOGLE_APPLICATION_CREDENTIALS=/key.json' -e 'ASPNETCORE_ENVIRONMENT=Development' -it --name asgr asgr:1.0 /bin/sh ` 
+
+## To enter a running container
+docker exec -it [container-id] /bin/sh
 
 ## To download entire GCP Cloud Storage Bucket:
 `gsutil cp -r gs://bucket/folder .`
