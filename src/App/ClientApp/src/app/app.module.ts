@@ -92,7 +92,6 @@ import { StagedFilesComponent } from './components/FileInputStagedFilesDisplay/s
             [
                 { path: '', component: HomeComponent, pathMatch: 'full' },
                 { path: 'rp524', component: FormComponent, canDeactivate: [PendingChangesGuard] },
-                // { path: 'rp524/:key', component: FormComponent, canDeactivate: [PendingChangesGuard] },
                 { path: 'submit', component: SubmitComponent },
                 { path: 'admin', component: AdminComponent },
                 { path: 'continue-submission', component: SubmissionContinueComponent },
