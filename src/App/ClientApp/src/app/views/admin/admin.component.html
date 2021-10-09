@@ -224,11 +224,56 @@
 </div>
 <br>
 
-
-
 <div class="container-fluid" *ngIf="UserAuthenticated === true">
 
-    <app-admin-instructions></app-admin-instructions>
+    <div class="row">
+        <div class="col-sm-9">
+            <app-admin-instructions></app-admin-instructions>
+        </div>
+
+        <div class="col-sm-3">
+            <button (click)="OpenEditSettingsModal()" class="btn btn-primary sharp-corners w-100">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pen" fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M5.707 13.707a1 1 0 0 1-.39.242l-3 1a1 1 0 0 1-1.266-1.265l1-3a1 1 0 0 1 .242-.391L10.086 2.5a2 2 0 0 1 2.828 0l.586.586a2 2 0 0 1 0 2.828l-7.793 7.793zM3 11l7.793-7.793a1 1 0 0 1 1.414 0l.586.586a1 1 0 0 1 0 1.414L5 13l-3 1 1-3z" />
+                    <path fill-rule="evenodd"
+                        d="M9.854 2.56a.5.5 0 0 0-.708 0L5.854 5.855a.5.5 0 0 1-.708-.708L8.44 1.854a1.5 1.5 0 0 1 2.122 0l.293.292a.5.5 0 0 1-.707.708l-.293-.293z" />
+                    <path
+                        d="M13.293 1.207a1 1 0 0 1 1.414 0l.03.03a1 1 0 0 1 .03 1.383L13.5 4 12 2.5l1.293-1.293z" />
+                </svg>
+                Edit App Settings
+            </button>
+
+            <button (click)="OpenEditRepsModal()" class="btn btn-dark w-100 sharp-corners">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pen" fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M5.707 13.707a1 1 0 0 1-.39.242l-3 1a1 1 0 0 1-1.266-1.265l1-3a1 1 0 0 1 .242-.391L10.086 2.5a2 2 0 0 1 2.828 0l.586.586a2 2 0 0 1 0 2.828l-7.793 7.793zM3 11l7.793-7.793a1 1 0 0 1 1.414 0l.586.586a1 1 0 0 1 0 1.414L5 13l-3 1 1-3z" />
+                    <path fill-rule="evenodd"
+                        d="M9.854 2.56a.5.5 0 0 0-.708 0L5.854 5.855a.5.5 0 0 1-.708-.708L8.44 1.854a1.5 1.5 0 0 1 2.122 0l.293.292a.5.5 0 0 1-.707.708l-.293-.293z" />
+                    <path
+                        d="M13.293 1.207a1 1 0 0 1 1.414 0l.03.03a1 1 0 0 1 .03 1.383L13.5 4 12 2.5l1.293-1.293z" />
+                </svg>
+                Edit Representatives
+            </button>
+
+            <button *ngIf="IsFetchingData == false" (click)="PopulateGridWithData()" class="btn btn-success sharp-corners w-100">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bootstrap-reboot" fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M1.161 8a6.84 6.84 0 1 0 6.842-6.84.58.58 0 0 1 0-1.16 8 8 0 1 1-6.556 3.412l-.663-.577a.58.58 0 0 1 .227-.997l2.52-.69a.58.58 0 0 1 .728.633l-.332 2.592a.58.58 0 0 1-.956.364l-.643-.56A6.812 6.812 0 0 0 1.16 8zm5.48-.079V5.277h1.57c.881 0 1.416.499 1.416 1.32 0 .84-.504 1.324-1.386 1.324h-1.6zm0 3.75V8.843h1.57l1.498 2.828h1.314L9.377 8.665c.897-.3 1.427-1.106 1.427-2.1 0-1.37-.943-2.246-2.456-2.246H5.5v7.352h1.141z" />
+                </svg>
+                Refresh Data In Grid
+            </button>
+            <button *ngIf="IsFetchingData == true" class="btn btn-success w-100 sharp-corners">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Refreshing...</span>
+                </div>
+            </button>
+        </div>
+    </div>
+
 
     <div class="alert alert-dark">
 
@@ -245,25 +290,7 @@
         <div id="All" class="tabcontent">
             <!-- Button row -->
             <div class="btn-group d-flex" role="group">
-                <button *ngIf="IsFetchingData == false" (click)="PopulateGridWithData()"
-                    class="btn btn-success sharp-corners">
-                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bootstrap-reboot" fill="currentColor"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                            d="M1.161 8a6.84 6.84 0 1 0 6.842-6.84.58.58 0 0 1 0-1.16 8 8 0 1 1-6.556 3.412l-.663-.577a.58.58 0 0 1 .227-.997l2.52-.69a.58.58 0 0 1 .728.633l-.332 2.592a.58.58 0 0 1-.956.364l-.643-.56A6.812 6.812 0 0 0 1.16 8zm5.48-.079V5.277h1.57c.881 0 1.416.499 1.416 1.32 0 .84-.504 1.324-1.386 1.324h-1.6zm0 3.75V8.843h1.57l1.498 2.828h1.314L9.377 8.665c.897-.3 1.427-1.106 1.427-2.1 0-1.37-.943-2.246-2.456-2.246H5.5v7.352h1.141z" />
-                    </svg>
-                    Refresh Data In Grid
-                </button>
-                <button *ngIf="IsFetchingData == true" class="btn btn-success w-100 sharp-corners">
-                    <div class="spinner-border" role="status">
-                        <span class="sr-only">Refreshing...</span>
-                    </div>
-                </button>
-            </div>
-
-            <!-- Button row -->
-            <div class="btn-group d-flex" role="group">
-                <button *ngIf="IsExportingAllGrievances == false" (click)="ExportAllGrievancesToCsv()" class="btn btn-light sharp-corners">
+                <button *ngIf="IsExportingAllGrievances == false" (click)="ExportAllGrievancesToCsv()" class="btn btn-success sharp-corners">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-paperclip" fill="currentColor"
                         xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd"
@@ -272,7 +299,7 @@
                     Download Grievances As CSV
                 </button>
 
-                <button *ngIf="IsExportingAllGrievances == true" class="btn btn-light w-100 sharp-corners">
+                <button *ngIf="IsExportingAllGrievances == true" class="btn btn-success w-100 sharp-corners">
                     <div class="spinner-border" role="status">
                         <span class="sr-only">Loading...</span>
                     </div>
@@ -281,8 +308,7 @@
 
             <!-- Button row -->
             <div class="btn-group d-flex" role="group">
-                <button (click)="BeginGenerateChangeListReport()"
-                    class="btn btn-dark sharp-corners">
+                <button (click)="BeginGenerateChangeListReport()" class="btn btn-secondary sharp-corners">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-arrow-down-fill"
                         fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd"
@@ -294,8 +320,7 @@
 
             <!-- Button row -->
             <div class="btn-group d-flex" role="group">
-                <button *ngIf="IsFindingAppealsLacking524 == false" (click)="FindGrievancesMissingRp524()"
-                    class="btn btn-info sharp-corners">
+                <button *ngIf="IsFindingAppealsLacking524 == false" (click)="FindGrievancesMissingRp524()" class="btn btn-dark sharp-corners">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-exclamation-diamond"
                         fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd"
@@ -305,7 +330,7 @@
                     </svg>
                     Find appeals lacking NYS RP-524 PDF
                 </button>
-                <button *ngIf="IsFindingAppealsLacking524 == true" class="btn btn-info w-100 sharp-corners">
+                <button *ngIf="IsFindingAppealsLacking524 == true" class="btn btn-dark w-100 sharp-corners">
                     <div class="spinner-border" role="status">
                         <span class="sr-only">Refreshing...</span>
                     </div>
@@ -314,7 +339,7 @@
 
             <!-- Button row -->
             <!-- Button opens modal -->
-            <button *ngIf="IsLoadingDispositionsModal === false" class="btn btn-danger sharp-corners w-100" (click)="BeginGenerateDispositions()">
+            <button *ngIf="IsLoadingDispositionsModal === false" class="btn btn-primary sharp-corners w-100" (click)="BeginGenerateDispositions()">
                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-envelope-fill" fill="currentColor"
                     xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd"
@@ -322,78 +347,25 @@
                 </svg>
                 Dispositions
             </button>
-            <button *ngIf="IsLoadingDispositionsModal === true" class="btn btn-danger w-100" type="button">
+            <button *ngIf="IsLoadingDispositionsModal === true" class="btn btn-primary w-100" type="button">
                 <div class="spinner-border" role="status">
                     <span class="sr-only">Loading...</span>
                 </div>
             </button>
-
-            <!-- Button row -->
-            <!-- Button opens modal -->
-            <button (click)="OpenEditRepsModal()" class="btn btn-dark w-100 sharp-corners">
-                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pen" fill="currentColor"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd"
-                        d="M5.707 13.707a1 1 0 0 1-.39.242l-3 1a1 1 0 0 1-1.266-1.265l1-3a1 1 0 0 1 .242-.391L10.086 2.5a2 2 0 0 1 2.828 0l.586.586a2 2 0 0 1 0 2.828l-7.793 7.793zM3 11l7.793-7.793a1 1 0 0 1 1.414 0l.586.586a1 1 0 0 1 0 1.414L5 13l-3 1 1-3z" />
-                    <path fill-rule="evenodd"
-                        d="M9.854 2.56a.5.5 0 0 0-.708 0L5.854 5.855a.5.5 0 0 1-.708-.708L8.44 1.854a1.5 1.5 0 0 1 2.122 0l.293.292a.5.5 0 0 1-.707.708l-.293-.293z" />
-                    <path
-                        d="M13.293 1.207a1 1 0 0 1 1.414 0l.03.03a1 1 0 0 1 .03 1.383L13.5 4 12 2.5l1.293-1.293z" />
-                </svg>
-                Edit Representatives
-            </button>
-
-            <!-- Button row -->
-            <!-- Button opens modal -->
-            <button (click)="OpenEditSettingsModal()" class="btn btn-warning w-100 sharp-corners">
-                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pen" fill="currentColor"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd"
-                        d="M5.707 13.707a1 1 0 0 1-.39.242l-3 1a1 1 0 0 1-1.266-1.265l1-3a1 1 0 0 1 .242-.391L10.086 2.5a2 2 0 0 1 2.828 0l.586.586a2 2 0 0 1 0 2.828l-7.793 7.793zM3 11l7.793-7.793a1 1 0 0 1 1.414 0l.586.586a1 1 0 0 1 0 1.414L5 13l-3 1 1-3z" />
-                    <path fill-rule="evenodd"
-                        d="M9.854 2.56a.5.5 0 0 0-.708 0L5.854 5.855a.5.5 0 0 1-.708-.708L8.44 1.854a1.5 1.5 0 0 1 2.122 0l.293.292a.5.5 0 0 1-.707.708l-.293-.293z" />
-                    <path
-                        d="M13.293 1.207a1 1 0 0 1 1.414 0l.03.03a1 1 0 0 1 .03 1.383L13.5 4 12 2.5l1.293-1.293z" />
-                </svg>
-                Edit App Settings
-            </button>
-
         </div>
 
         <div style="display: none;" id="Individual" class="tabcontent">
-            <!-- Button Row -->
-
+            <!-- Button row -->
             <div class="btn-group d-flex" role="group">
-                <button *ngIf="IsFetchingData == false" (click)="PopulateGridWithData()"
-                    class="btn btn-success sharp-corners w-100">
-                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bootstrap-reboot" fill="currentColor"
+                <!-- Button opens modal -->
+                <button (click)="BeginOnlineBarReview()" class="btn btn-primary w-100">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cloud-plus-fill" fill="currentColor"
                         xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd"
-                            d="M1.161 8a6.84 6.84 0 1 0 6.842-6.84.58.58 0 0 1 0-1.16 8 8 0 1 1-6.556 3.412l-.663-.577a.58.58 0 0 1 .227-.997l2.52-.69a.58.58 0 0 1 .728.633l-.332 2.592a.58.58 0 0 1-.956.364l-.643-.56A6.812 6.812 0 0 0 1.16 8zm5.48-.079V5.277h1.57c.881 0 1.416.499 1.416 1.32 0 .84-.504 1.324-1.386 1.324h-1.6zm0 3.75V8.843h1.57l1.498 2.828h1.314L9.377 8.665c.897-.3 1.427-1.106 1.427-2.1 0-1.37-.943-2.246-2.456-2.246H5.5v7.352h1.141z" />
+                            d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2zm.5 4a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V10a.5.5 0 0 0 1 0V8.5H10a.5.5 0 0 0 0-1H8.5V6z" />
                     </svg>
-                    Refresh Data In Grid
+                    Online BAR review
                 </button>
-                <button *ngIf="IsFetchingData == true" class="btn btn-success w-100 sharp-corners">
-                    <div class="spinner-border" role="status">
-                        <span class="sr-only">Refreshing...</span>
-                    </div>
-                </button>
-
-                <button *ngIf="IsArchiveDownloading == false" (click)="DownloadFilesAssociatedWithSelectedGrievance()"
-                    class="btn btn-dark w-100 sharp-corners">
-                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-arrow-down-fill"
-                        fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                            d="M12 1H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z" />
-                    </svg>
-                    Download files for selected grievance
-                </button>
-                <button *ngIf="IsArchiveDownloading == true" class="btn btn-dark w-100 sharp-corners">
-                    <div class="spinner-border" role="status">
-                        <span class="sr-only">Downloading...</span>
-                    </div>
-                </button>
-
             </div>
 
             <!-- Button row -->
@@ -413,21 +385,24 @@
                     Grievance details
                 </button>
 
-                <!-- Button opens modal -->
-                <button (click)="BeginOnlineBarReview()" class="btn btn-light w-100">
-                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cloud-plus-fill" fill="currentColor"
-                        xmlns="http://www.w3.org/2000/svg">
+                <button *ngIf="IsArchiveDownloading == false" (click)="DownloadFilesAssociatedWithSelectedGrievance()" class="btn btn-secondary w-100 sharp-corners">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-arrow-down-fill"
+                        fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd"
-                            d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2zm.5 4a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V10a.5.5 0 0 0 1 0V8.5H10a.5.5 0 0 0 0-1H8.5V6z" />
+                            d="M12 1H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z" />
                     </svg>
-                    Online BAR review
+                    Download files for selected grievance
+                </button>
+                <button *ngIf="IsArchiveDownloading == true" class="btn btn-secondary w-100 sharp-corners">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Downloading...</span>
+                    </div>
                 </button>
             </div>
 
             <!-- Button row -->
             <div class="btn-group d-flex" role="group">
-                <!-- Button opens modal -->
-                <button (click)="BeginSubmissionCreation()" class="btn btn-warning w-100 sharp-corners">
+                <button (click)="BeginSubmissionCreation()" class="btn btn-success w-100 sharp-corners">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cloud-arrow-up-fill"
                         fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd"
@@ -436,30 +411,7 @@
                     Manually create grievance
                 </button>
 
-                <button *ngIf="IsFetchingReviewData == false" (click)="BeginOfflineBarReview()"
-                    class="btn btn-dark w-100 sharp-corners">
-                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chat-left-text" fill="currentColor"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                            d="M14 1H2a1 1 0 0 0-1 1v11.586l2-2A2 2 0 0 1 4.414 11H14a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
-                        <path fill-rule="evenodd"
-                            d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6zm0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z" />
-                    </svg>
-                    Offline bar review
-                </button>
-                <button *ngIf="IsFetchingReviewData == true" class="btn btn-dark w-100 sharp-corners">
-                    <div class="spinner-border" role="status">
-                        <span class="sr-only">Fetching data...</span>
-                    </div>
-                </button>
-
-            </div>
-
-            <!-- Button row -->
-            <div class="btn-group d-flex" role="group">
-
-                <!-- Button opens modal -->
-                <button (click)="BeginAddFilesToSubmission()" class="btn btn-primary w-100">
+                <button (click)="BeginAddFilesToSubmission()" class="btn btn-dark w-100">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cloud-plus-fill" fill="currentColor"
                         xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd"
@@ -467,9 +419,11 @@
                     </svg>
                     Add file(s) to grievance
                 </button>
+            </div>
 
-                <!-- Button opens modal -->
-                <button (click)="BeginEditGrievance()" class="btn btn-light w-100">
+            <!-- Button row -->
+            <div class="btn-group d-flex" role="group">
+                <button (click)="BeginEditGrievance()" class="btn btn-dark w-100">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pen" fill="currentColor"
                         xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd"
@@ -483,7 +437,7 @@
                 </button>
 
                 <button *ngIf="IsDeletingGrievance === false" (click)="DeleteGrievance()"
-                    class="btn btn-danger w-100 sharp-corners">
+                    class="btn btn-warning w-100 sharp-corners">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-exclamation-triangle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 5zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
                     </svg>

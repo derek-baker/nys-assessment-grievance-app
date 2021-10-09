@@ -724,14 +724,21 @@ export class AdminComponent implements OnInit {
 
         this.httpAdminService.FindGrievancesMissingRp524().subscribe(
             (data) => {
+                if (!data || !data.some(() => true)) {
+                    window.alert('There are no grievances lacking RP-524 files.');
+                    return;
+                }
+
                 this.IsFindingAppealsLacking524 = false;
                 const dataBlob = this.fileDownloadService.BuildCsv(data);
                 this.fileDownloadService.DownloadCsv(dataBlob, filename);
             },
             (error) => {
-                this.IsFindingAppealsLacking524 = false;
                 window.alert('An error occurred. Please retry.');
                 console.error(error);
+            },
+            () => {
+                this.IsFindingAppealsLacking524 = false;
             }
         );
     }
