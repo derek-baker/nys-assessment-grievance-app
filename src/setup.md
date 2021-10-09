@@ -1,5 +1,6 @@
 - GCP
 	- Create GCP project
+	
 	- Enable Sendgrid: Marketplace > Sendgrid Email API > Free > Register with SendGrid
 		- Log into Sendgrid at https://app.sendgrid.com/login
 		- select MFA option > verify identity using selected factor

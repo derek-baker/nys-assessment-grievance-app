@@ -327,7 +327,7 @@ namespace App.Controllers
                     subject: EmailSettings.ConflictingSubmissionsEmailSubject,
                     html: msg);
             }
-            return Ok();            
+            return Ok(new { grievanceId });            
         }
 
 
