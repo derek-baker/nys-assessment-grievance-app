@@ -213,7 +213,7 @@ export class HttpService extends HttpServiceBase {
 
     public DownloadFilesForReview(
         guid: string,
-        endpoint: string = `/api/download/getGrievanceFiles?id=${guid}`
+        endpoint: string = `/api/download/getGrievanceFiles?guidStr=${guid}`
     ) {
         return this.http.get(
             endpoint,
