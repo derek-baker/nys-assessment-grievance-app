@@ -93,6 +93,8 @@ export class ModalSubmissionFilesComponent implements OnInit {
             (err) => {
                 console.error(err);
                 window.alert('An error occurred while fetching the data. Please retry.');
+            },
+            () => {
                 this.IsRefreshingFilesList = false;
             }
         );

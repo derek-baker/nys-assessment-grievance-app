@@ -32,7 +32,6 @@ export class ModalCreateSubmissionComponent implements OnInit, AfterViewChecked 
     public AttorneyPhone: string = '';
     public ComplainantMailAddress: string = '';
     public CoOpUnitNum: string = '';
-    // public Reason: string = '';
     public Notes: string = '';
 
     public IsUploading: boolean = false;
@@ -61,9 +60,7 @@ export class ModalCreateSubmissionComponent implements OnInit, AfterViewChecked 
     constructor(
         private readonly http: HttpService,
         private readonly httpPublic: HttpPublicService
-    ) {
-        //
-    }
+    ) {}
 
     public ngOnInit(): void {
         this.Attorneys = [
@@ -110,7 +107,6 @@ export class ModalCreateSubmissionComponent implements OnInit, AfterViewChecked 
         this.AttorneyPhone = '';
         this.ComplainantMailAddress = '';
         this.CoOpUnitNum = '';
-        // this.Reason = '';
         this.Notes = '';
 
         this.ComplaintTypeSelectControl.reset();
@@ -175,16 +171,6 @@ export class ModalCreateSubmissionComponent implements OnInit, AfterViewChecked 
         //
     }
 
-    // private countExpectedFiles() {
-    //     let numExpectedFiles = 0;
-    //     numExpectedFiles += (this.IncludesPersonalHearing) ? 1 : 0;
-    //     numExpectedFiles += (this.IncludesConflictOfInterest) ? 1 : 0;
-    //     numExpectedFiles += (this.IncludesResQuestionnaire) ? 1 : 0;
-    //     numExpectedFiles += (this.IncludesComQuestionnaire) ? 1 : 0;
-    //     numExpectedFiles += (this.IncludesLetterOfAuthorization) ? 1 : 0;
-    //     return numExpectedFiles;
-    // }
-
     private validateForm(formElement: any): boolean {
         // const expectedFileCount = this.countExpectedFiles();
         const actualFileCount = formElement.elements.namedItem('files').files.length;
@@ -196,28 +182,6 @@ export class ModalCreateSubmissionComponent implements OnInit, AfterViewChecked 
             );
             return false;
         }
-        // if (actualFileCount < expectedFileCount + 1) {
-        //     window.alert(
-        //         'Submission not uploaded. \n\n' +
-        //         `You\'ve indicated via the checkboxes that you\'re attaching at least ${expectedFileCount + 1} file(s), ` +
-        //         `but you\'ve only included ${actualFileCount} file(s). \n\n` +
-        //         'Please attach more files, or uncheck the necessary boxes.'
-        //     );
-        //     return false;
-        // }
-        // if (
-        //     this.IncludesPersonalHearing === true
-        //     &&
-        //     // @ts-ignore
-        //     formElement.elements.namedItem('files').files.length < 2
-        // ) {
-        //     window.alert(
-        //         'You\'ve indicated that a \'Request For Personal Hearing\' form is being included, ' +
-        //         'but you\'ve only included one file. When selecting that option, at least 2 files ' +
-        //         'must be included.'
-        //     );
-        //     return false;
-        // }
         if (
             this.ApplicantEmail?.length === 0
             ||
