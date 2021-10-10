@@ -145,12 +145,6 @@ export class FormControlsComponent implements OnInit {
         return true;
     }
 
-    // TODO: Handle user zoom
-
-    public ClearForm() {
-        this.ParentForm.reset();
-    }
-
     private validateForm(
         errorMsgFirstLine = 'FORM IS INCOMPLETE OR INVALID. \n'
     ): boolean {

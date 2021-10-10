@@ -9,7 +9,6 @@ export class SortService {
         //
     }
 
-    /** TODO: Unit tests */
     public SortBy(
         field: string,
         descending: boolean = false,

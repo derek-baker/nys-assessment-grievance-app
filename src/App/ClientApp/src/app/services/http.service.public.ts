@@ -9,9 +9,7 @@ import { ISession } from '../types/ISession';
     providedIn: 'root'
 })
 export class HttpPublicService extends HttpServiceBase {
-    constructor(
-        private readonly http: HttpClient
-    ) {
+    constructor(private readonly http: HttpClient) {
         super();
     }
 

@@ -107,26 +107,6 @@
                     This submission includes a 'Conflict of Interest' form.
                 </label>
             </div>
-            <!-- This submission includes a 'Residential Questionnaire' -->
-            <div class="form-group form-check">
-                <input name="includesResQuestionnaire" type="checkbox" class="form-check-input"
-                    id="CreateGrievance_IncludesResQuestionnaire" value="true" onchange="this.value=this.checked"
-                    [checked]="IncludesResQuestionnaire"
-                    (change)="IncludesResQuestionnaire = !IncludesResQuestionnaire" />
-                <label class="form-check-label" for="CreateGrievance_IncludesResQuestionnaire">
-                    This submission includes a 'Residential Questionnaire' form.
-                </label>
-            </div>
-            <!-- This submission includes a 'Commercial Questionnaire' -->
-            <div class="form-group form-check">
-                <input name="includesComQuestionnaire" type="checkbox" class="form-check-input"
-                    id="CreateGrievance_IncludesComQuestionnaire" value="true" onchange="this.value=this.checked"
-                    [checked]="IncludesComQuestionnaire"
-                    (change)="IncludesComQuestionnaire = !IncludesComQuestionnaire" />
-                <label class="form-check-label" for="CreateGrievance_IncludesComQuestionnaire">
-                    This submission includes a 'Commercial Questionnaire' form.
-                </label>
-            </div>
 
             <!-- This submission includes a 'Letter of Authorization' -->
             <div class="form-group form-check">
@@ -139,28 +119,6 @@
                 </label>
             </div>
 
-            <!-- This submission includes I&E Form(s) -->
-            <div class="form-group form-check">
-                <input name="includesIncomeExpenseForms" type="checkbox" class="form-check-input"
-                    id="CreateGrievance_IncludesIncomeExpenseForms" value="true" onchange="this.value=this.checked"
-                    [checked]="IncludesIncomeExpenseForms"
-                    (change)="IncludesIncomeExpenseForms = !IncludesIncomeExpenseForms" />
-                <label class="form-check-label" for="CreateGrievance_IncludesIncomeExpenseForms">
-                    This submission includes 'I&E' form(s).
-                </label>
-            </div>
-
-            <!-- This submission includes an I&E Exclusion -->
-            <div class="form-group form-check">
-                <input name="includesIncomeExpenseExclusion" type="checkbox" class="form-check-input"
-                    id="CreateGrievance_IncludesIncomeExpenseExclusion" value="true" onchange="this.value=this.checked"
-                    [checked]="IncludesIncomeExpenseExclusion"
-                    (change)="IncludesIncomeExpenseExclusion = !IncludesIncomeExpenseExclusion" />
-                <label class="form-check-label" for="CreateGrievance_IncludesIncomeExpenseExclusion">
-                    This submission includes an 'I&E' Exclusion.
-                </label>
-            </div>
-
             <!-- This submission includes Supporting Documentation -->
             <div class="form-group form-check">
                 <input name="includesSupportingDocumentation" type="checkbox" class="form-check-input"
@@ -168,7 +126,7 @@
                     [checked]="IncludesSupportingDocumentation"
                     (change)="IncludesSupportingDocumentation = !IncludesSupportingDocumentation" />
                 <label class="form-check-label" for="CreateGrievance_IncludesSupportingDocumentation">
-                    This submission includes 'Supporting Documentation'.
+                    This submission includes other supporting documentation.
                 </label>
             </div>
 
