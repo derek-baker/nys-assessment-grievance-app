@@ -81,19 +81,19 @@ namespace Library.Services.Csv
                 SubmitterEmail = Clean(grievance.email);
                 SubmitDate = Clean(grievance.submit_date);
 
-                RepGroupName = Clean(attorneyInfo.GroupName1);
-                RepGroupNo = Clean(attorneyInfo.GroupNo);
-                RepContact = Clean(attorneyInfo.ContactName);
-                RepEmail = Clean(attorneyInfo.Email);
-                RepPhone1 = Clean(attorneyInfo.Phone1);
-                RepPhone2 = Clean(attorneyInfo.Phone2);
-                RepAddress1 = Clean(attorneyInfo.Address1);
-                RepAddress2 = Clean(attorneyInfo.Address2);
-                RepCity = Clean(attorneyInfo.City);
-                RepState = Clean(attorneyInfo.State);
-                RepZip = Clean(attorneyInfo.ZipCode);
-                RepFax1 = Clean(attorneyInfo.FAX1);
-                RepFax2 = Clean(attorneyInfo.FAX2);
+                RepGroupName = Clean(attorneyInfo?.GroupName1);
+                RepGroupNo = Clean(attorneyInfo?.GroupNo);
+                RepContact = Clean(attorneyInfo?.ContactName);
+                RepEmail = Clean(attorneyInfo?.Email);
+                RepPhone1 = Clean(attorneyInfo?.Phone1);
+                RepPhone2 = Clean(attorneyInfo?.Phone2);
+                RepAddress1 = Clean(attorneyInfo?.Address1);
+                RepAddress2 = Clean(attorneyInfo?.Address2);
+                RepCity = Clean(attorneyInfo?.City);
+                RepState = Clean(attorneyInfo?.State);
+                RepZip = Clean(attorneyInfo?.ZipCode);
+                RepFax1 = Clean(attorneyInfo?.FAX1);
+                RepFax2 = Clean(attorneyInfo?.FAX2);
 
                 ComplainantMailingAddress = Clean(grievance.complainant_mail_address);
                 CoOpUnitNum = Clean(grievance.co_op_unit_num);
