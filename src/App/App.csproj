@@ -96,6 +96,9 @@
     <None Include="Assets\NYS_RP524_WithSignatureButtons_WithFillableBoardOnly.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Assets\NYS_RP525_NO_SIGNATURE.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

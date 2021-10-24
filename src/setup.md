@@ -31,5 +31,7 @@
 	- Build a Database > Free/Basic > Select a cloud provider and region (Consider the effect of geography on latency) > M0 (free) > Create cluster
 	- Security > Database Access > Add New Database User > Configure as to your preferences (password is easiest)
 	- Connect > Allow Access From Anywhere
+
+- ReCapcha: https://www.google.com/u/1/recaptcha/admin/site
 	 
 	

@@ -101,7 +101,6 @@ export class ModalExportReviewComponent implements OnInit {
                             TentativeAssessedValue: (d.nys_rp525_tentative) ? d.nys_rp525_tentative.replaceAll(',', '') : '',
                             BarTotalAssessedValue: (answers && answers.Admin_Rp525_Total) ? answers.Admin_Rp525_Total.replaceAll(',', '') : '',
 
-                            // BAR Total Assessed Value divided by .0209 (Level of Assessment)
                             BarFullMarketValue:
                                 (answers && answers.Admin_Rp525_Total)
                                     ? (
@@ -156,7 +155,6 @@ export class ModalExportReviewComponent implements OnInit {
             const day = `${date.getDate()}`.padStart(2, '0');
             return `${year}-${month}-${day}`;
         };
-        // const encodedUri = encodeURI(csvContent);
         const uri = URL.createObjectURL(csvContentBlob);
         const link = document.createElement('a');
         link.setAttribute('href', uri);

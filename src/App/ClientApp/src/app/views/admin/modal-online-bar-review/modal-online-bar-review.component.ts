@@ -67,13 +67,16 @@ export class ModalOnlineBarReviewComponent implements OnInit {
     ) {
         const validators = [Validators.required];
         this.NysRp525 = new FormGroup({
-            UserName: new FormControl('', validators),
+            UserName: new FormControl(''),
             SubmissionGuid: new FormControl('', validators),
             TaxMapId: new FormControl('', validators),
             SubmitterEmail: new FormControl('', validators),
             SignatureAsBase64String: new FormControl('', validators),
             Admin_Rp525_ComplainantInfoTextArea: new FormControl('', validators)
         });
+
+        console.log('TEST')
+        console.log(this.parent.UserName)
 
         // Set up local subscription to value stored in grievance service
         this.selectedGrievance.SelectedGrievance$.subscribe((selected) => {
