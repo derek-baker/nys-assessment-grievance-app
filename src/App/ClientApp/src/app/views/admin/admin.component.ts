@@ -10,7 +10,6 @@ import { IAssessmentGrievance } from 'src/app/types/IAssessmentGrievance';
 import { ModalEmailDispositionsComponent } from './modal-generate-dispositions/modal-generate-dispositions.component';
 import { ModalSubmissionFilesComponent } from './modal-submission-details/modal-submission-details.component';
 import { IAuthResponse } from 'src/app/types/ApiResponses/IAuthResponse';
-import { ClientStorageService } from 'src/app/services/client-storage.service';
 import { BrowserSnifferService } from 'src/app/services/browser-sniffer.service';
 import { Router } from '@angular/router';
 import { AssessmentGrievance } from 'src/app/types/AssessmentGrievance';
@@ -150,12 +149,16 @@ export class AdminComponent implements OnInit {
         private readonly httpPublic: HttpPublicService,
         private readonly httpAdminService: HttpAdminService,
         private readonly selectedAppService: SelectedGrievanceService,
-        private readonly clientStorage: ClientStorageService,
         private readonly browserSniffer: BrowserSnifferService,
         private readonly fileDownloadService: FileDownloadService,
         private readonly router: Router,
         private readonly cookieService: CookieService
     ) {}
+
+    public LogOut(location = window.location) {
+        this.cookieService.RemoveCookie(this.cookieService.CookieNames.session);
+        location.reload();
+    }
 
     /** Intended to auto-switch tabs when user highlights a row */
     public onRowSelected(event: RowSelectedEvent) {
@@ -200,8 +203,9 @@ export class AdminComponent implements OnInit {
             const session: ISession = JSON.parse(decodeURIComponent(sessionEncoded));
             this.httpPublic.ValidateSession(session).subscribe(
                 (result) => {
-                    if (result.isValid === true) {
+                    if (result.isValidSession === true) {
                         this.UserAuthenticated = true;
+                        this.UserName = result.userName;
                     }
                 },
                 (err) => {
@@ -264,6 +268,8 @@ export class AdminComponent implements OnInit {
                     this.IsFetchingData = false;
                 }
             );
+
+        this.UserName = this.cookieService.GetSessionCookie()?.UserId;
     }
 
     /** TODO: Refactor to use less DOM */

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import Cookies from 'js-cookie';
 
 @Injectable({
     providedIn: 'root'
@@ -26,6 +27,19 @@ export class CookieService {
         const cookie = this.getCookie(cookieKey, cookiesString);
         const cookieValue = cookie && cookie.includes('=') ? cookie.split('=')[1] : undefined;
         return cookieValue;
+    }
+
+    public RemoveCookie(cookieName: string) {
+        Cookies.remove(cookieName);
+    }
+
+    public GetSessionCookie(): {UserId: string} {
+        const sessionCookie = Cookies.get(this.CookieNames.session);
+        const sessionObj = sessionCookie ?
+            JSON.parse(sessionCookie)
+            : undefined;
+
+        return sessionObj;
     }
 
     // public InvalidatePrefillCookie(

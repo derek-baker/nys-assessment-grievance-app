@@ -65,5 +65,29 @@ namespace Library.Services.Clients.Database.Repositories
                 ? null
                 : BsonSerializer.Deserialize<User>(userDoc);
         }
+
+        public async Task<User> GetUserById(System.Guid userId)
+        {
+            var projection =
+                Builders<BsonDocument>
+                    .Projection
+                        .Include(UserDocument.Fields.UserId)
+                        .Include(UserDocument.Fields.UserName)
+                        .Include(UserDocument.Fields.PasswordHash)
+                        .Include(UserDocument.Fields.Salt)
+                        .Include(UserDocument.Fields.HasNeverLoggedIn);
+
+            var filter = Builders<BsonDocument>.Filter.Eq(UserDocument.Fields.UserId, userId.ToString());
+
+            var documents = await _db.GetDocuments(
+                _collection,
+                projection,
+                filter);
+
+            var userDoc = await documents.FirstOrDefaultAsync();
+            return userDoc is null
+                ? null
+                : BsonSerializer.Deserialize<User>(userDoc);
+        }
     }
 }

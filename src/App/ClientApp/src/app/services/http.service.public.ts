@@ -22,6 +22,6 @@ export class HttpPublicService extends HttpServiceBase {
     }
 
     public ValidateSession(session: ISession, endpoint = '/api/auth/validateSession') {
-        return this.http.post<{isValid: boolean}>(endpoint, session);
+        return this.http.post<{isValidSession: boolean, userName: string}>(endpoint, session);
     }
 }

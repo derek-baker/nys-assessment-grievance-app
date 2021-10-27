@@ -48,13 +48,14 @@ namespace Library.Services.Auth
         private static bool IsInvalidSession(Session session) 
             => session is null || session.ValidUntil <= DateTime.UtcNow;
 
-        public async Task<bool> ValidateSession(Session sessionFromCookie)
+        public async Task<(bool IsValidSession, string UserName)> ValidateSession(Session sessionFromCookie)
         {
             var sessionFromDb = await _sessions.GetUserSession(
                 sessionFromCookie.UserId,
                 sessionFromCookie.SessionId);
 
-            return !IsInvalidSession(sessionFromDb);
+            var userName = (await _users.GetUserById(sessionFromCookie.UserId))?.UserName;
+            return (IsValidSession: !IsInvalidSession(sessionFromDb), UserName: userName);
         }
 
         public async Task<bool> ValidateSession(string cookieData)

@@ -42,8 +42,8 @@ namespace App.Controllers
         [HttpPost("ValidateSession")]
         public async Task<IActionResult> ValidateSession([FromBody] Session session)
         {
-            var isValidSession = await _auth.ValidateSession(session);
-            return Ok(new { IsValid = isValidSession });
+            var (IsValidSession, UserName) = await _auth.ValidateSession(session);
+            return Ok(new { IsValidSession, UserName });
         }
     }
 }
