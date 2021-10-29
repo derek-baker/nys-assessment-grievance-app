@@ -87,7 +87,7 @@ export class ModalSubmissionFilesComponent implements OnInit {
         this.IsRefreshingFilesList = true;
         this.http.GetGrievanceFiles(this.SelectedGrievance.Guid).subscribe(
             (fileList) => {
-                this.FileList = fileList;
+                this.FileList = fileList.filter(((f) => !f.friendlyName.includes('.json')));
                 this.IsRefreshingFilesList = false;
             },
             (err) => {
