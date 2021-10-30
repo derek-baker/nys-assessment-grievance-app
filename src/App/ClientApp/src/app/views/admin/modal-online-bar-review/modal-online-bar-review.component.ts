@@ -54,7 +54,6 @@ export class ModalOnlineBarReviewComponent implements OnInit {
 
     private canvas: any;
     private signaturePad: any;
-    /** This is actually for a 525, but we would have gotten this data from the 524, or from scraping */
     // @ts-ignore
     private rp524Data: IRP525PrefillData = {};
     private readonly barReviewModalId: string = 'BarReviewOnlineModal';
@@ -74,9 +73,6 @@ export class ModalOnlineBarReviewComponent implements OnInit {
             SignatureAsBase64String: new FormControl('', validators),
             Admin_Rp525_ComplainantInfoTextArea: new FormControl('', validators)
         });
-
-        console.log('TEST')
-        console.log(this.parent.UserName)
 
         // Set up local subscription to value stored in grievance service
         this.selectedGrievance.SelectedGrievance$.subscribe((selected) => {

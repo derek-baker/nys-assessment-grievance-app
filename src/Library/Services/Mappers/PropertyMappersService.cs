@@ -7,9 +7,6 @@ using System.Reflection;
 
 namespace App.Services.Mappers
 {
-	// Clones object public properties to another object
-	// Uses Expressions (compiled and saved to static) - faster than Reflection
-	// (compilation happens with every new generic type call cause it's a new static class each time)
 	public static class PropMapper<TInput, TOutput>
 	{
 		private static readonly Func<TInput, TOutput> _cloner;

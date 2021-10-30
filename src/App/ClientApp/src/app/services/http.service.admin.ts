@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { HttpServiceBase } from './http.service.base';
 import { UserSettings } from '../types/UserSettings';
 import { IGetGrievancesMissingRP524 } from '../types/ApiResponses/IGetGrievancesMissingRP524';
