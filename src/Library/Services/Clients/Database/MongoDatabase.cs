@@ -780,11 +780,10 @@ namespace Library.Services.Clients.Database
         public void UpdateNysRp525Answers(
             IMongoCollection<BsonDocument> collection,
             string submissionId,
-            NysRps525OnlineFormAnswers answers
+            NysRps525OnlineFormAnswers answers,
+            bool isComplete = false
         )
         {
-            Contract.Requires(collection != null && answers != null);
-
             var filter =
                 Builders<BsonDocument>
                     .Filter.Eq(GrievanceDocument.Fields.GuidString, submissionId);
@@ -796,8 +795,10 @@ namespace Library.Services.Clients.Database
                         .Set(GrievanceDocument.Fields.NysRP525Tentative, answers.Admin_Rp525_Tentative)
                         .Set(GrievanceDocument.Fields.NysRP525IsReduced, answers.Admin_Rp525_Check2a)
                         .Set(GrievanceDocument.Fields.NysRP525IsReducedValue, answers.Admin_Rp525_Total)
-                        .Set(GrievanceDocument.Fields.NysRP525IsNotReduced, answers.Admin_Rp525_Check2b);
-
+                        .Set(GrievanceDocument.Fields.NysRP525IsNotReduced, answers.Admin_Rp525_Check2b)
+                        .Set(GrievanceDocument.Fields.BarReviewed, isComplete)
+                        .Set(GrievanceDocument.Fields.BarReviewDate, isComplete ? DateTime.Now.ToString() : null)
+                        .Set(GrievanceDocument.Fields.BarReviewDateUnix, isComplete ? TimeService.GetUnixTimestampInMilliseconds(DateTime.UtcNow) : 0);
             collection
                 .UpdateOne(filter, update);
         }

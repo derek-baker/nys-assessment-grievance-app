@@ -110,7 +110,7 @@ namespace Library.Services.Clients.Database
             string notes
         );
         void UpdateBarReviewStatus(IMongoCollection<BsonDocument> collection, string guidString, bool isBarReviewed);
-        void UpdateNysRp525Answers(IMongoCollection<BsonDocument> collection, string submissionId, NysRps525OnlineFormAnswers answers);
+        void UpdateNysRp525Answers(IMongoCollection<BsonDocument> collection, string submissionId, NysRps525OnlineFormAnswers answers, bool isComplete);
         NysRps525OnlineFormAnswers GetNysRp525Answers(IMongoCollection<BsonDocument> collection, string submissionId);
 
         void UpdateReviewStatus(IMongoCollection<BsonDocument> collection, string grievanceId, bool reviewed);
