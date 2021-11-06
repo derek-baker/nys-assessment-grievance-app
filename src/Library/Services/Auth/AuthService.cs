@@ -32,11 +32,11 @@ namespace Library.Services.Auth
 
             if (user is null) return buildNoAuthResult(userNameClean);
 
-            // TO DO: record login
-            
             if (HashService.HashData(passwordClean, user.SaltBytes) == user.PasswordHash)
             {
                 var session = await _sessions.CreateSession(user.UserId);
+
+                await _users.RecordLogin(user.UserId);
 
                 return new AuthenticationResult(
                     isAuthed: true, 

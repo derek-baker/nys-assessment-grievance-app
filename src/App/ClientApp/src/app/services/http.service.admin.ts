@@ -15,9 +15,7 @@ export class HttpAdminService extends HttpServiceBase {
         super();
     }
 
-    public FindGrievancesMissingRp524(
-        endpoint: string = '/api/admin/GetGrievancesMissingRP524'
-    ) {
+    public FindGrievancesMissingRp524(endpoint: string = '/api/admin/GetGrievancesMissingRP524') {
         return this.http.get<Array<IGetGrievancesMissingRP524>>(endpoint);
     }
 
@@ -53,6 +51,10 @@ export class HttpAdminService extends HttpServiceBase {
             endpoint,
             userSettings,
             { headers: this.headers });
+    }
+
+    public DeleteUser(userId: string, endpoint = `api/users/deleteUser?userId=${userId}`) {
+        return this.http.delete(endpoint);
     }
 }
 

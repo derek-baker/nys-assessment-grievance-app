@@ -46,6 +46,19 @@ namespace Library.Services.Clients.Database.Repositories
                 : BsonSerializer.Deserialize<User>(userDoc);
         }
 
+        private FilterDefinition<BsonDocument> GetFilterUserById(System.Guid userId) => 
+            Builders<BsonDocument>.Filter.Eq(UserDocument.Fields.UserId, userId.ToString());
+
+        public async Task RecordLogin(System.Guid userId)
+        {
+            await _db.UpdateDocumentField(
+                _collection,
+                idFieldName: UserDocument.Fields.UserId,
+                documentId: userId.ToString(),
+                fieldToUpdate: UserDocument.Fields.HasNeverLoggedIn, 
+                newFieldValue: false);
+        }
+
         public async Task<User> GetUserById(System.Guid userId)
         {
             var projection =
@@ -57,12 +70,10 @@ namespace Library.Services.Clients.Database.Repositories
                         .Include(UserDocument.Fields.Salt)
                         .Include(UserDocument.Fields.HasNeverLoggedIn);
 
-            var filter = Builders<BsonDocument>.Filter.Eq(UserDocument.Fields.UserId, userId.ToString());
-
             var documents = await _db.GetDocuments(
                 _collection,
                 projection,
-                filter);
+                GetFilterUserById(userId));
 
             var userDoc = await documents.FirstOrDefaultAsync();
             return userDoc is null

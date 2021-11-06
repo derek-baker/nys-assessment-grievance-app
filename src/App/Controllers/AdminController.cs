@@ -460,7 +460,7 @@ namespace App.Controllers
         {
             var grievanceCollection = _dbClient.GetCollection(_dbSettings.GrievancesCollectionName);
 
-            var submissionGuids = await _dbClient.GetAllSubmissionIds(grievanceCollection);
+            var submissionGuids = await _dbClient.GetAllGrievanceIds(grievanceCollection);
 
             var grievanceIds = _storageClient.FindSubmissionsLackingRp524(
                _storageSettings.BucketNameGrievances,

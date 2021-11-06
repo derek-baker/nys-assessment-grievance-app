@@ -1,8 +1,7 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { HttpAdminService } from 'src/app/services/http.service.admin';
 import { User } from 'src/app/types/User';
-import { SelectedGrievanceObservableService } from 'src/app/services/selected-application.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 
 @Component({
     selector: 'app-modal-edit-users',
@@ -14,6 +13,7 @@ export class ModalEditUsersComponent implements OnInit, OnChanges {
     @Input()
     public IsOpen = false;
     public IsCreateUserWidgetOpen = false;
+    public IsCreateUserSuccessMessageShown = false;
     public IsCreatingUserAtApi = false;
 
     public Users: Array<User> = [];
@@ -21,37 +21,20 @@ export class ModalEditUsersComponent implements OnInit, OnChanges {
     public Username: string;
     public readonly Form: FormGroup;
 
-    constructor(
-        private readonly httpAdmin: HttpAdminService,
-        private readonly selectedGrievanceService: SelectedGrievanceObservableService
-    ) {
-        // const validators = [Validators.required];
-        // this.Form = new FormGroup({
-        //     UserName: new FormControl('')
-        // });
-    }
+    constructor(private readonly httpAdmin: HttpAdminService) {}
 
     public ngOnInit(): void {
 
     }
 
     public ngOnChanges(changes: SimpleChanges & { IsOpen: {currentValue: boolean, previousValue?: boolean, firstChange: boolean}}){
-        console.log('changes')
-        console.log(changes)
-
         if (changes.IsOpen.currentValue === true) {
             this.onOpen();
         }
     }
 
     public onOpen() {
-        this.httpAdmin.GetUsers().subscribe(
-            (users) => {
-                this.Users = users;
-
-                console.log('onOpen')
-                console.log(this.Users)
-            });
+        this.getUsers();
     }
 
     public OpenCreateUserWidget() {
@@ -63,7 +46,15 @@ export class ModalEditUsersComponent implements OnInit, OnChanges {
         this.httpAdmin.CreateUser({userName: this.Username}).subscribe(
             () => {
                 this.httpAdmin.GetUsers().subscribe(
-                    (users) => { this.Users = users; }
+                    (users) => {
+                        this.Users = users;
+                        this.closeCreateUserDialog();
+                        this.Username = undefined;
+                        this.IsCreateUserSuccessMessageShown = true;
+                        setTimeout(
+                            () => { this.IsCreateUserSuccessMessageShown = false; },
+                            10000);
+                    }
                 );
                 this.IsCreatingUserAtApi = false;
             },
@@ -76,16 +67,29 @@ export class ModalEditUsersComponent implements OnInit, OnChanges {
     }
 
     public CancelCreate() {
-        this.IsCreateUserWidgetOpen = false;
+        this.closeCreateUserDialog();
     }
 
     public DeleteUser(userId) {
-        console.log('delete')
-        // this.httpAdmin.TODO
+        this.httpAdmin.DeleteUser(userId).subscribe(
+            () => { this.getUsers(); },
+            (err) => { console.error(err); window.alert('An error occurred.'); }
+        );
     }
 
     public Clean() {
         this.IsOpen = false;
+        this.closeCreateUserDialog();
+    }
+
+    private closeCreateUserDialog() {
         this.IsCreateUserWidgetOpen = false;
+    }
+
+    private getUsers() {
+        this.httpAdmin.GetUsers().subscribe(
+            (users) => { this.Users = users; },
+            (err) => { console.error(err); window.alert('An error occurred.'); }
+        );
     }
 }

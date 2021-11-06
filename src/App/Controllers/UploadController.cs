@@ -393,36 +393,40 @@ namespace App.Controllers
             {
                 await _dbClient.UpdateDocumentField(
                     collection: collection,
+                    idFieldName: GrievanceDocument.Fields.GuidString,
                     documentId: inputGuid,
                     fieldToUpdate: "includes_conflict",
-                    newfieldValue: includesConflictOfInterest
+                    newFieldValue: includesConflictOfInterest
                 );
             }
             if (includesResQuestionnaire)
             {
                 await _dbClient.UpdateDocumentField(
                     collection: collection,
+                    idFieldName: GrievanceDocument.Fields.GuidString,
                     documentId: inputGuid,
                     fieldToUpdate: "includes_res_questionnaire",
-                    newfieldValue: includesResQuestionnaire
+                    newFieldValue: includesResQuestionnaire
                 );
             }
             if (includesComQuestionnaire)
             {
                 await _dbClient.UpdateDocumentField(
                     collection: collection,
+                    idFieldName: GrievanceDocument.Fields.GuidString,
                     documentId: inputGuid,
                     fieldToUpdate: "includes_com_questionnaire",
-                    newfieldValue: includesComQuestionnaire
+                    newFieldValue: includesComQuestionnaire
                 );
             }
             if (includesLetterOfAuthorization)
             {
                 await _dbClient.UpdateDocumentField(
                     collection: collection,
+                    idFieldName: GrievanceDocument.Fields.GuidString,
                     documentId: inputGuid,
                     fieldToUpdate: "includes_letter_of_auth",
-                    newfieldValue: includesLetterOfAuthorization
+                    newFieldValue: includesLetterOfAuthorization
                 );
             }
 
@@ -430,27 +434,30 @@ namespace App.Controllers
             {
                 await _dbClient.UpdateDocumentField(
                     collection: collection,
+                    idFieldName: GrievanceDocument.Fields.GuidString,
                     documentId: inputGuid,
                     fieldToUpdate: GrievanceDocument.Fields.IncludesIncomeExpenseForms,
-                    newfieldValue: includesIncomeExpenseForms
+                    newFieldValue: includesIncomeExpenseForms
                 );
             }
             if (includesIncomeExpenseExclusion)
             {
                 await _dbClient.UpdateDocumentField(
                     collection: collection,
+                    idFieldName: GrievanceDocument.Fields.GuidString,
                     documentId: inputGuid,
                     fieldToUpdate: GrievanceDocument.Fields.IncludesIncomeExpenseExclusion,
-                    newfieldValue: includesIncomeExpenseExclusion
+                    newFieldValue: includesIncomeExpenseExclusion
                 );
             }
             if (includesSupportingDocumentation)
             {
                 await _dbClient.UpdateDocumentField(
                     collection: collection,
+                    idFieldName: GrievanceDocument.Fields.GuidString,
                     documentId: inputGuid,
                     fieldToUpdate: GrievanceDocument.Fields.IncludesSupportingDocumentation,
-                    newfieldValue: includesSupportingDocumentation
+                    newFieldValue: includesSupportingDocumentation
                 );
             }
 

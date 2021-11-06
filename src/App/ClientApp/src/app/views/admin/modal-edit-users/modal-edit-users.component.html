@@ -12,13 +12,16 @@
             <div class="modal-body">
                 <div class="alert alert-light shadow">
 
+                    <div class="alert alert-success" *ngIf="IsCreateUserSuccessMessageShown === true">
+                        <p>User created successfully. An email was sent to the user containing their username, password, and this app's URL.</p>
+                    </div>
                     <button *ngIf="IsCreateUserWidgetOpen === false" (click)="OpenCreateUserWidget()" class="btn btn-primary">Create User</button>
                     <div *ngIf="IsCreateUserWidgetOpen === true">
 
                         <div class="form-group">
                             <label for="CreateUser_Username">Email/Username</label>
                             <input [(ngModel)]="Username" id="CreateUser_Username" name="Username"
-                                type="text" class="form-control" placeholder="Username" required>
+                                type="text" class="form-control" placeholder="Username">
                             <small class="text-muted">Username must be an email must be an email</small>
                         </div>
 
@@ -45,7 +48,7 @@
                             <tbody>
                                 <tr *ngFor="let user of Users; index as i;">
                                     <td>{{ user.userName }}</td>
-                                    <td>{{ user.hasNeverLoggedIn }}</td>
+                                    <td>{{ !user.hasNeverLoggedIn }}</td>
                                     <td><button (click)="DeleteUser(user.userId)" class="btn btn-sm btn-danger">Delete User</button></td>
                                 </tr>
                             </tbody>
