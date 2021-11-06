@@ -41,5 +41,4 @@ export class ModalEditGrievanceComponent implements OnInit {
             }
         );
     }
-
 }

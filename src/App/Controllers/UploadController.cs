@@ -289,7 +289,7 @@ namespace App.Controllers
             );
 
             var encodedUrl = new Uri(Request.GetEncodedUrl());
-            string host = HostService.GetHostFromAmbientInfo(encodedUrl);
+            string host = HostService.GetAppUrlFromAmbientInfo(encodedUrl);
 
             // TODO: Handle error if it occurs. User should know that their submission succeeded, but their confirmation email did not.
             await _email.SendInitialSubmissionEmail(
@@ -393,36 +393,40 @@ namespace App.Controllers
             {
                 await _dbClient.UpdateDocumentField(
                     collection: collection,
+                    idFieldName: GrievanceDocument.Fields.GuidString,
                     documentId: inputGuid,
                     fieldToUpdate: "includes_conflict",
-                    newfieldValue: includesConflictOfInterest
+                    newFieldValue: includesConflictOfInterest
                 );
             }
             if (includesResQuestionnaire)
             {
                 await _dbClient.UpdateDocumentField(
                     collection: collection,
+                    idFieldName: GrievanceDocument.Fields.GuidString,
                     documentId: inputGuid,
                     fieldToUpdate: "includes_res_questionnaire",
-                    newfieldValue: includesResQuestionnaire
+                    newFieldValue: includesResQuestionnaire
                 );
             }
             if (includesComQuestionnaire)
             {
                 await _dbClient.UpdateDocumentField(
                     collection: collection,
+                    idFieldName: GrievanceDocument.Fields.GuidString,
                     documentId: inputGuid,
                     fieldToUpdate: "includes_com_questionnaire",
-                    newfieldValue: includesComQuestionnaire
+                    newFieldValue: includesComQuestionnaire
                 );
             }
             if (includesLetterOfAuthorization)
             {
                 await _dbClient.UpdateDocumentField(
                     collection: collection,
+                    idFieldName: GrievanceDocument.Fields.GuidString,
                     documentId: inputGuid,
                     fieldToUpdate: "includes_letter_of_auth",
-                    newfieldValue: includesLetterOfAuthorization
+                    newFieldValue: includesLetterOfAuthorization
                 );
             }
 
@@ -430,27 +434,30 @@ namespace App.Controllers
             {
                 await _dbClient.UpdateDocumentField(
                     collection: collection,
+                    idFieldName: GrievanceDocument.Fields.GuidString,
                     documentId: inputGuid,
                     fieldToUpdate: GrievanceDocument.Fields.IncludesIncomeExpenseForms,
-                    newfieldValue: includesIncomeExpenseForms
+                    newFieldValue: includesIncomeExpenseForms
                 );
             }
             if (includesIncomeExpenseExclusion)
             {
                 await _dbClient.UpdateDocumentField(
                     collection: collection,
+                    idFieldName: GrievanceDocument.Fields.GuidString,
                     documentId: inputGuid,
                     fieldToUpdate: GrievanceDocument.Fields.IncludesIncomeExpenseExclusion,
-                    newfieldValue: includesIncomeExpenseExclusion
+                    newFieldValue: includesIncomeExpenseExclusion
                 );
             }
             if (includesSupportingDocumentation)
             {
                 await _dbClient.UpdateDocumentField(
                     collection: collection,
+                    idFieldName: GrievanceDocument.Fields.GuidString,
                     documentId: inputGuid,
                     fieldToUpdate: GrievanceDocument.Fields.IncludesSupportingDocumentation,
-                    newfieldValue: includesSupportingDocumentation
+                    newFieldValue: includesSupportingDocumentation
                 );
             }
 
@@ -478,7 +485,7 @@ namespace App.Controllers
             }
 
             Uri encodedUrl = new Uri(Request.GetEncodedUrl());
-            string host = HostService.GetHostFromAmbientInfo(encodedUrl);
+            string host = HostService.GetAppUrlFromAmbientInfo(encodedUrl);
 
             await _email.SendSupportingDocsEmail(
                 to: inputEmail,

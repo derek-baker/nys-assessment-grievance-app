@@ -17,14 +17,14 @@ namespace Library.Services.Clients.Database
             DocumentDatabaseSettings dbSettings,
             string grievanceId
         );
-        Task<IEnumerable<string>> GetAllSubmissionIds(
+        Task<IEnumerable<string>> GetAllGrievanceIds(
             IMongoCollection<BsonDocument> grievanceCollection
         );
         ProjectionDefinition<BsonDocument> BuildProjection(ImmutableList<string> fieldsToInclude);
         
         List<BsonDocument> GetChangeList(IMongoCollection<BsonDocument> collection, DateTime dateFilterStart, DateTime dateFilterEnd);
 
-        Task ArchiveDeletedDocs(
+        Task ArchiveDeletedGrievances(
             IMongoCollection<BsonDocument> submissionsCollection,
             IMongoCollection<BsonDocument> submissionsArchiveCollection
         );
@@ -39,6 +39,10 @@ namespace Library.Services.Clients.Database
             string fieldName, 
             string fieldValue
         );
+
+        Task<IAsyncCursor<BsonDocument>> GetDocuments(
+            IMongoCollection<BsonDocument> collection,
+            ProjectionDefinition<BsonDocument> projection);
 
         Task<IAsyncCursor<BsonDocument>> GetDocuments(
             IMongoCollection<BsonDocument> collection,
@@ -122,9 +126,10 @@ namespace Library.Services.Clients.Database
         );
         Task UpdateDocumentField<T>(
             IMongoCollection<BsonDocument> collection,
+            string idFieldName,
             string documentId,
             string fieldToUpdate,
-            T newfieldValue
+            T newFieldValue
         );
 
         /// <summary>

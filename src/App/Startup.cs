@@ -137,8 +137,7 @@ namespace App
             if (defaultAdminUser != null) return;
             users.CreateUser(
                 username: _settings.Admin.DefaultUser, 
-                password: _settings.Admin.DefaultPassword,
-                forcePasswordReset: false
+                password: _settings.Admin.DefaultPassword
             ).Wait();
         }
     }

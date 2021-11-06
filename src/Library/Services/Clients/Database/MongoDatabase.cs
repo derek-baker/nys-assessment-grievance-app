@@ -43,7 +43,6 @@ namespace Library.Services.Clients.Database
             string server,
             string dbName)
         {
-            // &readPreference = primary & readConcernLevel = local
             return $"mongodb+srv://{dbUser}:{password}@{server}/{dbName}?retryWrites=true&w=majority";
         }
 
@@ -54,7 +53,7 @@ namespace Library.Services.Clients.Database
             return collection;
         }
 
-        public async Task<IEnumerable<string>> GetAllSubmissionIds(IMongoCollection<BsonDocument> grievanceCollection)
+        public async Task<IEnumerable<string>> GetAllGrievanceIds(IMongoCollection<BsonDocument> grievanceCollection)
         {
             var projection =
                 Builders<BsonDocument>
@@ -77,8 +76,7 @@ namespace Library.Services.Clients.Database
         public List<BsonDocument> GetChangeList(
             IMongoCollection<BsonDocument> collection,
             DateTime dateFilterStart,
-            DateTime dateFilterEnd
-        )
+            DateTime dateFilterEnd)
         {
             var projection =
                 Builders<BsonDocument>
@@ -230,7 +228,7 @@ namespace Library.Services.Clients.Database
 
             var documents =
                 collection
-                    .Find(doc => true) //_submissionNotDeletedFilter)
+                    .Find(doc => true) 
                     .Project(projection)
                     .ToList();
             
@@ -238,7 +236,7 @@ namespace Library.Services.Clients.Database
                 .Select(d => BsonSerializer.Deserialize<GrievanceApplication>(d));
         }
 
-        public async Task ArchiveDeletedDocs(
+        public async Task ArchiveDeletedGrievances(
             IMongoCollection<BsonDocument> submissionsCollection,
             IMongoCollection<BsonDocument> submissionsArchiveCollection)
         {
@@ -255,7 +253,6 @@ namespace Library.Services.Clients.Database
         }
 
         /// <param name="fieldsToInclude">list of fields to include in the projection</param>
-        /// <returns></returns>
         public ProjectionDefinition<BsonDocument> BuildProjection(ImmutableList<string> fieldsToInclude)
         {
             var projectionBuilder =
@@ -274,7 +271,6 @@ namespace Library.Services.Clients.Database
             return projection;
         }
 
-        [Obsolete("DEPRECATED. Use a generic method instead.")]
         public List<BsonDocument> GetDocsByTaxMapId(
             IMongoCollection<BsonDocument> collection,
             string taxMapId
@@ -384,6 +380,16 @@ namespace Library.Services.Clients.Database
 
         public Task<IAsyncCursor<BsonDocument>> GetDocuments(
             IMongoCollection<BsonDocument> collection,
+            ProjectionDefinition<BsonDocument> projection)
+        {
+            return collection
+                .Find(doc => true)
+                .Project(projection)
+                .ToCursorAsync();
+        }
+
+        public Task<IAsyncCursor<BsonDocument>> GetDocuments(
+            IMongoCollection<BsonDocument> collection,
             ProjectionDefinition<BsonDocument> projection,
             FilterDefinition<BsonDocument> filter)
         {
@@ -440,7 +446,6 @@ namespace Library.Services.Clients.Database
         /// <summary>
         /// Does not apply a projection to the result of the query.
         /// </summary>   
-        [Obsolete("Please use a generic method instead")]
         public BsonDocument GetDocumentByTwoStringFields(
             IMongoCollection<BsonDocument> collection,
             string field1Name,
@@ -454,7 +459,6 @@ namespace Library.Services.Clients.Database
             return document;
         }
 
-        [Obsolete("DEPRECATED. Use a generic method instead.")]
         public BsonDocument GetDocumentByGuid(
             IMongoCollection<BsonDocument> collection,
             string guid
@@ -563,28 +567,25 @@ namespace Library.Services.Clients.Database
 
             await submissionsCollection.UpdateOneAsync(filterDef, updateDef);
 
-            await ArchiveDeletedDocs(submissionsCollection, submissionsArchiveCollection);
+            await ArchiveDeletedGrievances(submissionsCollection, submissionsArchiveCollection);
         }
 
         public async Task UpdateDocumentField<T>(
-            IMongoCollection<BsonDocument> collection, 
+            IMongoCollection<BsonDocument> collection,
+            string idFieldName,
             string documentId, 
             string fieldToUpdate, 
-            T newfieldValue
+            T newFieldValue
         ) {
-            Contract.Requires(collection != null);
             var filter =
                 Builders<BsonDocument>
-                    .Filter.Eq(GrievanceDocument.Fields.GuidString, documentId);
+                    .Filter.Eq(idFieldName, documentId);
 
             var update =
                 Builders<BsonDocument>
-                    .Update
-                        .Set(fieldToUpdate, newfieldValue);
+                    .Update.Set(fieldToUpdate, newFieldValue);
 
-            await collection.UpdateOneAsync(
-                filter, update
-            ).ConfigureAwait(false);
+            await collection.UpdateOneAsync(filter, update);
         }
 
         public void UpdateIsRequestingPersonalHearing(

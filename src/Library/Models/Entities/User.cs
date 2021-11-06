@@ -10,7 +10,7 @@ namespace Library.Models.Entities
         public string UserName { get; set; }
         public string PasswordHash { get; set; }
         public string Salt { get; set; }
-        public byte[] SaltBytes => Convert.FromBase64String(Salt);
+        public byte[] SaltBytes => Convert.FromBase64String(Salt ?? "");
         public bool HasNeverLoggedIn { get; set; }
     }
 

@@ -3,7 +3,6 @@ using Library.Models.Entities;
 using Library.Services.Clients.Database.Repositories;
 using Library.Services.Crypto;
 using System;
-using System.Collections.Immutable;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -16,9 +15,9 @@ namespace Library.Services.Auth
         private readonly UserRepository _users;
         private readonly SessionRepository _sessions;
 
-        public AuthService(UserRepository db, SessionRepository sessions)
+        public AuthService(UserRepository users, SessionRepository sessions)
         {
-            _users = db;
+            _users = users;
             _sessions = sessions;
         }
 
@@ -32,10 +31,12 @@ namespace Library.Services.Auth
             var user = await _users.GetUser(userName);
 
             if (user is null) return buildNoAuthResult(userNameClean);
-            
+
             if (HashService.HashData(passwordClean, user.SaltBytes) == user.PasswordHash)
             {
                 var session = await _sessions.CreateSession(user.UserId);
+
+                await _users.RecordLogin(user.UserId);
 
                 return new AuthenticationResult(
                     isAuthed: true, 
