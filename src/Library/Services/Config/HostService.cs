@@ -2,14 +2,13 @@
 
 namespace Library.Services
 {
-    // TODO: Non-static interface implementation
     public static class HostService
     {
-        public static string GetHostFromAmbientInfo(Uri encodedUrl)
+        public static string GetAppUrlFromAmbientInfo(Uri encodedUrl)
         {
             var port = encodedUrl.Host.Contains("localhost") ? $":{encodedUrl.Port}" : "";
-            string host = "https" + Uri.SchemeDelimiter + encodedUrl.Host + port;
-            return host;
+            string appUrl = "https" + Uri.SchemeDelimiter + encodedUrl.Host + port;
+            return appUrl;
         }
     }
 }

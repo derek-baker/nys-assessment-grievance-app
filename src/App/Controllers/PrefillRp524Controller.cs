@@ -33,7 +33,7 @@ namespace App.Controllers
             );
 
             Uri encodedUrl = new Uri(Request.GetEncodedUrl());
-            string host = HostService.GetHostFromAmbientInfo(encodedUrl);
+            string host = HostService.GetAppUrlFromAmbientInfo(encodedUrl);
 
             return Redirect($"{host}/{clientCallbackRoute}");
         }

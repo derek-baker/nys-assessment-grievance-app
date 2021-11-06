@@ -90,8 +90,9 @@ namespace Library.Services.Clients.Database.Repositories
         /// <summary>
         /// When creating normal users, password should be null.  
         /// </summary>
-        public async Task CreateUser(string username, string password = null)
+        public async Task<string> CreateUser(string username, string password = null)
         {
+            var generatedPassword = PasswordService.Generate(26, 4);
             var salt = HashService.GenerateSalt();
             var user = new User
             {
@@ -99,7 +100,7 @@ namespace Library.Services.Clients.Database.Repositories
                 HasNeverLoggedIn = true,
                 UserName = username,
                 Salt = Convert.ToBase64String(salt),
-                PasswordHash = HashService.HashData(password is null ? PasswordService.Generate(26, 4) : password, salt)
+                PasswordHash = HashService.HashData(password is null ? generatedPassword : password, salt)
             };
             var document = new BsonDocument
             {
@@ -109,7 +110,8 @@ namespace Library.Services.Clients.Database.Repositories
                 { UserDocument.Fields.PasswordHash, user.PasswordHash },
                 { UserDocument.Fields.Salt, user.Salt },
             };
-            await _db.InsertDocument(_collection, document);;
+            await _db.InsertDocument(_collection, document);
+            return generatedPassword;
         }
 
         public async Task DeleteUser(System.Guid userId)

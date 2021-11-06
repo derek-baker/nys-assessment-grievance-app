@@ -65,9 +65,13 @@ export class ModalEditUsersComponent implements OnInit, OnChanges {
                 this.httpAdmin.GetUsers().subscribe(
                     (users) => { this.Users = users; }
                 );
+                this.IsCreatingUserAtApi = false;
             },
-            (err) => { console.error(err); },
-            () => { this.IsCreatingUserAtApi = false; }
+            (err) => {
+                console.error(err);
+                this.IsCreatingUserAtApi = false;
+                window.alert('An error occurred.');
+            }
         );
     }
 

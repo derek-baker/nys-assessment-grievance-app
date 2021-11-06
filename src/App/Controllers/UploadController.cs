@@ -289,7 +289,7 @@ namespace App.Controllers
             );
 
             var encodedUrl = new Uri(Request.GetEncodedUrl());
-            string host = HostService.GetHostFromAmbientInfo(encodedUrl);
+            string host = HostService.GetAppUrlFromAmbientInfo(encodedUrl);
 
             // TODO: Handle error if it occurs. User should know that their submission succeeded, but their confirmation email did not.
             await _email.SendInitialSubmissionEmail(
@@ -478,7 +478,7 @@ namespace App.Controllers
             }
 
             Uri encodedUrl = new Uri(Request.GetEncodedUrl());
-            string host = HostService.GetHostFromAmbientInfo(encodedUrl);
+            string host = HostService.GetAppUrlFromAmbientInfo(encodedUrl);
 
             await _email.SendSupportingDocsEmail(
                 to: inputEmail,

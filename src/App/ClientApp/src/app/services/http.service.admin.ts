@@ -51,7 +51,7 @@ export class HttpAdminService extends HttpServiceBase {
     public CreateUser(userSettings: ICreateUserInput, endpoint = '/api/users/createUser') {
         return this.http.post(
             endpoint,
-            { userSettings },
+            userSettings,
             { headers: this.headers });
     }
 }

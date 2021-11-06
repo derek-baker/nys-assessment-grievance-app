@@ -37,5 +37,10 @@ namespace Library.Email
             string from,
             string subject,
             string error);
+
+        Task SendUserCreationEmail(
+            string to,
+            string password,
+            string loginUrl);
     }
 }

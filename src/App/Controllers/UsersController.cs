@@ -2,6 +2,10 @@
 using System.Threading.Tasks;
 using Library.Services.Clients.Database.Repositories;
 using System;
+using Library.Models.DataTransfer;
+using Library.Email;
+using Microsoft.AspNetCore.Http.Extensions;
+using Library.Services;
 
 namespace App.Controllers
 {
@@ -10,10 +14,14 @@ namespace App.Controllers
     public class UsersController : ControllerBase
     {
         private readonly UserRepository _users;
+        private readonly IEmailClient _email;
         
-        public UsersController(UserRepository userSettings)
+        public UsersController(
+            UserRepository userSettings, 
+            IEmailClient email)
         {
             _users = userSettings;
+            _email = email;
         }
 
         [HttpGet]
@@ -28,10 +36,19 @@ namespace App.Controllers
         [HttpPost]
         [CustomAuth]
         [ActionName("createUser")]
-        public async Task<IActionResult> CreateUser(string userEmail)
+        public async Task<IActionResult> CreateUser(UserCreateInput input)
         {
-            await _users.CreateUser(userEmail);
-            // TODO: send email to user 
+            var generatedPassword = await _users.CreateUser(input.UserName);
+
+            Uri encodedUrl = new Uri(Request.GetEncodedUrl());
+            string host = HostService.GetAppUrlFromAmbientInfo(encodedUrl);
+            // TO DO: prevent users from being created with the same username
+            // TODO: send email to user with password
+            await _email.SendUserCreationEmail(
+                to: input.UserName,
+                password: generatedPassword,
+                loginUrl: host);
+
             return Ok();
         }
 

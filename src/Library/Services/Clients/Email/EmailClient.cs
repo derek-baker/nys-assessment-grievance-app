@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Library.Services.Clients.Email;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
@@ -13,10 +14,12 @@ namespace Library.Email
         const string LINK_ROUTE = "continue-submission";
         
         private readonly ISendGridClient _email;
-        
-        public EmailClient(ISendGridClient email)
+        private readonly EmailSettings _emailSettings;
+
+        public EmailClient(ISendGridClient email, EmailSettings emailSettings)
         {
             _email = email;
+            _emailSettings = emailSettings;
         }
 
         public async Task SendInitialSubmissionEmail(
@@ -103,18 +106,37 @@ namespace Library.Email
             throw new NotImplementedException();
         }
 
+        public async Task SendUserCreationEmail(string to, string password, string loginUrl)
+        {
+            var body =
+                "An account was created for you within the Assessment Grievances app. <br>" +
+                $"You can access the app at: {loginUrl} <br>" +
+                $"Your username is: <b>{to}</b> <br>" +
+                $"Your password is: <b>{password}</b> <br>";
+
+            var message = BuildEmailInputs(
+                to,
+                from: _emailSettings.From,
+                emailSubject: $"Do Not Reply - User Creation Confirmation",
+                body,
+                isBodyHtml: true);
+
+            await _email.SendEmailAsync(message);
+        }
+
         private SendGridMessage BuildEmailInputs(
             string to,
             string from,
             string emailSubject,
-            string bodyPlainText)
+            string body,
+            bool isBodyHtml = false)
         {
             return MailHelper.CreateSingleEmail(
                 to: new EmailAddress(to),
                 from: new EmailAddress(from),
                 subject: emailSubject,
-                plainTextContent: bodyPlainText,
-                htmlContent: "");
+                plainTextContent: !isBodyHtml ? body : "",
+                htmlContent: isBodyHtml ? body : "");
         }
 
         private SendGridMessage BuildEmailInputs(
