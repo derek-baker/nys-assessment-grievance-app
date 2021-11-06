@@ -208,11 +208,9 @@ export class ModalCreateSubmissionComponent implements OnInit, AfterViewChecked 
 
     /**
      * TODO: Refactor to HTTP Service
-     * This should never enforce submission dates (in case you were wondering)
      */
     public async UploadSubmission(
         formId: string = 'CreateSubmissionForm',
-        // TODO: Refactor to config
         endpoint = 'api/admin/PostCreateSubmission'
     ) {
         const formElement = document.getElementById(formId);
@@ -222,9 +220,6 @@ export class ModalCreateSubmissionComponent implements OnInit, AfterViewChecked 
         this.IsUploading = true;
         // @ts-ignore
         const formData = new FormData(formElement);
-        // for (const pair of formData.entries()) {
-        //     console.log(pair[0] + ', ' + pair[1]);
-        // }
         try {
             const response = await fetch(
                 endpoint,

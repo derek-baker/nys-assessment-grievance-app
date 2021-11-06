@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { AdminComponent } from '../admin.component';
 import $ from 'jquery';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { SelectedGrievanceService } from 'src/app/services/selected-application.service';
+import { SelectedGrievanceObservableService } from 'src/app/services/selected-application.service';
 import { FormDataService } from 'src/app/services/form-data.service';
 import SignaturePad from 'signature_pad';
 import trimCanvas from 'trim-canvas';
@@ -60,7 +60,7 @@ export class ModalOnlineBarReviewComponent implements OnInit {
 
     constructor(
         private readonly parent: AdminComponent,
-        private readonly selectedGrievance: SelectedGrievanceService,
+        private readonly selectedGrievanceService: SelectedGrievanceObservableService,
         private readonly formData: FormDataService,
         private readonly http: HttpService
     ) {
@@ -74,26 +74,19 @@ export class ModalOnlineBarReviewComponent implements OnInit {
             Admin_Rp525_ComplainantInfoTextArea: new FormControl('', validators)
         });
 
-        // Set up local subscription to value stored in grievance service
-        this.selectedGrievance.SelectedGrievance$.subscribe((selected) => {
+        this.selectedGrievanceService.SelectedGrievance.subscribe((selected) => {
             // Need to clean up here in case any previous form submission wasn't completed and cleaned
             this.NysRp525.reset();
             // Reload these from memory if possible
             this.NysRp525.controls.Admin_Rp525_SignDate.setValue(this.signatureDateCache);
             this.NysRp525.controls.Admin_Rp525_SignName.setValue(this.signatureNameCache);
 
-            // Take this opportunity to refresh the creds
             this.NysRp525.controls.UserName.setValue(this.parent.UserName);
 
             // Figure out which submission the user selected before the modal opened
             this.NysRp525.controls.SubmissionGuid.setValue(selected.Guid);
             this.NysRp525.controls.TaxMapId.setValue(selected.TaxMapId);
             this.NysRp525.controls.SubmitterEmail.setValue(selected.Email);
-
-            if (!this.NysRp525.controls.SubmissionGuid.value) {
-                console.warn('Skipping fetching of 524 JSON due to lack of submission ID. Please investigate.');
-                return;
-            }
 
             this.prefillRp525FromGridData();
             this.http.GetGrievanceJson(
@@ -134,9 +127,7 @@ export class ModalOnlineBarReviewComponent implements OnInit {
                     console.error(error);
                     window.alert('An error occurred. Please retry.');
                 },
-                () => {
-                    // finally
-                }
+                () => { }
             );
         });
     }
@@ -404,9 +395,6 @@ export class ModalOnlineBarReviewComponent implements OnInit {
         }
     }
 
-    /**
-     * @param signatureFileInputId TODO: Refactor to not need this ID
-     */
     public RenderSignatureImage(signatureFileInputId: string = 'Admin_BarReview_SignatureFile') {
         const selector = `#${signatureFileInputId}`;
         if (

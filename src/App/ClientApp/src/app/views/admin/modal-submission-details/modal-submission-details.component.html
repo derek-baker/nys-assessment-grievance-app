@@ -36,16 +36,16 @@
                     <table class="table table-bordered table-striped table-hover shadow">
                         <thead class="thead-dark">
                             <tr>
-                                <th scope="col"></th>
-                                <th scope="col">File Name</th>
+                                <th scope="col">User</th>
+                                <th scope="col">Has Logged In</th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let file of FileList; index as i;">
+                            <tr *ngFor="let user of Users; index as i;">
+                                <td>{{ user.userName }}</td>
                                 <td>{{ i + 1 }}</td>
-                                <td>{{ file.friendlyName }}</td>
-                                <td><button (click)="DeleteFile(i)" class="btn btn-sm btn-danger">Delete File</button></td>
+                                <td><button (click)="DeleteUser(user.userId)" class="btn btn-sm btn-danger">Delete File</button></td>
                             </tr>
                         </tbody>
                     </table>

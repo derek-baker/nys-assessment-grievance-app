@@ -5,7 +5,7 @@ import { RowSelectedEvent } from 'ag-grid-community';
 import $ from 'jquery';
 import { IRP525PrefillData } from 'src/app/types/IRP525PrefillData';
 import { ISelectedGrievance } from 'src/app/types/ISelectedApplication';
-import { SelectedGrievanceService } from 'src/app/services/selected-application.service';
+import { SelectedGrievanceObservableService } from 'src/app/services/selected-application.service';
 import { IAssessmentGrievance } from 'src/app/types/IAssessmentGrievance';
 import { ModalEmailDispositionsComponent } from './modal-generate-dispositions/modal-generate-dispositions.component';
 import { ModalSubmissionFilesComponent } from './modal-submission-details/modal-submission-details.component';
@@ -18,6 +18,7 @@ import { FileDownloadService } from 'src/app/services/file-download-service';
 import { HttpPublicService } from 'src/app/services/http.service.public';
 import { CookieService } from 'src/app/services/cookie.service';
 import { ISession } from 'src/app/types/ISession';
+import { AdminGridColumnDefinitions, AdminGridDefaultColumnDef } from './admin-grid-schema';
 
 @Component({
     selector: 'app-admin',
@@ -27,20 +28,21 @@ import { ISession } from 'src/app/types/ISession';
 export class AdminComponent implements OnInit {
 
     private readonly settingsModalId = 'Admin_Settings';
-    private readonly repsModalId: string = 'Admin_SetRepresentatives';
-    private readonly editGrievanceModalId: string = 'Admin_EditGrievance';
-    private readonly addFilesModalId: string = 'AddFilesToSubmission';
-    private readonly createSubmissionModalId: string = 'CreateSubmissionModal';
-    private readonly barReviewModalId: string = 'BarReviewModal';
-    private readonly barReviewOnlineModalId: string = 'BarReviewOnlineModal';
-    private readonly emailDispositionsModalId: string = 'Admin_EmailDispositions_Modal';
-    private readonly listFilesModalId: string = 'Admin_ListFiles_Modal';
-    private readonly exportReviewModalId: string = 'Admin_ExportReview_Modal';
+    private readonly repsModalId = 'Admin_SetRepresentatives';
+    private readonly editGrievanceModalId = 'Admin_EditGrievance';
+    private readonly addFilesModalId = 'AddFilesToSubmission';
+    private readonly createSubmissionModalId = 'CreateSubmissionModal';
+    private readonly barReviewModalId = 'BarReviewModal';
+    private readonly barReviewOnlineModalId = 'BarReviewOnlineModal';
+    private readonly emailDispositionsModalId = 'Admin_EmailDispositions_Modal';
+    private readonly listFilesModalId = 'Admin_ListFiles_Modal';
+    private readonly exportReviewModalId = 'Admin_ExportReview_Modal';
+    private readonly editUsersModalId = 'Admin_EditUsersModalId';
 
-    private readonly nothingSelectedMessage: string =
+    private readonly nothingSelectedMessage =
         'You don\'t have a grievance selected. \n' +
         'To select a grievance, click one of the checkboxes in the Tax Map ID column in the grid.';
-    private readonly notAuthorizedMessage: string =
+    private readonly notAuthorizedMessage =
         'You are not authorized to perform this action. \n' +
         'Please request assistance from a user with the necessary authorizations.';
 
@@ -64,6 +66,7 @@ export class AdminComponent implements OnInit {
     public IsLoadingDispositionsModal = false;
     public IsValidatingSession = false;
     public IsAppConfigured = true;
+    public IsEditUsersOpen = false;
 
     public CanPrefillBarReview: boolean = true;
 
@@ -80,60 +83,10 @@ export class AdminComponent implements OnInit {
         Grievance: new AssessmentGrievance()
     };
 
-    /** */
     private rp524Data: any = {};
 
-    /**
-     * TODO: Refactor to shared data component
-     * The field values need to kept in line with data in the DB/store
-     */
-    public readonly ColumnDefs: Array<{headerName: string, field: string, checkboxSelection?: boolean}> = [
-        { headerName: 'Tax Map ID', field: 'tax_map_id', checkboxSelection: true },
-        { headerName: 'Grievance ID', field: 'guid' },
-        { headerName: 'Complainant', field: 'complainant' },
-        { headerName: 'Submitter Email', field: 'email' },
-        { headerName: 'Attorney Email', field: 'attorney_email' },
-        { headerName: 'Submit Date', field: 'submit_date' },
-        { headerName: 'Attorney/Rep Group', field: 'attorney_group' },
-        { headerName: 'Attorney/Rep Phone', field: 'attorney_phone' },
-        { headerName: 'Complainant Mailing Address', field: 'complainant_mail_address' },
-        { headerName: 'Co-Op Unit Num', field: 'co_op_unit_num' },
-        { headerName: 'Reason', field: 'reason' },
-        { headerName: 'Notes', field: 'notes' },
-
-        { headerName: 'Hearing Requested', field: 'requested_personal_hearing' },
-        { headerName: 'Hearing Completed', field: 'completed_personal_hearing' },
-        { headerName: 'Complaint Type', field: 'complaint_type' },
-        { headerName: 'Proposed Value', field: 'proposed_value' },
-        { headerName: 'Created By', field: 'creator_name' },
-
-        { headerName: 'Bar Review Status', field: 'barReviewed' },
-        { headerName: 'Bar Review Date', field: 'barReviewDate' },
-        { headerName: 'Downloaded', field: 'downloaded' },
-        { headerName: 'Download Date', field: 'download_date' },
-
-        { headerName: 'Conflict of Interest', field: 'includes_conflict' },
-        { headerName: 'Res Questionnaire', field: 'includes_res_questionnaire' },
-        { headerName: 'Com Questionnaire', field: 'includes_com_questionnaire' },
-        { headerName: 'Includes Auth Letter', field: 'includes_letter_of_auth' },
-
-        { headerName: 'Includes Income Expense Forms', field: 'includes_income_expense_forms' },
-        { headerName: 'Includes Income Expense Exclusion', field: 'includes_income_expense_exclusion' },
-        { headerName: 'Includes Supporting Docs', field: 'includes_supporting_docs' },
-
-        { headerName: 'Signature Type', field: 'five_signature_type' },
-
-        { headerName: 'RP-525 Tentative', field: 'nys_rp525_tentative' },
-        { headerName: 'RP-525 Is Reduced', field: 'nys_rp525_is_reduced' },
-        { headerName: 'RP-525 Reduced To', field: 'nys_rp525_is_reduced_value' },
-        { headerName: 'RP-525 All Answers', field: 'nys_rp525_answers' }
-    ];
-    public readonly DefaultColumnDef = {
-        sortable: true,
-        filter: true,
-        resizable: true,
-        enableCellChangeFlash: true
-    };
+    public readonly ColumnDefs = AdminGridColumnDefinitions;
+    public readonly DefaultColumnDef = AdminGridDefaultColumnDef;
 
     @ViewChild('agGrid')
     private readonly agGrid: AgGridAngular;
@@ -148,7 +101,7 @@ export class AdminComponent implements OnInit {
         private readonly httpService: HttpService,
         private readonly httpPublic: HttpPublicService,
         private readonly httpAdminService: HttpAdminService,
-        private readonly selectedAppService: SelectedGrievanceService,
+        private readonly selectedGrievanceService: SelectedGrievanceObservableService,
         private readonly browserSniffer: BrowserSnifferService,
         private readonly fileDownloadService: FileDownloadService,
         private readonly router: Router,
@@ -201,8 +154,15 @@ export class AdminComponent implements OnInit {
         if (sessionEncoded) {
             this.IsValidatingSession = true;
             const session: ISession = JSON.parse(decodeURIComponent(sessionEncoded));
+
+            console.log('session')
+            console.log(session)
+
             this.httpPublic.ValidateSession(session).subscribe(
                 (result) => {
+                    console.log('validateSessionResult')
+                    console.log(result)
+
                     if (result.isValidSession === true) {
                         this.UserAuthenticated = true;
                         this.UserName = result.userName;
@@ -297,8 +257,6 @@ export class AdminComponent implements OnInit {
             .subscribe(
                 (result: Array<IAssessmentGrievance>) => {
                     const data = result;
-                    // If the list returned from the API contains one element,
-                    // it's being unwrapped into a string for some reason.
                     if (data === null || Array.isArray(data) === false) {
                         console.log('Wrapping data with array to handle edge case...');
                         this.GrievanceStatuses = [];
@@ -318,11 +276,6 @@ export class AdminComponent implements OnInit {
             );
     }
 
-    // /** https://www.ag-grid.com/javascript-grid-row-node/#application-assigned-ids */
-    // private GetRowNodeId(data: any) {
-    //     return data.guid;
-    // }
-
     /** WARNING: Method assumes multi-row selections are not enabled */
     public refreshGridData(dataUpdaterFunc: (rowToUpdate: any) => void) {
         this.IsFetchingData = true;
@@ -330,8 +283,6 @@ export class AdminComponent implements OnInit {
         this.httpService.GetSubmissionData().subscribe(
             (result: Array<IAssessmentGrievance>) => {
                 const data = result;
-                // If the list returned from the API contains one element,
-                // it's being unwrapped into a string for some reason.
                 if (data === null || Array.isArray(data) === false) {
                     this.GrievanceStatuses = [];
                     return;
@@ -520,7 +471,7 @@ export class AdminComponent implements OnInit {
         this.SelectedApplication.Email = email;
         this.SelectedApplication.EmailConfirm = email;
 
-        this.selectedAppService.SetSelectedApplication(this.SelectedApplication);
+        this.selectedGrievanceService.PublishSelectedGrievance(this.SelectedApplication);
         $(`#${this.barReviewOnlineModalId}`).modal();
     }
 
@@ -577,6 +528,11 @@ export class AdminComponent implements OnInit {
     }
 
     public OpenEditRepsModal(modalId = this.repsModalId) {
+        $(`#${modalId}`).modal();
+    }
+
+    public OpenEditUsersModal(modalId = this.editUsersModalId) {
+        this.IsEditUsersOpen = true;
         $(`#${modalId}`).modal();
     }
 

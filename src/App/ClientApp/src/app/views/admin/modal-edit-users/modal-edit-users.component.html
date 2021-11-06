@@ -1,0 +1,64 @@
+<div class="modal fade" id="Admin_EditUsersModalId" tabindex="-1" role="dialog" aria-labelledby="Admin_EditUsersModalId" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Users</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="alert alert-light shadow">
+
+                    <button *ngIf="IsCreateUserWidgetOpen === false" (click)="OpenCreateUserWidget()" class="btn btn-primary">Create User</button>
+                    <div *ngIf="IsCreateUserWidgetOpen === true">
+
+                        <div class="form-group">
+                            <label for="CreateUser_Username">Email/Username</label>
+                            <input [(ngModel)]="Username" id="CreateUser_Username" name="Username"
+                                type="text" class="form-control" placeholder="Username" required>
+                            <small class="text-muted">Username must be an email must be an email</small>
+                        </div>
+
+                        <button *ngIf="IsCreatingUserAtApi === false" (click)="CreateUser()" class="btn btn-success">Create</button>
+                        <button *ngIf="IsCreatingUserAtApi === true" class="btn btn-success">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only">Creating...</span>
+                            </div>
+                        </button>
+
+                        <button (click)="CancelCreate()" class="btn btn-warning ml-2">Cancel</button>
+                    </div>
+                    <br><br>
+
+                    <div>
+                        <table class="table table-bordered table-striped table-hover shadow">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">User</th>
+                                    <th scope="col">Has Logged In</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let user of Users; index as i;">
+                                    <td>{{ user.userName }}</td>
+                                    <td>{{ user.hasNeverLoggedIn }}</td>
+                                    <td><button (click)="DeleteUser(user.userId)" class="btn btn-sm btn-danger">Delete User</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button (click)="Clean()" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+

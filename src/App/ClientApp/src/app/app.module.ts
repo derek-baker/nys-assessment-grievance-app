@@ -39,6 +39,7 @@ import { ModalExportReviewComponent } from './views/admin/modal-export-review/mo
 import { ModalSetRepresentativesComponent } from './views/admin/modal-set-representatives/modal-set-representatives.component';
 import { AdminInstructionsComponent } from './views/admin/instructions/instructions.component';
 import { AdminSettingsComponent } from './views/admin/modal-settings/settings.component';
+import { ModalEditUsersComponent } from './views/admin/modal-edit-users/modal-edit-users.component';
 
 import { HAS_ACCEPTED_RP524_TERMS, SESSION_HASH_KEY } from './tokens/client.storage.prefix.token';
 import { AutofocusDirective } from './directives/autofocus.directive';
@@ -80,6 +81,7 @@ import { StagedFilesComponent } from './components/FileInputStagedFilesDisplay/s
         ModalSetRepresentativesComponent,
         AdminInstructionsComponent,
         AdminSettingsComponent,
+        ModalEditUsersComponent,
         StagedFilesComponent
     ],
     imports: [

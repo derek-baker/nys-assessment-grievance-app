@@ -42,6 +42,10 @@ namespace Library.Services.Clients.Database
 
         Task<IAsyncCursor<BsonDocument>> GetDocuments(
             IMongoCollection<BsonDocument> collection,
+            ProjectionDefinition<BsonDocument> projection);
+
+        Task<IAsyncCursor<BsonDocument>> GetDocuments(
+            IMongoCollection<BsonDocument> collection,
             ProjectionDefinition<BsonDocument> projection,
             FilterDefinition<BsonDocument> filter);
 

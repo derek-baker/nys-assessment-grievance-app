@@ -230,7 +230,7 @@ namespace Library.Services.Clients.Database
 
             var documents =
                 collection
-                    .Find(doc => true) //_submissionNotDeletedFilter)
+                    .Find(doc => true) 
                     .Project(projection)
                     .ToList();
             
@@ -380,6 +380,16 @@ namespace Library.Services.Clients.Database
                 .ToCursor();
 
             return cursor.ToList();
+        }
+
+        public Task<IAsyncCursor<BsonDocument>> GetDocuments(
+            IMongoCollection<BsonDocument> collection,
+            ProjectionDefinition<BsonDocument> projection)
+        {
+            return collection
+                .Find(doc => true)
+                .Project(projection)
+                .ToCursorAsync();
         }
 
         public Task<IAsyncCursor<BsonDocument>> GetDocuments(

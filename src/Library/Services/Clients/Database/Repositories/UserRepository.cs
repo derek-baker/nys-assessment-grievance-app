@@ -5,6 +5,8 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Library.Services.Clients.Database.Repositories
@@ -18,28 +20,6 @@ namespace Library.Services.Clients.Database.Repositories
         {
             _db = db;
             _collection = _db.GetCollection(dbSettings.UsersCollectionName);
-        }
-
-        public async Task CreateUser(string username, string password, bool forcePasswordReset)
-        {
-            var salt = HashService.GenerateSalt();
-            var user = new User
-            {
-                UserId = System.Guid.NewGuid(),
-                HasNeverLoggedIn = forcePasswordReset,
-                UserName = username,
-                Salt = Convert.ToBase64String(salt),
-                PasswordHash = HashService.HashData(password, salt)
-            };
-            var document = new BsonDocument
-            {
-                { UserDocument.Fields.UserId, user.UserId.ToString() },
-                { UserDocument.Fields.HasNeverLoggedIn, user.HasNeverLoggedIn },
-                { UserDocument.Fields.UserName, user.UserName },
-                { UserDocument.Fields.PasswordHash, user.PasswordHash },
-                { UserDocument.Fields.Salt, user.Salt },
-            };
-            await _db.InsertDocument(_collection, document);;
         }
 
         public async Task<User> GetUser(string username)
@@ -88,6 +68,59 @@ namespace Library.Services.Clients.Database.Repositories
             return userDoc is null
                 ? null
                 : BsonSerializer.Deserialize<User>(userDoc);
+        }
+
+        public async Task<IEnumerable<User>> GetUsers()
+        {
+            var projection =
+                Builders<BsonDocument>
+                    .Projection
+                        .Include(UserDocument.Fields.UserId)
+                        .Include(UserDocument.Fields.UserName)
+                        .Include(UserDocument.Fields.HasNeverLoggedIn);
+
+            var documents = await _db.GetDocuments(
+                _collection,
+                projection);
+
+            var users = (await documents.ToListAsync())?.Select(u => BsonSerializer.Deserialize<User>(u));
+            return users;
+        }
+
+        /// <summary>
+        /// When creating normal users, password should be null.  
+        /// </summary>
+        public async Task CreateUser(string username, string password = null)
+        {
+            var salt = HashService.GenerateSalt();
+            var user = new User
+            {
+                UserId = System.Guid.NewGuid(),
+                HasNeverLoggedIn = true,
+                UserName = username,
+                Salt = Convert.ToBase64String(salt),
+                PasswordHash = HashService.HashData(password is null ? PasswordService.Generate(26, 4) : password, salt)
+            };
+            var document = new BsonDocument
+            {
+                { UserDocument.Fields.UserId, user.UserId.ToString() },
+                { UserDocument.Fields.HasNeverLoggedIn, user.HasNeverLoggedIn },
+                { UserDocument.Fields.UserName, user.UserName },
+                { UserDocument.Fields.PasswordHash, user.PasswordHash },
+                { UserDocument.Fields.Salt, user.Salt },
+            };
+            await _db.InsertDocument(_collection, document);;
+        }
+
+        public async Task DeleteUser(System.Guid userId)
+        {
+            var filterForNonBuiltInUsers = Builders<BsonDocument>.Filter
+                .Ne(UserDocument.Fields.IsBuiltIn, true);
+
+            var filterForDocToDelete = Builders<BsonDocument>.Filter.Eq(
+                UserDocument.Fields.UserId, userId.ToString());
+
+            await _collection.DeleteOneAsync(filterForNonBuiltInUsers & filterForDocToDelete);
         }
     }
 }

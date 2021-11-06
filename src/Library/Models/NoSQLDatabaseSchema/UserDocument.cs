@@ -12,5 +12,6 @@
         public string PasswordHash { get; } = "PasswordHash";
         public string Salt { get; } = "Salt";
         public string HasNeverLoggedIn { get; } = "HasNeverLoggedIn";
+        public string IsBuiltIn { get; } = "IsBuiltIn";
     }
 }

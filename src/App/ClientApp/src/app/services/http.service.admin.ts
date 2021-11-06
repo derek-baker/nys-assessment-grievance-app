@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpServiceBase } from './http.service.base';
 import { UserSettings } from '../types/UserSettings';
 import { IGetGrievancesMissingRP524 } from '../types/ApiResponses/IGetGrievancesMissingRP524';
+import { User } from '../types/User';
 
 @Injectable({
     providedIn: 'root'
@@ -42,4 +43,19 @@ export class HttpAdminService extends HttpServiceBase {
             { responseType: 'blob' }
         );
     }
+
+    public GetUsers(endpoint = '/api/users/getUsers') {
+        return this.http.get<Array<User>>(endpoint);
+    }
+
+    public CreateUser(userSettings: ICreateUserInput, endpoint = '/api/users/createUser') {
+        return this.http.post(
+            endpoint,
+            { userSettings },
+            { headers: this.headers });
+    }
+}
+
+interface ICreateUserInput {
+    userName: string;
 }
