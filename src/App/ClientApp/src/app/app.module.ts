@@ -45,6 +45,7 @@ import { HAS_ACCEPTED_RP524_TERMS, SESSION_HASH_KEY } from './tokens/client.stor
 import { AutofocusDirective } from './directives/autofocus.directive';
 import { PendingChangesGuard } from './services/router-guard.service';
 import { StagedFilesComponent } from './components/FileInputStagedFilesDisplay/staged-files.component';
+import { SpinnerComponent } from './components/Spinner/spinner.component';
 
 @NgModule({
     declarations: [
@@ -82,7 +83,8 @@ import { StagedFilesComponent } from './components/FileInputStagedFilesDisplay/s
         AdminInstructionsComponent,
         AdminSettingsComponent,
         ModalEditUsersComponent,
-        StagedFilesComponent
+        StagedFilesComponent,
+        SpinnerComponent
     ],
     imports: [
         BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

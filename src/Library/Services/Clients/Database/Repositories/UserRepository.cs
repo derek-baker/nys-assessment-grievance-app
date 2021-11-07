@@ -46,10 +46,7 @@ namespace Library.Services.Clients.Database.Repositories
                 : BsonSerializer.Deserialize<User>(userDoc);
         }
 
-        private FilterDefinition<BsonDocument> GetFilterUserById(System.Guid userId) => 
-            Builders<BsonDocument>.Filter.Eq(UserDocument.Fields.UserId, userId.ToString());
-
-        public async Task RecordLogin(System.Guid userId)
+        public async Task RecordLogin(Guid userId)
         {
             await _db.UpdateDocumentField(
                 _collection,
@@ -59,7 +56,7 @@ namespace Library.Services.Clients.Database.Repositories
                 newFieldValue: false);
         }
 
-        public async Task<User> GetUserById(System.Guid userId)
+        public async Task<User> GetUserById(Guid userId)
         {
             var projection =
                 Builders<BsonDocument>
@@ -92,7 +89,8 @@ namespace Library.Services.Clients.Database.Repositories
 
             var documents = await _db.GetDocuments(
                 _collection,
-                projection);
+                projection,
+                GetFilterForNonBuiltInUsers());
 
             var users = (await documents.ToListAsync())?.Select(u => BsonSerializer.Deserialize<User>(u));
             return users;
@@ -103,14 +101,14 @@ namespace Library.Services.Clients.Database.Repositories
         /// </summary>
         public async Task<string> CreateUser(string username, string password = null)
         {
-            var generatedPassword = PasswordService.Generate(26, 4);
+            var generatedPassword = GeneratePassword();
             var salt = HashService.GenerateSalt();
             var user = new User
             {
-                UserId = System.Guid.NewGuid(),
+                UserId = Guid.NewGuid(),
                 HasNeverLoggedIn = true,
                 UserName = username,
-                Salt = Convert.ToBase64String(salt),
+                Salt = HashService.ConvertSaltToString(salt),
                 PasswordHash = HashService.HashData(password is null ? generatedPassword : password, salt)
             };
             var document = new BsonDocument
@@ -125,16 +123,41 @@ namespace Library.Services.Clients.Database.Repositories
             return generatedPassword;
         }
 
-        public async Task DeleteUser(System.Guid userId)
+        public async Task<(string Password, User user)> ResetUserPassword(Guid userId)
+        {
+            var password = GeneratePassword();
+            var salt = HashService.GenerateSalt();
+            var hash = HashService.HashData(password, salt);
+            User user = null;
+
+            var tasks = new List<Task>
+            {
+                _db.UpdateDocumentField(
+                    collection: _collection,
+                    idFieldName: UserDocument.Fields.UserId,
+                    documentId: userId.ToString(),
+                    fieldToUpdate: UserDocument.Fields.PasswordHash,
+                    newFieldValue: hash),
+                
+                _db.UpdateDocumentField(
+                    collection: _collection,
+                    idFieldName: UserDocument.Fields.UserId,
+                    documentId: userId.ToString(),
+                    fieldToUpdate: UserDocument.Fields.Salt,
+                    newFieldValue: HashService.ConvertSaltToString(salt)),
+
+                Task.Run(async () => {
+                    user = await GetUserById(userId);
+                })
+            };
+            await Task.WhenAll(tasks);
+            return (password, user);
+        }
+
+        public async Task DeleteUser(Guid userId)
         {
             var filter = GetFilterForNonBuiltInUsers() & GetFilterForUserDocument(userId);
             await _collection.DeleteOneAsync(filter);
-        }
-
-        public async Task ResetUserPassword(System.Guid userId)
-        {
-            var filter = GetFilterForNonBuiltInUsers() & GetFilterForUserDocument(userId);
-            //await _db.UpdateDocumentField
         }
 
         private FilterDefinition<BsonDocument> GetFilterForNonBuiltInUsers() => 
@@ -146,5 +169,10 @@ namespace Library.Services.Clients.Database.Repositories
             Builders<BsonDocument>.Filter.Eq(
                 UserDocument.Fields.UserId, 
                 userId.ToString());
+
+        private FilterDefinition<BsonDocument> GetFilterUserById(System.Guid userId) =>
+            Builders<BsonDocument>.Filter.Eq(UserDocument.Fields.UserId, userId.ToString());
+
+        private string GeneratePassword() => PasswordService.Generate(20, 4);
     }
 }

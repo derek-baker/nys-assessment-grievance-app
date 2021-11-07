@@ -36,6 +36,7 @@ namespace App.Controllers
             IDocumentDatabase dbClient,
             IStorage storage,
             UserSettingsRepository userSettings,
+            GrievanceRepository grievances,
             DocumentDatabaseSettings dbSettings,
             StorageSettings storageSettings)
         {
@@ -44,6 +45,7 @@ namespace App.Controllers
             _dbSettings = dbSettings;
             _storageSettings = storageSettings;
             _userSettings = userSettings;
+            _grievances = grievances;
         }
 
         // GET: /api/<controller>/<action>
@@ -51,8 +53,6 @@ namespace App.Controllers
         [ActionName("GetGrievanceData")]
         public IActionResult GetGrievanceData()
         {
-            var collection = _dbClient.GetCollection(_dbSettings.GrievancesCollectionName);
-
             var data = _grievances.GetAll();
             return Ok(JsonSerializer.Serialize(data));
         }
@@ -448,6 +448,7 @@ namespace App.Controllers
             );                            
         }
 
+        [CustomAuth]
         [HttpGet]
         [ActionName("GetGrievancesMissingRP524")]
         public async Task<IActionResult> GetGrievancesMissingRP524()

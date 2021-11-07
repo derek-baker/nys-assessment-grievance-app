@@ -11,7 +11,6 @@ using Library.Storage;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Library.Services;
-using Library.Services.Clients.Database;
 using Library.Services.Clients.Database.Repositories;
 using Library.Services.Clients.Storage;
 

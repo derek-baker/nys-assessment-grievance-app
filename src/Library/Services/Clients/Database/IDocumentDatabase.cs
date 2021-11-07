@@ -9,11 +9,14 @@ namespace Library.Services.Clients.Database
 {
     public interface IDocumentDatabase
     {
-        BsonArray BuildBsonArray<T>(List<T> objects);
+        BsonArray BuildBsonArray<T>(
+            List<T> objects);
 
-        ProjectionDefinition<BsonDocument> BuildProjection(ImmutableList<string> fieldsToInclude);
+        ProjectionDefinition<BsonDocument> BuildProjection(
+            ImmutableList<string> fieldsToInclude);
         
-        IMongoCollection<BsonDocument> GetCollection(string collectionName);
+        IMongoCollection<BsonDocument> GetCollection(
+            string collectionName);
         
         BsonDocument GetDocumentByStringField(
             IMongoCollection<BsonDocument> collection, 
@@ -47,8 +50,18 @@ namespace Library.Services.Clients.Database
             bool field2ValueEquals = true
         );
         
-        BsonDocument GetDocumentByTwoStringFields(IMongoCollection<BsonDocument> collection, string field1Name, string field1Value, string field2Name, string field2Value);
-        List<BsonDocument> GetDocumentsByStringField(IMongoCollection<BsonDocument> collection, ProjectionDefinition<BsonDocument> projection, string fieldName, string fieldValue);
+        BsonDocument GetDocumentByTwoStringFields(
+            IMongoCollection<BsonDocument> collection, 
+            string field1Name, 
+            string field1Value, 
+            string field2Name, 
+            string field2Value);
+
+        List<BsonDocument> GetDocumentsByStringField(
+            IMongoCollection<BsonDocument> collection, 
+            ProjectionDefinition<BsonDocument> projection, 
+            string fieldName, 
+            string fieldValue);
 
         List<BsonDocument> GetDocumentsByStringFieldCaseInsensitive(
             IMongoCollection<BsonDocument> collection,
@@ -62,10 +75,6 @@ namespace Library.Services.Clients.Database
             BsonDocument document
         );
 
-        void UpdateBarReviewStatus(IMongoCollection<BsonDocument> collection, string guidString, bool isBarReviewed);
-        void UpdateNysRp525Answers(IMongoCollection<BsonDocument> collection, string submissionId, NysRps525OnlineFormAnswers answers, bool isComplete);
-        NysRps525OnlineFormAnswers GetNysRp525Answers(IMongoCollection<BsonDocument> collection, string submissionId);
-
         Task UpdateDocumentField<T>(
             IMongoCollection<BsonDocument> collection,
             string idFieldName,
@@ -73,5 +82,9 @@ namespace Library.Services.Clients.Database
             string fieldToUpdate,
             T newFieldValue
         );
+
+        void UpdateBarReviewStatus(IMongoCollection<BsonDocument> collection, string guidString, bool isBarReviewed);
+        void UpdateNysRp525Answers(IMongoCollection<BsonDocument> collection, string submissionId, NysRps525OnlineFormAnswers answers, bool isComplete);
+        NysRps525OnlineFormAnswers GetNysRp525Answers(IMongoCollection<BsonDocument> collection, string submissionId);
     }
 }

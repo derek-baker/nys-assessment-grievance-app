@@ -39,15 +39,13 @@ namespace App.Controllers
         public async Task<IActionResult> CreateUser(UserCreateInput input)
         {
             var generatedPassword = await _users.CreateUser(input.UserName);
-
-            Uri encodedUrl = new Uri(Request.GetEncodedUrl());
-            string host = HostService.GetAppUrlFromAmbientInfo(encodedUrl);
-            // TO DO: prevent users from being created with the same username
-            // TODO: send email to user with password
+            
+            // TODO: prevent users from being created with the same username
+            
             await _email.SendUserCreationEmail(
                 to: input.UserName,
                 password: generatedPassword,
-                loginUrl: host);
+                loginUrl: GetAppUrl());
 
             return Ok();
         }
@@ -61,13 +59,21 @@ namespace App.Controllers
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpPost]
         [CustomAuth]
-        [ActionName("deleteUser")]
+        [ActionName("resetUserPassword")]
         public async Task<IActionResult> ResetUserPassword(Guid userId)
         {
-            await _users.ResetUserPassword(userId);
+            var (password, user) = await _users.ResetUserPassword(userId);
+            await _email.SendUserCreationEmail(
+                to: user.UserName,
+                password:
+                password,
+                loginUrl: GetAppUrl());
             return Ok();
         }
+
+        private string GetAppUrl() =>
+            HostService.GetAppUrlFromAmbientInfo(new Uri(Request.GetEncodedUrl()));
     }
 }
