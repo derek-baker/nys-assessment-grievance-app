@@ -23,11 +23,13 @@ namespace Library.Services.Crypto
             return hashedPassword;
         }
 
-        public static byte[] GenerateSalt(int saltBytesMaxLengh = 32)
+        public static byte[] GenerateSalt(int saltBytesMaxLength = 32)
         {
-            var salt = new byte[saltBytesMaxLengh];
+            var salt = new byte[saltBytesMaxLength];
             cryptoProvider.GetNonZeroBytes(salt);
             return salt;
         }
+
+        public static string ConvertSaltToString(byte[] salt) => Convert.ToBase64String(salt);        
     }
 }

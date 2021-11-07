@@ -155,14 +155,8 @@ export class AdminComponent implements OnInit {
             this.IsValidatingSession = true;
             const session: ISession = JSON.parse(decodeURIComponent(sessionEncoded));
 
-            console.log('session')
-            console.log(session)
-
             this.httpPublic.ValidateSession(session).subscribe(
                 (result) => {
-                    console.log('validateSessionResult')
-                    console.log(result)
-
                     if (result.isValidSession === true) {
                         this.UserAuthenticated = true;
                         this.UserName = result.userName;

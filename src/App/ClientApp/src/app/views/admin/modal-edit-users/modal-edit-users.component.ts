@@ -16,6 +16,9 @@ export class ModalEditUsersComponent implements OnInit, OnChanges {
     public IsCreateUserSuccessMessageShown = false;
     public IsCreatingUserAtApi = false;
 
+    public SelectedUserId: string;
+    public IsOperatingOnUser = false;
+
     public Users: Array<User> = [];
 
     public Username: string;
@@ -71,9 +74,37 @@ export class ModalEditUsersComponent implements OnInit, OnChanges {
     }
 
     public DeleteUser(userId) {
+        this.IsOperatingOnUser = true;
+        this.setSelectedUserId(userId);
+
+        // TO DO: Force user to confirm delete
         this.httpAdmin.DeleteUser(userId).subscribe(
-            () => { this.getUsers(); },
-            (err) => { console.error(err); window.alert('An error occurred.'); }
+            () => {
+                this.getUsers();
+                this.IsOperatingOnUser = false;
+            },
+            (err) => {
+                console.error(err);
+                window.alert('An error occurred.');
+                this.IsOperatingOnUser = false;
+            }
+        );
+    }
+
+    public ResetUserPassword(userId) {
+        this.IsOperatingOnUser = true;
+        this.setSelectedUserId(userId);
+
+        this.httpAdmin.ResetUserPassword(userId).subscribe(
+            () => {
+                window.alert('The user\'s password was reset. The user will receive an email with more information.');
+                this.IsOperatingOnUser = false;
+            },
+            (err) => {
+                console.error(err);
+                window.alert('An error occurred.');
+                this.IsOperatingOnUser = false;
+            }
         );
     }
 
@@ -84,6 +115,7 @@ export class ModalEditUsersComponent implements OnInit, OnChanges {
 
     private closeCreateUserDialog() {
         this.IsCreateUserWidgetOpen = false;
+        this.setSelectedUserId(undefined);
     }
 
     private getUsers() {
@@ -91,5 +123,9 @@ export class ModalEditUsersComponent implements OnInit, OnChanges {
             (users) => { this.Users = users; },
             (err) => { console.error(err); window.alert('An error occurred.'); }
         );
+    }
+
+    private setSelectedUserId(id) {
+        this.SelectedUserId = id;
     }
 }

@@ -1,24 +1,14 @@
 using App.Extensions;
 using Contracts;
-using Library.Email;
 using Library.Services._Clients.Secrets;
-using Library.Services.Csv;
-using Library.Services.Filesystem;
-using Library.Services.Guid;
-using Library.Storage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Library.Services.Auth;
-using Library.Services.Image;
 using Library.Services.Clients.Database.Repositories;
-using Library.Services.Clients.Database;
-using Library.Services.Clients.Storage;
-using Library.Services.Clients.Email;
-using SendGrid;
+using App.Config;
 
 namespace App
 {
@@ -63,35 +53,7 @@ namespace App
             services.AddSpaStaticFiles(
                 (configuration) => { configuration.RootPath = $"{spaDir}/dist"; }
             );
-            ConfigureDependencyInjection(services, _settings);
-        }
-
-        private static void ConfigureDependencyInjection(IServiceCollection services, Settings settings)
-        {
-            services.AddTransient<IDocumentDatabase>(
-                s => new MongoDatabase(
-                    new DocumentDatabaseSettings(settings).ConnectionString, 
-                    settings.Database.DatabaseName));
-
-            services.AddTransient<SessionRepository>();
-            services.AddTransient<UserRepository>();
-            services.AddTransient<UserSettingsRepository>();
-            services.AddTransient<RepresentativesRepository>();
-
-            services.AddTransient<IStorage, GoogleCloudStorage>();
-            services.AddTransient<IAuthService, AuthService>();
-            services.AddTransient<IZipFileService, ZipFileService>();
-            services.AddTransient<IImageService, ImageService>();
-            services.AddTransient<IGuidService, GuidService>();
-            services.AddTransient<ICsvGeneratorService, CsvGeneratorService>();
-            
-            services.AddTransient<ISendGridClient>(
-                s => new SendGridClient(settings.Email.ApiKey));
-            services.AddTransient<IEmailClient, EmailClient>();
-
-            services.AddSingleton(services => new DocumentDatabaseSettings(settings));
-            services.AddSingleton(services => new StorageSettings(settings));
-            services.AddSingleton(services => new EmailSettings(settings));
+            DependencyInjection.Configure(services, _settings);
         }
 
         public void Configure(

@@ -12,6 +12,7 @@ namespace Library.Models.Entities
         public string Salt { get; set; }
         public byte[] SaltBytes => Convert.FromBase64String(Salt ?? "");
         public bool HasNeverLoggedIn { get; set; }
+        public bool IsBuiltIn { get; set; }
     }
 
     public enum AppUserType

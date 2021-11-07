@@ -56,6 +56,10 @@ export class HttpAdminService extends HttpServiceBase {
     public DeleteUser(userId: string, endpoint = `api/users/deleteUser?userId=${userId}`) {
         return this.http.delete(endpoint);
     }
+
+    public ResetUserPassword(userId: string, endpoint = `api/users/resetUserPassword?userId=${userId}`) {
+        return this.http.post(endpoint, {headers: this.headers});
+    }
 }
 
 interface ICreateUserInput {
