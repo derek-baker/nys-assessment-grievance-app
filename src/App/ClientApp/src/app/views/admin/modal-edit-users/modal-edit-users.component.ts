@@ -106,8 +106,6 @@ export class ModalEditUsersComponent implements OnInit, OnChanges {
                 this.IsOperatingOnUser = false;
             }
         );
-
-        setTimeout(() => { this.IsOperatingOnUser = false; }, 3000)
     }
 
     public Clean() {
