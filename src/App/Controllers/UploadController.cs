@@ -13,14 +13,12 @@ using Library.Services.Time;
 using Microsoft.AspNetCore.Http.Extensions;
 using System.Collections.Immutable;
 using Library.Services.Image;
-using Library.Models.NoSQLDatabaseSchema;
 using Library.Storage;
 using Library.Models;
 using Library.Email;
 using Library.Services.Filesystem;
 using Library.Services.PDF;
 using Library.Services.Email;
-using Library.Services.Guid;
 using Library.Services.Clients.Database;
 using Library.Services.Clients.Database.Repositories;
 using Library.Services.Clients.Storage;
@@ -36,34 +34,31 @@ namespace App.Controllers
     public class UploadController : ControllerBase
     {
         private readonly ILogger<UploadController> _logger;
-        private readonly IDocumentDatabase _dbClient;
         private readonly IStorage _storageClient;
         private readonly IEmailClient _email;
         private readonly IImageService _img;
-        private readonly IGuidService _guid;
         private readonly StorageSettings _storageSettings;
         private readonly EmailSettings _emailSettings;
         private readonly DocumentDatabaseSettings _dbSettings;
         private readonly UserSettingsRepository _userSettings;
+        private readonly GrievanceRepository _grievances;
 
         public UploadController(
             ILogger<UploadController> logger,
-            IDocumentDatabase dbClient,
             IStorage storageClient,
             IEmailClient email,
             IImageService img,
-            IGuidService guidService,
+            GrievanceRepository grievances,
             UserSettingsRepository userSettings,
             StorageSettings storageSettings,
             EmailSettings emailSettings,
             DocumentDatabaseSettings dbSettings)
         {
             _logger = logger;
-            _dbClient = dbClient;
+            _grievances = grievances;
             _storageClient = storageClient;
             _email = email;
             _img = img;
-            _guid = guidService;
             _userSettings = userSettings;
 
             _storageSettings = storageSettings;
@@ -211,7 +206,7 @@ namespace App.Controllers
             if (DateTime.Now < userSettings.SubmissionsStartDate || DateTime.Now > userSettings.SubmissionsEndDate) 
                 return StatusCode(403);
 
-            string grievanceId = _guid.GetNewGuid(_dbClient, _dbSettings);
+            string grievanceId = _grievances.GetNewGuid();
             if (
                 string.IsNullOrEmpty(formData)
                 ||
@@ -260,11 +255,10 @@ namespace App.Controllers
                 );
             }
             var rp524Answers = JsonSerializer.Deserialize<NysRp524FormData>(formData);
-            _dbClient.InsertGrievance(
+            _grievances.InsertGrievance(
                 submissionGuid: grievanceId,
                 taxMapId: taxMapId,
                 applicantEmail: inputEmail,
-                dbClient: _dbClient,
                 settings: _dbSettings,
                 creationMechanism: "Owner/Rep Submission",
                 complaintType: rp524Answers.ComputeComplaintType(),
@@ -301,11 +295,7 @@ namespace App.Controllers
                 taxMapId: taxMapId
             );
 
-            var conflicts = _dbClient.GetConflictingSubmitters(
-                _dbClient,
-                taxMapId,
-                _dbSettings
-            );
+            var conflicts = _grievances.GetConflictingSubmitters(taxMapId);
 
             // Deal with conflicting submissions
             if (conflicts.ConflictingApplications.Count > 1)
@@ -362,9 +352,8 @@ namespace App.Controllers
                     JsonSerializer.Serialize(new { Msg = "INVALID REQUEST" }));
             }
             inputGuid = inputGuid.Trim();
-            if (!_guid.TestGuidExistence(_dbClient, _dbSettings, inputGuid)) {
-                return StatusCode(403, JsonSerializer.Serialize(new { Msg = "INVALID GUID"}));
-            }
+            if (!_grievances.TestGuidExistence(inputGuid)) 
+                return StatusCode(403, JsonSerializer.Serialize(new { Msg = "INVALID GUID"}));            
 
             var userSettings = await _userSettings.GetUserSettings();
 
@@ -377,89 +366,21 @@ namespace App.Controllers
                 return StatusCode(403, JsonSerializer.Serialize(new { Msg = "SUBMISSIONS ENDED" }));
             }            
 
-            var collection = _dbClient.GetCollection(_dbSettings.GrievancesCollectionName);
-
             // TODO: Task.WhenAll() 
             // https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.whenall?view=netcore-3.1
             if (includesPersonalHearing)
             {
-                _dbClient.UpdateIsRequestingPersonalHearing(
-                    collection, 
-                    inputGuid, 
-                    includesPersonalHearing
-                );
+                _grievances.UpdateIsRequestingPersonalHearing(inputGuid, includesPersonalHearing);
             }
-            if (includesConflictOfInterest)
-            {
-                await _dbClient.UpdateDocumentField(
-                    collection: collection,
-                    idFieldName: GrievanceDocument.Fields.GuidString,
-                    documentId: inputGuid,
-                    fieldToUpdate: "includes_conflict",
-                    newFieldValue: includesConflictOfInterest
-                );
-            }
-            if (includesResQuestionnaire)
-            {
-                await _dbClient.UpdateDocumentField(
-                    collection: collection,
-                    idFieldName: GrievanceDocument.Fields.GuidString,
-                    documentId: inputGuid,
-                    fieldToUpdate: "includes_res_questionnaire",
-                    newFieldValue: includesResQuestionnaire
-                );
-            }
-            if (includesComQuestionnaire)
-            {
-                await _dbClient.UpdateDocumentField(
-                    collection: collection,
-                    idFieldName: GrievanceDocument.Fields.GuidString,
-                    documentId: inputGuid,
-                    fieldToUpdate: "includes_com_questionnaire",
-                    newFieldValue: includesComQuestionnaire
-                );
-            }
-            if (includesLetterOfAuthorization)
-            {
-                await _dbClient.UpdateDocumentField(
-                    collection: collection,
-                    idFieldName: GrievanceDocument.Fields.GuidString,
-                    documentId: inputGuid,
-                    fieldToUpdate: "includes_letter_of_auth",
-                    newFieldValue: includesLetterOfAuthorization
-                );
-            }
-
-            if (includesIncomeExpenseForms)
-            {
-                await _dbClient.UpdateDocumentField(
-                    collection: collection,
-                    idFieldName: GrievanceDocument.Fields.GuidString,
-                    documentId: inputGuid,
-                    fieldToUpdate: GrievanceDocument.Fields.IncludesIncomeExpenseForms,
-                    newFieldValue: includesIncomeExpenseForms
-                );
-            }
-            if (includesIncomeExpenseExclusion)
-            {
-                await _dbClient.UpdateDocumentField(
-                    collection: collection,
-                    idFieldName: GrievanceDocument.Fields.GuidString,
-                    documentId: inputGuid,
-                    fieldToUpdate: GrievanceDocument.Fields.IncludesIncomeExpenseExclusion,
-                    newFieldValue: includesIncomeExpenseExclusion
-                );
-            }
-            if (includesSupportingDocumentation)
-            {
-                await _dbClient.UpdateDocumentField(
-                    collection: collection,
-                    idFieldName: GrievanceDocument.Fields.GuidString,
-                    documentId: inputGuid,
-                    fieldToUpdate: GrievanceDocument.Fields.IncludesSupportingDocumentation,
-                    newFieldValue: includesSupportingDocumentation
-                );
-            }
+            await _grievances.UpdateIncludesDocumentFields(
+                inputGuid,
+                includesConflictOfInterest,
+                includesComQuestionnaire,
+                includesResQuestionnaire,
+                includesLetterOfAuthorization,
+                includesIncomeExpenseForms,
+                includesIncomeExpenseExclusion,
+                includesSupportingDocumentation);
 
             var fileNames = new List<string>();
             // Process non-RP524 files (we'd like to assume these are all PDF files...)

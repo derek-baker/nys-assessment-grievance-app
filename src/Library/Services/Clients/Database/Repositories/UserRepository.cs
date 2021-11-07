@@ -127,13 +127,24 @@ namespace Library.Services.Clients.Database.Repositories
 
         public async Task DeleteUser(System.Guid userId)
         {
-            var filterForNonBuiltInUsers = Builders<BsonDocument>.Filter
-                .Ne(UserDocument.Fields.IsBuiltIn, true);
-
-            var filterForDocToDelete = Builders<BsonDocument>.Filter.Eq(
-                UserDocument.Fields.UserId, userId.ToString());
-
-            await _collection.DeleteOneAsync(filterForNonBuiltInUsers & filterForDocToDelete);
+            var filter = GetFilterForNonBuiltInUsers() & GetFilterForUserDocument(userId);
+            await _collection.DeleteOneAsync(filter);
         }
+
+        public async Task ResetUserPassword(System.Guid userId)
+        {
+            var filter = GetFilterForNonBuiltInUsers() & GetFilterForUserDocument(userId);
+            //await _db.UpdateDocumentField
+        }
+
+        private FilterDefinition<BsonDocument> GetFilterForNonBuiltInUsers() => 
+            Builders<BsonDocument>.Filter.Ne(
+                UserDocument.Fields.IsBuiltIn, 
+                true);
+
+        private FilterDefinition<BsonDocument> GetFilterForUserDocument(System.Guid userId) =>
+            Builders<BsonDocument>.Filter.Eq(
+                UserDocument.Fields.UserId, 
+                userId.ToString());
     }
 }

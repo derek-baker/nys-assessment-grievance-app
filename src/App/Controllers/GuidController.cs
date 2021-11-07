@@ -1,6 +1,5 @@
 ﻿using Library.Models;
-using Library.Services.Clients.Database;
-using Library.Services.Guid;
+using Library.Services.Clients.Database.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -11,18 +10,11 @@ namespace App.Controllers
     [ApiController]
     public class GuidController : ControllerBase
     {
-        private readonly IDocumentDatabase _db;
-        private readonly IGuidService _guid;
-        private readonly DocumentDatabaseSettings _dbSettings;
+        private readonly GrievanceRepository _grievances;
 
-        public GuidController(
-            IDocumentDatabase db,
-            IGuidService guidService,
-            DocumentDatabaseSettings dbSettings)
+        public GuidController(GrievanceRepository grievances)
         {
-            _db = db;
-            _guid = guidService;
-            _dbSettings = dbSettings;
+            _grievances = grievances;
         }
 
         /// <summary>
@@ -32,12 +24,9 @@ namespace App.Controllers
         [ActionName("TestGrievanceIdExistence")]
         public GuidTestResult TestGrievanceIdExistence(string guidString)
         {
-            var isValid = _guid.TestGuidExistence(_db, _dbSettings, guidString);
+            var isValid = _grievances.TestGuidExistence(guidString);
             
-            var collection = _db.GetCollection(_dbSettings.GrievancesCollectionName);
-
-            // TODO: Refactor this to use more general method
-            BsonDocument doc = _db.GetDocumentByGuid(collection, guidString);
+            BsonDocument doc = _grievances.GetByGuid(guidString);
             
             if (doc != null)
             {

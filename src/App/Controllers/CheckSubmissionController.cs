@@ -2,6 +2,7 @@
 using Library.Models.DataTransferObjects;
 using Library.Models.DataTransferObjects.Output;
 using Library.Services.Clients.Database;
+using Library.Services.Clients.Database.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Controllers
@@ -10,15 +11,11 @@ namespace App.Controllers
     [ApiController]
     public class CheckSubmissionController : ControllerBase
     {
-        private readonly IDocumentDatabase _dbClient;
-        private readonly DocumentDatabaseSettings _dbSettings;
+        private readonly GrievanceRepository _grievances;
 
-        public CheckSubmissionController(
-            DocumentDatabaseSettings dbSettings,
-            IDocumentDatabase dbClient)
+        public CheckSubmissionController(GrievanceRepository grievances)
         {
-            _dbSettings = dbSettings;
-            _dbClient = dbClient;
+            _grievances = grievances;
         }
 
         /// <summary>
@@ -29,11 +26,7 @@ namespace App.Controllers
         public IActionResult PostCheckForPreviousSubmission(
             [FromBody] GrievanceProperties grievanceProps)
         {
-            ConflictingSubmittersInfo conflicts = _dbClient.GetConflictingSubmitters(
-                _dbClient,
-                grievanceProps.taxMapId,
-                _dbSettings
-            );
+            ConflictingSubmittersInfo conflicts = _grievances.GetConflictingSubmitters(grievanceProps.taxMapId);
             return Ok(new ResponseMessage() { Message = conflicts.EmailSubmitters });            
         }
     }

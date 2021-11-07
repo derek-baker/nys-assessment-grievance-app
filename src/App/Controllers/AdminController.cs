@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -10,7 +9,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson.Serialization;
-using Library.Services.Auth;
 using Library.Services;
 using Library.Models.DataTransferObjects;
 using Library.Models.NoSQLDatabaseSchema;
@@ -18,7 +16,6 @@ using Library.Storage;
 using Library.Models;
 using Library.Services.PDF;
 using Library.Services.Filesystem;
-using Library.Services.Guid;
 using Library.Services.Clients.Database;
 using Library.Services.Clients.Database.Repositories;
 using Library.Services.Clients.Storage;
@@ -30,22 +27,20 @@ namespace App.Controllers
     {
         private readonly IDocumentDatabase _dbClient;
         private readonly IStorage _storageClient;
-        private readonly IGuidService _guid;
         private readonly UserSettingsRepository _userSettings;
         private readonly DocumentDatabaseSettings _dbSettings;
         private readonly StorageSettings _storageSettings;
+        private readonly GrievanceRepository _grievances;
 
         public AdminController(
             IDocumentDatabase dbClient,
             IStorage storage,
-            IGuidService guidSvc,
             UserSettingsRepository userSettings,
             DocumentDatabaseSettings dbSettings,
             StorageSettings storageSettings)
         {
             _dbClient = dbClient;
             _storageClient = storage; 
-            _guid = guidSvc;
             _dbSettings = dbSettings;
             _storageSettings = storageSettings;
             _userSettings = userSettings;
@@ -58,7 +53,7 @@ namespace App.Controllers
         {
             var collection = _dbClient.GetCollection(_dbSettings.GrievancesCollectionName);
 
-            var data = _dbClient.GetAllGrievances(collection);
+            var data = _grievances.GetAll();
             return Ok(JsonSerializer.Serialize(data));
         }
 
@@ -68,7 +63,7 @@ namespace App.Controllers
         public IActionResult GetChangeReport(DateTime start, DateTime end)
         {
             var collection = _dbClient.GetCollection(_dbSettings.GrievancesCollectionName);
-            var rawPartialData = _dbClient.GetChangeList(collection, start, end);
+            var rawPartialData = _grievances.GetChangeList(collection, start, end);
 
             // TODO: Report class based on fields included from DB
             var partialData = rawPartialData
@@ -157,7 +152,7 @@ namespace App.Controllers
         public async Task<IActionResult> PostEditGrievance([FromBody] PostGrievanceEditParams reqParams)
         {
             var collection = _dbClient.GetCollection(_dbSettings.GrievancesCollectionName);
-            await _dbClient.UpdateGrievance(
+            await _grievances.UpdateGrievance(
                 collection,
                 reqParams.grievance
             ).ConfigureAwait(false);
@@ -172,7 +167,7 @@ namespace App.Controllers
         {
             if (parameters.guid is null) { throw new Exception("Guid param is null"); }
             var collection = _dbClient.GetCollection(collectionName: _dbSettings.GrievancesCollectionName);
-            _dbClient.UpdateReviewStatus(collection, parameters.guid, parameters.isReviewed);
+            _grievances.UpdateReviewStatus(collection, parameters.guid, parameters.isReviewed);
             return Ok();            
         }
 
@@ -184,7 +179,7 @@ namespace App.Controllers
         {
             if (parameters.guid == null) { throw new Exception("Guid param is null"); }
             var collection = _dbClient.GetCollection(_dbSettings.GrievancesCollectionName);
-            _dbClient.UpdateCompletedPersonalHearing(collection, parameters.guid, parameters.isHearingCompleted);
+            _grievances.UpdateCompletedPersonalHearing(collection, parameters.guid, parameters.isHearingCompleted);
             return Ok();
         }
 
@@ -207,7 +202,7 @@ namespace App.Controllers
             [FromForm] bool includesSupportingDocumentation)
         {
             var collection = _dbClient.GetCollection(_dbSettings.GrievancesCollectionName);
-            _dbClient.UpdateIncludesFileTypeFields(
+            _grievances.UpdateIncludesFileTypeFields(
                 collection,
                 submissionGuid,
                 includesPersonalHearing,
@@ -347,7 +342,7 @@ namespace App.Controllers
             [FromForm] string notes
         )
         {
-            string newGuid = _guid.GetNewGuid(_dbClient, _dbSettings);
+            string newGuid = _grievances.GetNewGuid();
             var year = (await _userSettings.GetUserSettings()).Year.ToString();
             foreach (var file in files)
             {
@@ -369,13 +364,12 @@ namespace App.Controllers
                     bucketName: _storageSettings.BucketNameGrievances
                 );
             }
-            // REMINDER: Do not send confirmation email to applicant 
+            // REMINDER: Do not send confirmation email to submitter here 
 
-            _dbClient.InsertGrievance(
+            _grievances.InsertGrievance(
                 submissionGuid: newGuid,
                 taxMapId: taxMapId,
                 applicantEmail: applicantEmail,
-                dbClient: _dbClient,
                 settings: _dbSettings,
                 creationMechanism: creatorName,
                 complaintType: complaintType,
@@ -418,7 +412,7 @@ namespace App.Controllers
         [ActionName("PostGrievanceDeleteRequest")]
         public async Task<IActionResult> PostGrievanceDeleteRequest([FromBody] GrievanceDeletionRequest req)
         {
-            await _dbClient.DeleteGrievanceSoftly(_dbSettings, req.grievanceId);
+            await _grievances.DeleteGrievanceSoftly(_dbSettings, req.grievanceId);
             return Ok();
         }
 
@@ -460,7 +454,7 @@ namespace App.Controllers
         {
             var grievanceCollection = _dbClient.GetCollection(_dbSettings.GrievancesCollectionName);
 
-            var submissionGuids = await _dbClient.GetAllGrievanceIds(grievanceCollection);
+            var submissionGuids = await _grievances.GetAllGrievanceIds(grievanceCollection);
 
             var grievanceIds = _storageClient.FindSubmissionsLackingRp524(
                _storageSettings.BucketNameGrievances,
@@ -471,7 +465,7 @@ namespace App.Controllers
             );
 
             var submissionsCollection = _dbClient.GetCollection(_dbSettings.GrievancesCollectionName);
-            var data = _dbClient.GetDocumentsByField(submissionsCollection, GrievanceDocument.Fields.GuidString, grievanceIds);
+            var data = _grievances.GetDocumentsByField(submissionsCollection, GrievanceDocument.Fields.GuidString, grievanceIds);
 
             return Ok(data);
         }

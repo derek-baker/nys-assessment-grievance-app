@@ -60,5 +60,14 @@ namespace App.Controllers
             await _users.DeleteUser(userId);
             return Ok();
         }
+
+        [HttpDelete]
+        [CustomAuth]
+        [ActionName("deleteUser")]
+        public async Task<IActionResult> ResetUserPassword(Guid userId)
+        {
+            await _users.ResetUserPassword(userId);
+            return Ok();
+        }
     }
 }

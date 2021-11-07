@@ -22,28 +22,23 @@ namespace App.Controllers
     public class DownloadController : ControllerBase
     {
         private readonly StorageSettings _storageSettings;
-        private readonly DocumentDatabaseSettings _dbSettings;
-        
         private readonly IStorage _storageClient;
-        private readonly IDocumentDatabase _db;
+        private readonly GrievanceRepository _grievances;
         private readonly UserSettingsRepository _userSettings;
         private readonly ICsvGeneratorService _csv;
 
         public DownloadController(
             IStorage storageClient,
+            GrievanceRepository grievances,
             UserSettingsRepository userSettings,
             ICsvGeneratorService csv,
-            IDocumentDatabase db,
-            StorageSettings storageSettings,
-            DocumentDatabaseSettings documentDatabaseSettings)
+            StorageSettings storageSettings)
         {
             _storageSettings = storageSettings;
-            _dbSettings = documentDatabaseSettings;
-
             _storageClient = storageClient;
             _userSettings = userSettings;
             _csv = csv;
-            _db = db;
+            _grievances = grievances;
         }
 
         [HttpGet("getRp524Pdf")]
@@ -107,8 +102,7 @@ namespace App.Controllers
         [HttpGet("ExportGrievancesCsv")]
         public async Task<IActionResult> ExportGrievancesCsv()
         {
-            var grievanceCollection = _db.GetCollection(_dbSettings.GrievancesCollectionName);
-            var grievances = _db.GetAllGrievances(grievanceCollection);
+            var grievances = _grievances.GetAll();
 
             var csvBytes = await _csv.Generate(grievances);
             return File(csvBytes, "text/csv");
