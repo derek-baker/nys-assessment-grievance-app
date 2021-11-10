@@ -9,5 +9,7 @@ namespace Library.Services.Auth
         Task<AuthenticationResult> AuthenticateAndAuthorizeUser(string userName, string password);
         Task<(bool IsValidSession, string UserName)> ValidateSession(Session session);
         Task<bool> ValidateSession(string cookieData);
+
+        Task<bool> ValidateSecurityCode(string code, Session session);
     }
 }

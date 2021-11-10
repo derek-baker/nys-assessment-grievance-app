@@ -3,6 +3,7 @@ using Library.Models.Entities;
 using Library.Services.Clients.Database.Repositories;
 using Library.Services.Crypto;
 using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -67,6 +68,15 @@ namespace Library.Services.Auth
                 sessionFromCookie.SessionId);
 
             return !IsInvalidSession(sessionFromDb);
+        }
+
+        public Task<bool> ValidateSecurityCode(string code, Session session)
+        {
+            var intervals = new List<int> { 0, 1, 2, 3, 4 };
+
+            // hash codes from last five minutes
+
+            return Task.Run(() => true);
         }
 
         private static AuthenticationResult buildNoAuthResult(string user)

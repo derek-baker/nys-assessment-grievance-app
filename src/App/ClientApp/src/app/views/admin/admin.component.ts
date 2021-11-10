@@ -52,6 +52,7 @@ export class AdminComponent implements OnInit {
     public UserName: string = '';
     public Password: string = '';
     public UserAuthenticated: boolean = false;
+    public UserSecondFactorValidated: boolean = false;
 
     public IsFetchingData = false;
     public IsExportingAllGrievances = false;
@@ -67,6 +68,7 @@ export class AdminComponent implements OnInit {
     public IsValidatingSession = false;
     public IsAppConfigured = true;
     public IsEditUsersOpen = false;
+    public SecurityCode: string;
 
     public CanPrefillBarReview: boolean = true;
 
@@ -326,6 +328,13 @@ export class AdminComponent implements OnInit {
         finally {
             this.IsValidatingPassword = false;
         }
+    }
+
+    public async ValidateSecondFactor() {
+        this.httpAdminService.ValidateSecurityCode(this.SecurityCode).subscribe(
+            (result) => { if (result.isValid) { this.UserSecondFactorValidated = true; }},
+            (err) => { console.error(err); window.alert('An error occurred.'); }
+        );
     }
 
     /** TODO: Stop returning an array with one element */

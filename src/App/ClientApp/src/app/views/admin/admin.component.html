@@ -225,7 +225,11 @@
 </div>
 <br>
 
-<div class="container-fluid" *ngIf="UserAuthenticated === true">
+<div class="container" *ngIf="UserAuthenticated && !UserSecondFactorValidated">
+    <label>Security Code: </label>
+</div>
+
+<div class="container-fluid" *ngIf="UserAuthenticated && UserSecondFactorValidated">
 
     <div class="row mb-3">
         <div class="col-sm-9">

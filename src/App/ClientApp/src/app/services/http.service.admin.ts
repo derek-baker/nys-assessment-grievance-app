@@ -60,6 +60,13 @@ export class HttpAdminService extends HttpServiceBase {
     public ResetUserPassword(userId: string, endpoint = `api/users/resetUserPassword?userId=${userId}`) {
         return this.http.post(endpoint, {headers: this.headers});
     }
+
+    public ValidateSecurityCode(code, endpoint = `api/auth/ValidateSecurityCode`) {
+        return this.http.post<{isValid: boolean}>(
+            endpoint,
+            { code },
+            { headers: this.headers });
+    }
 }
 
 interface ICreateUserInput {

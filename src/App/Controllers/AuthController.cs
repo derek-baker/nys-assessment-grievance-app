@@ -45,5 +45,13 @@ namespace App.Controllers
             var (IsValidSession, UserName) = await _auth.ValidateSession(session);
             return Ok(new { IsValidSession, UserName });
         }
+
+        [HttpPost("ValidateSecurityCode")]
+        public async Task<IActionResult> ValidateSecurityCode([FromBody] string code)
+        {
+            HttpContext.Request.Cookies.TryGetValue(nameof(Session), out var cookie);
+            var session = JsonSerializer.Deserialize<Session>(cookie);
+            await _auth.ValidateSecurityCode(code, coo)
+        }
     }
 }
