@@ -4,6 +4,7 @@ using Library.Services.Clients.Database.Repositories;
 using Library.Services.Crypto;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -22,29 +23,32 @@ namespace Library.Services.Auth
             _sessions = sessions;
         }
 
-        public async Task<AuthenticationResult> AuthenticateAndAuthorizeUser(string userName, string password)
+        public async Task<(AuthenticationResult Result, User User)> AuthenticateAndAuthorizeUser(
+            string userName, 
+            string password)
         {
             var userNameClean = removeNonAsciiChars(userName.ToLower().Trim());
             var passwordClean = removeNonAsciiChars(password.Trim());
 
             // TODO: Brute force mitigation based on IP?
 
-            var user = await _users.GetUser(userName);
+            var user = await _users.GetUser(userNameClean);
+            if (user is null) 
+                return (Result: buildNoAuthResult(userNameClean), User: null);
 
-            if (user is null) return buildNoAuthResult(userNameClean);
-
-            if (HashService.HashData(passwordClean, user.SaltBytes) == user.PasswordHash)
+            if (HashService.HashData<string>(passwordClean, user.SaltBytes) == user.PasswordHash)
             {
                 var session = await _sessions.CreateSession(user.UserId);
 
                 await _users.RecordLogin(user.UserId);
 
-                return new AuthenticationResult(
+                var result = new AuthenticationResult(
                     isAuthed: true, 
                     authorization: new AppAuthorization(userNameClean, AppUserType.AdvancedAdmin),
                     session);
+                return (Result: result, User: user);
             }
-            return buildNoAuthResult(userNameClean);
+            return (Result: buildNoAuthResult(userNameClean), User: user);
         }
 
         private static bool IsInvalidSession(Session session) 
@@ -70,13 +74,27 @@ namespace Library.Services.Auth
             return !IsInvalidSession(sessionFromDb);
         }
 
-        public Task<bool> ValidateSecurityCode(string code, Session session)
+        public async Task<(bool IsSuccess, int? Code)> GenerateSecurityCode(string userEmail)
         {
-            var intervals = new List<int> { 0, 1, 2, 3, 4 };
+            var user = await _users.GetUser(userEmail);
+            if (user is null) return (IsSuccess: false, Code: null);
 
-            // hash codes from last five minutes
+            var code = GetSecurityCode(user, GetTime);
+            return (IsSuccess: true, Code: code);
+        }
 
-            return Task.Run(() => true);
+        private static DateTime GetTime => DateTime.UtcNow;
+        private static int GetSecurityCode(User user, DateTime time) => 
+            HashService.GenerateSecurityCode(user.Salt, time.ToString("MM/dd/yyyy hh:mm"));
+
+        public bool ValidateSecurityCode(int code, User user)
+        {
+            foreach (var minute in Enumerable.Range(0, 5))
+            {
+                var candidateCode = GetSecurityCode(user, GetTime.AddMinutes(-1 * minute));
+                if (candidateCode == code) return true;
+            }
+            return false;
         }
 
         private static AuthenticationResult buildNoAuthResult(string user)

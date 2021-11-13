@@ -109,7 +109,7 @@ namespace Library.Services.Clients.Database.Repositories
                 HasNeverLoggedIn = true,
                 UserName = username,
                 Salt = HashService.ConvertSaltToString(salt),
-                PasswordHash = HashService.HashData(password is null ? generatedPassword : password, salt)
+                PasswordHash = HashService.HashData<string>(password is null ? generatedPassword : password, salt)
             };
             var document = new BsonDocument
             {
@@ -127,7 +127,7 @@ namespace Library.Services.Clients.Database.Repositories
         {
             var password = GeneratePassword();
             var salt = HashService.GenerateSalt();
-            var hash = HashService.HashData(password, salt);
+            var hash = HashService.HashData<string>(password, salt);
             User user = null;
 
             var tasks = new List<Task>

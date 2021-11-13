@@ -18,8 +18,8 @@ namespace UnitTests
             var salt = HashService.GenerateSalt();
 
             // Act
-            var actual1 = HashService.HashData(password, salt);
-            var actual2 = HashService.HashData(password, salt);
+            var actual1 = HashService.HashData<string>(password, salt);
+            var actual2 = HashService.HashData<string>(password, salt);
 
             // Assert
             actual1.Should().Be(actual2);

@@ -49,16 +49,18 @@ export class AdminComponent implements OnInit {
     /** Ag-Grid jacks into this via a directive to get its data. */
     public GrievanceStatuses: Array<IAssessmentGrievance> = [];
 
-    public UserName: string = '';
-    public Password: string = '';
-    public UserAuthenticated: boolean = false;
-    public UserSecondFactorValidated: boolean = false;
+    public UserName = '';
+    public Password = '';
+    public SecurityCode: number;
+    public UserAuthenticated = false;
+    public IsSecurityCodeSent = false;
+    public UserSecondFactorValidated = false;
 
     public IsFetchingData = false;
     public IsExportingAllGrievances = false;
     public IsArchiveDownloading = false;
     public AreAllArchivesDownloading = false;
-    public IsValidatingPassword = false;
+    public IsAuthenticatingUser = false;
     public IsUploading = false;
     public IsDownloadingPrefilled525 = false;
     public IsFindingAppealsLacking524 = false;
@@ -68,9 +70,7 @@ export class AdminComponent implements OnInit {
     public IsValidatingSession = false;
     public IsAppConfigured = true;
     public IsEditUsersOpen = false;
-    public SecurityCode: string;
-
-    public CanPrefillBarReview: boolean = true;
+    public CanPrefillBarReview = true;
 
     public SelectedApplication: ISelectedGrievance = {
         Guid: '',
@@ -198,8 +198,7 @@ export class AdminComponent implements OnInit {
         );
 
         this.IsFetchingData = true;
-        this.httpService.GetSubmissionData()
-            .subscribe(
+        this.httpService.GetSubmissionData().subscribe(
                 (result: Array<IAssessmentGrievance>) => {
                     const data = result;
                     // If the list returned from the API contains one element,
@@ -300,24 +299,53 @@ export class AdminComponent implements OnInit {
         );
     }
 
+    public SendSecurityCode() {
+        if (this.validateUsername() === false) { return; }
+
+        this.httpAdminService.SendSecurityCode(this.UserName).subscribe(
+            () => {
+                window.alert(`If your email address is associated with a user, you'll receive a security code in your mailbox.`);
+                this.IsSecurityCodeSent = true;
+            },
+            (err) => { console.error(err); window.alert('An error occurred'); }
+        );
+    }
+
+    private validateUsername(alertFunc = window.alert) {
+        const userName = this.UserName?.trim().toLowerCase();
+
+        const isUserNameInvalid = !userName
+            || userName.length === 0
+            || !userName.includes('@')
+            || !userName.includes('.');
+
+        if (isUserNameInvalid) {
+            alertFunc('Please input a valid email');
+        }
+        return !isUserNameInvalid;
+    }
+
     public async Authenticate(alertFunc = window.alert) {
         try {
-            const userName: string = this.UserName.trim().toLowerCase();
-            const password: string = this.Password.trim();
-            if (!password || password.length === 0) {
-                return alertFunc('Please input a password');
+            const userName = this.UserName?.trim().toLowerCase();
+            const password = this.Password?.trim();
+            const securityCode = this.SecurityCode;
+
+            if (!password || password.length === 0 || !securityCode) {
+                return alertFunc('Please input both a password and a security code');
             }
-            this.IsValidatingPassword = true;
+            this.IsAuthenticatingUser = true;
             const authResult: IAuthResponse = await this.httpService.AuthUser(
                 userName,
-                password
+                password,
+                securityCode
             );
 
             if (authResult.authResult.isAuthenticated === true) {
                 this.UserAuthenticated = true;
                 return;
             }
-            window.alert('Invalid password. Please try again.');
+            window.alert(`We're unable to authenticate those credentials. Please try again.`);
         }
         catch (error) {
             window.alert(
@@ -326,15 +354,8 @@ export class AdminComponent implements OnInit {
             console.error(error);
         }
         finally {
-            this.IsValidatingPassword = false;
+            this.IsAuthenticatingUser = false;
         }
-    }
-
-    public async ValidateSecondFactor() {
-        this.httpAdminService.ValidateSecurityCode(this.SecurityCode).subscribe(
-            (result) => { if (result.isValid) { this.UserSecondFactorValidated = true; }},
-            (err) => { console.error(err); window.alert('An error occurred.'); }
-        );
     }
 
     /** TODO: Stop returning an array with one element */

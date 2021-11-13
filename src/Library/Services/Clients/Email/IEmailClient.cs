@@ -42,5 +42,9 @@ namespace Library.Email
             string to,
             string password,
             string loginUrl);
+
+        Task SendSecurityCodeEmail(
+            string userEmail,
+            int code);
     }
 }

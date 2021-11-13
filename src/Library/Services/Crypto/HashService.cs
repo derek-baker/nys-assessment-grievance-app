@@ -8,19 +8,28 @@ namespace Library.Services.Crypto
     public static class HashService
     {
         public static readonly RNGCryptoServiceProvider cryptoProvider = new RNGCryptoServiceProvider();
-        
-        public static string HashData(string data, byte[] salt)
+
+        public static int GenerateSecurityCode(string value, string salt)
         {
-            string hashedPassword = Convert.ToBase64String(
+            var hash = HashData<byte[]>(value, Encoding.Unicode.GetBytes(salt));
+            return Math.Abs(BitConverter.ToInt32(hash));
+        }
+        
+        /// <typeparam name="T">string | byte[]</typeparam>
+        public static T HashData<T>(string data, byte[] salt)
+        {
+            var hash = 
                 KeyDerivation.Pbkdf2(
                     password: data,
                     salt: salt,
                     prf: KeyDerivationPrf.HMACSHA1,
                     iterationCount: 10000,
                     numBytesRequested: 256 / 8
-                )
-            );
-            return hashedPassword;
+                );
+
+            return (typeof(T) == typeof(string))
+                ? (T)Convert.ChangeType(Convert.ToBase64String(hash), typeof(T))
+                : (T)Convert.ChangeType(hash, typeof(T));
         }
 
         public static byte[] GenerateSalt(int saltBytesMaxLength = 32)
