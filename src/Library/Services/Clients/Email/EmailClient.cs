@@ -124,6 +124,22 @@ namespace Library.Email
             await _email.SendEmailAsync(message);
         }
 
+        public async Task SendSecurityCodeEmail(string userEmail, int code)
+        {
+            var body =
+                $"Your login security code for the Assessment Grievance app is: <b>{code}</b><br/>" +
+                $"This code will expire in five minutes.";
+
+            var message = BuildEmailInputs(
+                to: userEmail,
+                from: _emailSettings.From,
+                emailSubject: $"Do Not Reply - Security Code",
+                body,
+                isBodyHtml: true);
+
+            await _email.SendEmailAsync(message);
+        }
+
         private SendGridMessage BuildEmailInputs(
             string to,
             string from,

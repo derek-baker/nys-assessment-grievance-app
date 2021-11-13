@@ -5,10 +5,13 @@
         public string UserName { get; }
         public AuthenticationResult AuthResult { get; }
 
-        public AuthResponse(string userName, AuthenticationResult result)
+        public AuthResponse(
+            string userName, 
+            AuthenticationResult result,
+            bool isCodeValid)
         {
             UserName = userName;
-            AuthResult = result;
+            AuthResult = new AuthenticationResult(result, isCodeValid);            
         }
     }
 }

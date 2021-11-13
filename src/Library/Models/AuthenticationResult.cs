@@ -37,5 +37,12 @@ namespace Library.Models
             Authorization = authorization;
             Session = session;
         }
+
+        public AuthenticationResult(
+            AuthenticationResult result,
+            bool isSecurityCodeValid)
+        {
+            IsAuthenticated = result.IsAuthenticated && isSecurityCodeValid;            
+        }
     }
 }

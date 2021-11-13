@@ -114,11 +114,11 @@ export class HttpService extends HttpServiceBase {
     public AuthUser(
         userName: string,
         password: string,
-        endpoint: string = '/api/auth',
-        headers = (new HttpHeaders()).set('Content-Type', 'application/json')
+        securityCode: number,
+        endpoint: string = '/api/auth'
     ): Promise<IAuthResponse> {
-        const userInfo = { userName, password };
-        return this.http.post<any>(endpoint, userInfo, { headers }).toPromise();
+        const userInfo = { userName, password, securityCode };
+        return this.http.post<any>(endpoint, userInfo, { headers: this.headers }).toPromise();
     }
 
     public SetIsDownloadedStatus(
