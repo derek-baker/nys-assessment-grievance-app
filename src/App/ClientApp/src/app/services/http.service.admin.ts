@@ -66,13 +66,6 @@ export class HttpAdminService extends HttpServiceBase {
             endpoint,
             {headers: this.headers});
     }
-
-    // public ValidateSecurityCode(code, endpoint = `api/auth/ValidateSecurityCode`) {
-    //     return this.http.post<{isValid: boolean}>(
-    //         endpoint,
-    //         { code },
-    //         { headers: this.headers });
-    // }
 }
 
 interface ICreateUserInput {
