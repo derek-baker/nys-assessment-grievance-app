@@ -1,18 +1,8 @@
 import * as assert from 'assert';
 import * as mocha from 'mocha';
 import { ClientStorageService } from '../../src/app/services/client-storage.service';
-import { IBrowserStorage } from 'src/app/types/IBrowserStorage';
 
 mocha.describe('ClientStorageService', () => {
-    const browserStorageMock: IBrowserStorage =  {
-        setItem: () => {},
-        getItem: () => '',
-        removeItem: () => {},
-        clear: () => {},
-        length: 0,
-        key: (index) => 'value'
-    };
-
     mocha.describe('GetData', () => {
         mocha.it('returns expected', () => {
             // Arrange
