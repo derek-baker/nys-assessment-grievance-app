@@ -6,7 +6,7 @@
 
 <br>
 
-**How do I run it?** This app is dependent on a couple of services from specific vendors. Some of the services below could be swapped out easily in favor of other options, but some services (such object storage and secret management) would require changes to the application. 
+**How do I run it?** This app is dependent on a couple of services from specific vendors. Some of the services below could be swapped out easily in favor of other options, but swapping out other services (such object storage and secret management) would require changes to the application. 
 
 
 | Service            | Purpose                  |
