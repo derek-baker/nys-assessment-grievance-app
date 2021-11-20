@@ -41,7 +41,7 @@ import { AdminInstructionsComponent } from './views/admin/instructions/instructi
 import { AdminSettingsComponent } from './views/admin/modal-settings/settings.component';
 import { ModalEditUsersComponent } from './views/admin/modal-edit-users/modal-edit-users.component';
 
-import { HAS_ACCEPTED_RP524_TERMS, SESSION_HASH_KEY } from './tokens/client.storage.prefix.token';
+import { HAS_ACCEPTED_RP524_TERMS } from './tokens/client.storage.prefix.token';
 import { AutofocusDirective } from './directives/autofocus.directive';
 import { PendingChangesGuard } from './services/router-guard.service';
 import { StagedFilesComponent } from './components/FileInputStagedFilesDisplay/staged-files.component';
@@ -109,8 +109,7 @@ import { SpinnerComponent } from './components/Spinner/spinner.component';
     providers: [
         CurrencyPipe,
         PendingChangesGuard,
-        { provide: HAS_ACCEPTED_RP524_TERMS, useValue: 'HAS_ACCEPTED_TERMS' },
-        { provide: SESSION_HASH_KEY, useValue: 'SESSION_HASH_KEY' }
+        { provide: HAS_ACCEPTED_RP524_TERMS, useValue: 'HAS_ACCEPTED_TERMS' }
     ],
     bootstrap: [AppComponent]
 })
