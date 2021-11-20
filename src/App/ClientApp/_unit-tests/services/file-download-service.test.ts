@@ -24,11 +24,18 @@ mocha.describe(FileDownloadService.name, () => {
             const { document } = (new JSDOM(`...`)).window;
 
             const sut = getSut();
+            const blob: Blob = {
+                size: undefined,
+                type: undefined,
+                arrayBuffer: undefined,
+                slice: undefined,
+                stream: undefined,
+                text: undefined
+            };
             // Act
             // Assert
             assert.doesNotThrow(() => sut.DownloadCsv(
-                // @ts-ignore
-                {} as Blob,
+                blob,
                 'file',
                 document));
         });
