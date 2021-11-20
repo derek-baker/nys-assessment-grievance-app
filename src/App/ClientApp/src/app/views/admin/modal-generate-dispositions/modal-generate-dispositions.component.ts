@@ -87,7 +87,7 @@ export class ModalEmailDispositionsComponent implements OnInit {
         const data = this.filterSubmissionsPerEmailByMinSubmissionsPredicate(submissionsPerEmail);
         const submissionsAndCompletions =
             data
-                .sort(this.sortService.SortBy('Email'))
+                .sort(this.sortService.BuildCompareFunc('Email'))
                 .map(
                     (d) => {
                         const emailLowerCase = d.Email.toLowerCase();

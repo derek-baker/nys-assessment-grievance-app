@@ -6,19 +6,21 @@ import { IAuthResponse } from '../types/ApiResponses/IAuthResponse';
 import { IAssessmentGrievance } from '../types/IAssessmentGrievance';
 import { HttpServiceBase } from './http.service.base';
 
+export interface IHttpService {
+    GetTimelineSetting: () => any;
+}
+
 @Injectable({
     providedIn: 'root'
 })
-export class HttpService extends HttpServiceBase {
+export class HttpService extends HttpServiceBase implements IHttpService {
     constructor(
         private readonly http: HttpClient
     ) {
         super();
     }
 
-    public GetTimelineSetting(
-        endpoint: string = '/api/UserSettings/GetUserSettings'
-    ) {
+    public GetTimelineSetting(endpoint: string = '/api/UserSettings/GetUserSettings') {
         return this.http.get<any>(endpoint);
     }
 
