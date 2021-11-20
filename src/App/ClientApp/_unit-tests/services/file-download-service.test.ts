@@ -28,7 +28,9 @@ mocha.describe(FileDownloadService.name, () => {
             // Assert
             assert.doesNotThrow(() => sut.DownloadCsv(
                 // @ts-ignore
-                {}, 'file', document));
+                {} as Blob,
+                'file',
+                document));
         });
     });
 });
