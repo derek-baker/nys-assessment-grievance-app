@@ -81,15 +81,17 @@ namespace Library.Services.Auth
             var user = await _users.GetUser(userEmail);
             if (user is null) return (IsSuccess: false, Code: null);
 
-            var code = GetSecurityCode(user, GetTime);
+            var code = GetSecurityCode(user, GetTime());
             return (IsSuccess: true, Code: code);
         }
 
         public bool ValidateSecurityCode(int code, User user)
         {
+            var time = GetTime();
             foreach (var minute in Enumerable.Range(0, 5))
             {
-                var candidateCode = GetSecurityCode(user, GetTime.AddMinutes(-1 * minute));
+                var delta = -1 * minute;
+                var candidateCode = GetSecurityCode(user, time.AddMinutes(delta));
                 if (candidateCode == code) return true;
             }
             return false;
@@ -118,10 +120,12 @@ namespace Library.Services.Auth
         private static bool IsInvalidSession(Session session)
             => session is null || session.ValidUntil <= DateTime.UtcNow;
 
-        private DateTime GetTime 
+        private DateTime GetTime() 
             => _time.GetTime();
 
         private static int GetSecurityCode(User user, DateTime time) 
-            => HashService.GenerateSecurityCode(user.Salt, time.ToString("MM/dd/yyyy hh:mm"));
+            => HashService.GenerateSecurityCode(
+                user.Salt, 
+                time.ToString(format: "MM/dd/yyyy hh:mm"));
     }
 }

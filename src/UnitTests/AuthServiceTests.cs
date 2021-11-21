@@ -9,6 +9,7 @@ using AutoFixture;
 using Library.Services.Time;
 using FluentAssertions;
 using System.Text.Json;
+using Library.Services.Crypto;
 
 namespace UnitTests
 {
@@ -161,6 +162,117 @@ namespace UnitTests
 
             // Act
             var actual = await sut.ValidateSession(JsonSerializer.Serialize(session));
+
+            // Assert
+            actual.Should().BeFalse();
+        }
+
+        [Fact]
+        public async void GenerateSecurityCode_ReturnsExpectedWhenUserExists()
+        {
+            // Arrange
+            var now = DateTime.UtcNow;
+            var userId = Guid.NewGuid();
+            var userEmail = "me@me.com";
+            var user = _fixtureGenerator
+                .Build<User>()
+                .With(u => u.UserId, userId)
+                .With(u => u.UserName, userEmail)
+                .Create();
+            
+            _usersMock
+                .Setup(m => m.GetUser(It.IsAny<string>()))
+                .Returns(Task.Run(() => user));
+
+            var sut = new AuthService(
+                _usersMock.Object, 
+                _sessionsMock.Object, 
+                _timeMock.Object);
+
+            // Act
+            var (IsSuccess, Code) = await sut.GenerateSecurityCode(userEmail);
+
+            // Assert
+            IsSuccess.Should().BeTrue();
+            Code.Should().HaveValue();
+        }
+
+        [Fact]
+        public async void GenerateSecurityCode_ReturnsExpectedWhenUserDoesntExist()
+        {
+            // Arrange
+            var now = DateTime.UtcNow;
+            
+            _usersMock
+                .Setup(m => m.GetUser(It.IsAny<string>()))
+                .Returns(Task.Run(() => { User user = null; return user; }));
+
+            var sut = new AuthService(
+                _usersMock.Object,
+                _sessionsMock.Object,
+                _timeMock.Object);
+
+            // Act
+            var (IsSuccess, Code) = await sut.GenerateSecurityCode("notLegit@notLegit.com");
+
+            // Assert
+            IsSuccess.Should().BeFalse();
+            Code.Should().NotHaveValue();
+        }
+
+        [Fact]
+        public void ValidateSecurityCode_ReturnsTrueWhenCodeIsValid()
+        {
+            // Arrange
+            var now = DateTime.Now;
+            var salt = "98asdfi98349t8a9($*&Y#($YKSudefh";
+            var user = _fixtureGenerator
+                .Build<User>()
+                .With(u => u.Salt, salt)
+                .Create();
+            var code = HashService.GenerateSecurityCode(
+                user.Salt, 
+                now.ToString(format: "MM/dd/yyyy hh:mm"));
+
+            _timeMock
+                .Setup(m => m.GetTime())
+                .Returns(now);
+
+            var sut = new AuthService(
+                _usersMock.Object,
+                _sessionsMock.Object,
+                _timeMock.Object);
+
+            // Act
+            var actual = sut.ValidateSecurityCode(code, user);
+
+            // Assert
+            actual.Should().BeTrue();
+        }
+
+        [Fact]
+        public void ValidateSecurityCode_ReturnsFalseWhenCodeIsNotValid()
+        {
+            // Arrange
+            var now = DateTime.Now;
+            var salt = "98asdfi98349t8a9($*&Y#($YKSudefh";
+            var user = _fixtureGenerator
+                .Build<User>()
+                .With(u => u.Salt, salt)
+                .Create();
+            var code = 1234;
+
+            _timeMock
+                .Setup(m => m.GetTime())
+                .Returns(now);
+
+            var sut = new AuthService(
+                _usersMock.Object,
+                _sessionsMock.Object,
+                _timeMock.Object);
+
+            // Act
+            var actual = sut.ValidateSecurityCode(code, user);
 
             // Assert
             actual.Should().BeFalse();

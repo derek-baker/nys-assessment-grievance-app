@@ -7,7 +7,7 @@ namespace Library.Services.Crypto
 {
     public static class HashService
     {
-        public static readonly RNGCryptoServiceProvider cryptoProvider = new RNGCryptoServiceProvider();
+        public static readonly RNGCryptoServiceProvider _cryptoProvider = new RNGCryptoServiceProvider();
 
         public static int GenerateSecurityCode(string value, string salt)
         {
@@ -35,7 +35,7 @@ namespace Library.Services.Crypto
         public static byte[] GenerateSalt(int saltBytesMaxLength = 32)
         {
             var salt = new byte[saltBytesMaxLength];
-            cryptoProvider.GetNonZeroBytes(salt);
+            _cryptoProvider.GetNonZeroBytes(salt);
             return salt;
         }
 
