@@ -8,6 +8,7 @@ using Library.Services.Clients.Storage;
 using Library.Services.Csv;
 using Library.Services.Filesystem;
 using Library.Services.Image;
+using Library.Services.Time;
 using Library.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using SendGrid;
@@ -23,8 +24,8 @@ namespace App.Config
                     new DocumentDatabaseSettings(settings).ConnectionString,
                     settings.Database.DatabaseName));
 
-            services.AddTransient<SessionRepository>();
-            services.AddTransient<UserRepository>();
+            services.AddTransient<ISessionRepository, SessionRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<UserSettingsRepository>();
             services.AddTransient<RepresentativesRepository>();
             services.AddTransient<GrievanceRepository>();
@@ -34,6 +35,7 @@ namespace App.Config
             services.AddTransient<IZipFileService, ZipFileService>();
             services.AddTransient<IImageService, ImageService>();
             services.AddTransient<ICsvGeneratorService, CsvGeneratorService>();
+            services.AddTransient<ITimeService, TimeService>();
 
             services.AddTransient<ISendGridClient>(s => new SendGridClient(settings.Email.ApiKey));
             services.AddTransient<IEmailClient, EmailClient>();

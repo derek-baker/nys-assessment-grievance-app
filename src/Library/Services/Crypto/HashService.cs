@@ -39,6 +39,7 @@ namespace Library.Services.Crypto
             return salt;
         }
 
-        public static string ConvertSaltToString(byte[] salt) => Convert.ToBase64String(salt);        
+        public static string ConvertSaltToString(byte[] salt) 
+            => Convert.ToBase64String(salt);        
     }
 }

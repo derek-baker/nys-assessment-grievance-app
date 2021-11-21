@@ -11,15 +11,15 @@ using System.Threading.Tasks;
 
 namespace Library.Services.Clients.Database.Repositories
 {
-    public class UserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly IDocumentDatabase _db;
         private readonly IMongoCollection<BsonDocument> _collection;
-        
+
         public UserRepository(IDocumentDatabase db, DocumentDatabaseSettings dbSettings)
         {
             _db = db;
-            _collection = _db.GetCollection(dbSettings.UsersCollectionName);
+            _collection = _db.GetCollection(dbSettings.UsersCollectionName);            
         }
 
         public async Task<User> GetUser(string username)
@@ -41,9 +41,7 @@ namespace Library.Services.Clients.Database.Repositories
                 filter);
 
             var userDoc = await documents.FirstOrDefaultAsync();
-            return userDoc is null
-                ? null
-                : BsonSerializer.Deserialize<User>(userDoc);
+            return userDoc is null ? null : BsonSerializer.Deserialize<User>(userDoc);
         }
 
         public async Task RecordLogin(Guid userId)
@@ -52,7 +50,7 @@ namespace Library.Services.Clients.Database.Repositories
                 _collection,
                 idFieldName: UserDocument.Fields.UserId,
                 documentId: userId.ToString(),
-                fieldToUpdate: UserDocument.Fields.HasNeverLoggedIn, 
+                fieldToUpdate: UserDocument.Fields.HasNeverLoggedIn,
                 newFieldValue: false);
         }
 
@@ -138,7 +136,7 @@ namespace Library.Services.Clients.Database.Repositories
                     documentId: userId.ToString(),
                     fieldToUpdate: UserDocument.Fields.PasswordHash,
                     newFieldValue: hash),
-                
+
                 _db.UpdateDocumentField(
                     collection: _collection,
                     idFieldName: UserDocument.Fields.UserId,
@@ -160,14 +158,14 @@ namespace Library.Services.Clients.Database.Repositories
             await _collection.DeleteOneAsync(filter);
         }
 
-        private FilterDefinition<BsonDocument> GetFilterForNonBuiltInUsers() => 
+        private FilterDefinition<BsonDocument> GetFilterForNonBuiltInUsers() =>
             Builders<BsonDocument>.Filter.Ne(
-                UserDocument.Fields.IsBuiltIn, 
+                UserDocument.Fields.IsBuiltIn,
                 true);
 
         private FilterDefinition<BsonDocument> GetFilterForUserDocument(System.Guid userId) =>
             Builders<BsonDocument>.Filter.Eq(
-                UserDocument.Fields.UserId, 
+                UserDocument.Fields.UserId,
                 userId.ToString());
 
         private FilterDefinition<BsonDocument> GetFilterUserById(System.Guid userId) =>

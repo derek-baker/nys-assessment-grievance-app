@@ -2,8 +2,8 @@
 using Library.Models.Entities;
 using Library.Services.Clients.Database.Repositories;
 using Library.Services.Crypto;
+using Library.Services.Time;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -14,13 +14,18 @@ namespace Library.Services.Auth
 {
     public class AuthService : IAuthService
     {
-        private readonly UserRepository _users;
-        private readonly SessionRepository _sessions;
+        private readonly IUserRepository _users;
+        private readonly ISessionRepository _sessions;
+        private readonly ITimeService _time;
 
-        public AuthService(UserRepository users, SessionRepository sessions)
+        public AuthService(
+            IUserRepository users, 
+            ISessionRepository sessions,
+            ITimeService time)
         {
             _users = users;
             _sessions = sessions;
+            _time = time;
         }
 
         public async Task<(AuthenticationResult Result, User User)> AuthenticateAndAuthorizeUser(
@@ -51,9 +56,6 @@ namespace Library.Services.Auth
             return (Result: buildNoAuthResult(userNameClean), User: user);
         }
 
-        private static bool IsInvalidSession(Session session) 
-            => session is null || session.ValidUntil <= DateTime.UtcNow;
-
         public async Task<(bool IsValidSession, string UserName)> ValidateSession(Session sessionFromCookie)
         {
             var sessionFromDb = await _sessions.GetUserSession(
@@ -82,10 +84,6 @@ namespace Library.Services.Auth
             var code = GetSecurityCode(user, GetTime);
             return (IsSuccess: true, Code: code);
         }
-
-        private static DateTime GetTime => DateTime.UtcNow;
-        private static int GetSecurityCode(User user, DateTime time) => 
-            HashService.GenerateSecurityCode(user.Salt, time.ToString("MM/dd/yyyy hh:mm"));
 
         public bool ValidateSecurityCode(int code, User user)
         {
@@ -116,5 +114,14 @@ namespace Library.Services.Auth
             );
             return userNameClean;
         }
+
+        private static bool IsInvalidSession(Session session)
+            => session is null || session.ValidUntil <= DateTime.UtcNow;
+
+        private DateTime GetTime 
+            => _time.GetTime();
+
+        private static int GetSecurityCode(User user, DateTime time) 
+            => HashService.GenerateSecurityCode(user.Salt, time.ToString("MM/dd/yyyy hh:mm"));
     }
 }
