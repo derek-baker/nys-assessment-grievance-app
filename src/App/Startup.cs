@@ -36,7 +36,7 @@ namespace App
             settings.Admin.DefaultUser = secrets.GetSecret(SecretKeys.AppDefaultUserName);
             settings.Admin.DefaultPassword = secrets.GetSecret(SecretKeys.AppDefaultUserPassword);
 
-            _settings = settings;            
+            _settings = settings;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -59,7 +59,7 @@ namespace App
         public void Configure(
             IApplicationBuilder app, 
             IWebHostEnvironment env,
-            UserRepository users)   
+            IUserRepository users)   
         {
             if (env.IsDevelopment())
             {

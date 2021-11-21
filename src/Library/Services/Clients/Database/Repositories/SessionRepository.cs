@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace Library.Services.Clients.Database.Repositories
 {
-    public class SessionRepository
+    public class SessionRepository : ISessionRepository
     {
         private readonly IDocumentDatabase _db;
         private readonly IMongoCollection<BsonDocument> _collection;
-        
+
         public SessionRepository(IDocumentDatabase db, DocumentDatabaseSettings dbSettings)
         {
             _db = db;
@@ -23,7 +23,7 @@ namespace Library.Services.Clients.Database.Repositories
         {
             var session = new Session
             {
-                SessionId = System.Guid.NewGuid(),
+                SessionId = Guid.NewGuid(),
                 UserId = userId,
                 CreatedAt = DateTime.UtcNow,
                 ValidUntil = DateTime.UtcNow.AddHours(8)
@@ -39,7 +39,7 @@ namespace Library.Services.Clients.Database.Repositories
             return session;
         }
 
-        public async Task<Session> GetUserSession(System.Guid userId, System.Guid sessionId)
+        public async Task<Session> GetUserSession(Guid userId, Guid sessionId)
         {
             var projection =
                 Builders<BsonDocument>

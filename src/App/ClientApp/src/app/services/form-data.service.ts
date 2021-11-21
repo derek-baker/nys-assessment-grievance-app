@@ -48,23 +48,17 @@ export class FormDataService {
         const formValues = {};
         // tslint:disable-next-line: forin
         for (const propName in this.form.controls) {
-            if (propName.includes('check') || propName.includes('Check')) {
-                formValues[propName] =
-                    (this.form.controls[propName].value === true)
-                        ? true
-                        : false;
+            if (propName.toLowerCase().includes('check')) {
+                formValues[propName] = this.form.controls[propName].value === true;
             }
             else {
                 formValues[propName] = this.form.controls[propName].value;
             }
-
         }
         return formValues;
     }
 
     /**
-     * TODO: I think this breaks on Legacy Edge
-     * DOCS: https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs
      * @param dataURL - Assumed to be in this format: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAO0AAAAWCAYAAAAsGBtVAAADV'
      */
     public GetBase64ImageFromDataUrl(dataURL: string): string {

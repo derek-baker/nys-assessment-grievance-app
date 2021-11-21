@@ -1,13 +1,20 @@
 import { Injectable } from '@angular/core';
 
-const buildBlob = (blobParts: Array<BlobPart>, options: any) => new Blob(blobParts, options);
+@Injectable({
+    providedIn: 'root'
+})
+export class BlobBuilder {
+    public build(blobParts: Array<BlobPart>, options: any) {
+        return new Blob(blobParts, options);
+    }
+}
 
 @Injectable({
     providedIn: 'root'
 })
 export class FileDownloadService {
 
-    constructor(private readonly buildBlobFunc = buildBlob) {}
+    constructor(private readonly blobBuilder: BlobBuilder) {}
 
     public BuildCsv(rows: Array<any>, keysObj?: any | undefined): Blob {
         let csvContent = '';
@@ -37,7 +44,7 @@ export class FileDownloadService {
         };
         buildRows();
 
-        return this.buildBlobFunc([csvContent], { type: 'text/csv;charset=utf-8' });
+        return this.blobBuilder.build([csvContent], { type: 'text/csv;charset=utf-8' });
     }
 
     public DownloadCsv(csvContentBlob: Blob, fileName: string, documentObj = window.document): void {

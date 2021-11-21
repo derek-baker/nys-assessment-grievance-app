@@ -13,14 +13,14 @@ namespace App.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly UserRepository _users;
+        private readonly IUserRepository _users;
         private readonly IEmailClient _email;
         
         public UsersController(
-            UserRepository userSettings, 
+            IUserRepository users, 
             IEmailClient email)
         {
-            _users = userSettings;
+            _users = users;
             _email = email;
         }
 
@@ -67,8 +67,7 @@ namespace App.Controllers
             var (password, user) = await _users.ResetUserPassword(userId);
             await _email.SendUserCreationEmail(
                 to: user.UserName,
-                password:
-                password,
+                password: password,
                 loginUrl: GetAppUrl());
             return Ok();
         }

@@ -2,8 +2,10 @@
 
 namespace Library.Services.Time
 {
-    public static class TimeService
+    public class TimeService : ITimeService
     {
+        public DateTime GetTime() => DateTime.UtcNow;
+
         public static string GetFormattedDate(DateTime date)
         {
             return string.Format(date.ToString("yyyy-M-dd_HH-mm-ss-FFF"));

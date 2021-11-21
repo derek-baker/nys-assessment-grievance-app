@@ -47,6 +47,10 @@ import { PendingChangesGuard } from './services/router-guard.service';
 import { StagedFilesComponent } from './components/FileInputStagedFilesDisplay/staged-files.component';
 import { SpinnerComponent } from './components/Spinner/spinner.component';
 
+import { CookiesLibrary } from './services/cookie.service';
+import Cookies from 'js-cookie';
+import { BlobBuilder } from './services/file-download-service';
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -109,7 +113,9 @@ import { SpinnerComponent } from './components/Spinner/spinner.component';
     providers: [
         CurrencyPipe,
         PendingChangesGuard,
-        { provide: HAS_ACCEPTED_RP524_TERMS, useValue: 'HAS_ACCEPTED_TERMS' }
+        { provide: HAS_ACCEPTED_RP524_TERMS, useValue: 'HAS_ACCEPTED_TERMS' },
+        CookiesLibrary,
+        BlobBuilder
     ],
     bootstrap: [AppComponent]
 })

@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
 import Cookies from 'js-cookie';
 
-export interface ICookiesLibrary {
-    remove: (cookieName: string) => void;
-    get: (cookieName: string) => string;
+@Injectable({
+    providedIn: 'root'
+})
+export class CookiesLibrary {
+    public remove: (cookieName: string) => void = Cookies.remove;
+    public get: (cookieName: string) => string = Cookies.get;
 }
 
 @Injectable({
@@ -16,7 +19,7 @@ export class CookieService {
         session: 'Session'
     });
 
-    constructor(private readonly cookie: ICookiesLibrary = Cookies) { }
+    constructor(private readonly cookie: CookiesLibrary) { }
 
     private getCookie(cookieKey: string, documentcookies: string) {
         const cookies = documentcookies.split('; ');
