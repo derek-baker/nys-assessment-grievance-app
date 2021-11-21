@@ -10,7 +10,6 @@ export interface IComponentCanDeactivate {
 export class PendingChangesGuard implements CanDeactivate<IComponentCanDeactivate> {
 
     public canDeactivate(component: IComponentCanDeactivate): boolean | Observable<boolean> {
-        // If there are no pending changes, just allow deactivation; else confirm first
         return component.canDeactivate() ?
             true :
             // NOTE: this warning message will only be shown when navigating elsewhere within your angular app;

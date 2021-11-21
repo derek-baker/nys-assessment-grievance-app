@@ -5,24 +5,18 @@ import { Injectable } from '@angular/core';
 })
 export class SortService {
 
-    constructor() {
-        //
-    }
+    constructor() {}
 
-    public SortBy(
+    public BuildCompareFunc(
         field: string,
-        descending: boolean = false,
-        primer: (valueBeingSorted: number | string) => number | string = (value) => value.toString().toUpperCase()
+        isDescending: boolean = false,
+        prepDataFunc = (value: string | number) => value.toString().toUpperCase()
     ) {
-        const key = primer ?
-            (x: any) => {
-                return primer(x[field]);
-            } :
-            (x: any) => {
-                return x[field];
-            };
+        const key = prepDataFunc
+            ? (x: any) => prepDataFunc(x[field])
+            : (x: any) => x[field];
 
-        const isAscending = (!descending) ? 1 : -1;
+        const isAscending = (!isDescending) ? 1 : -1;
 
         return (a: any, b: any) => {
             // @ts-ignore

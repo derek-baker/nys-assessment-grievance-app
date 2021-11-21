@@ -13,7 +13,8 @@ export class TimelineValidationService {
     constructor(private readonly httpService: HttpService) {
         this.httpService.GetTimelineSetting().subscribe(
             (result: any) => {
-                const timeline: {submissionsDateStart: string, submissionsDateEnd: string, supportingDocsDateEnd: string} = result;
+                const timeline: {submissionsDateStart: string, submissionsDateEnd: string, supportingDocsDateEnd: string}
+                    = result;
 
                 this.submissionsDateStart = new Date(timeline.submissionsDateStart);
                 this.submissionsDateEnd = new Date(timeline.submissionsDateEnd);

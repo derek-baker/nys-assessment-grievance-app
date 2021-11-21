@@ -9,7 +9,7 @@ mocha.describe('ClientStorageService', () => {
             const value = 'value';
             // tslint:disable-next-line: object-literal-key-quotes
             const mockStorage = { 'mockKey': value, getItem: () => value };
-            const sut = new ClientStorageService('dummy', 'FAKE');
+            const sut = new ClientStorageService('dummy');
             // @ts-ignore
             const actual = sut.GetData('mockKey', mockStorage);
             // Assert

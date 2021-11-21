@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import Cookies from 'js-cookie';
 
+export interface ICookiesLibrary {
+    remove: (cookieName: string) => void;
+    get: (cookieName: string) => string;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -11,7 +16,7 @@ export class CookieService {
         session: 'Session'
     });
 
-    constructor() { }
+    constructor(private readonly cookie: ICookiesLibrary = Cookies) { }
 
     private getCookie(cookieKey: string, documentcookies: string) {
         const cookies = documentcookies.split('; ');
@@ -30,40 +35,15 @@ export class CookieService {
     }
 
     public RemoveCookie(cookieName: string) {
-        Cookies.remove(cookieName);
+        this.cookie.remove(cookieName);
     }
 
-    public GetSessionCookie(): {UserId: string} {
-        const sessionCookie = Cookies.get(this.CookieNames.session);
+    public GetSessionCookie(): { UserId: string } {
+        const sessionCookie = this.cookie.get(this.CookieNames.session);
         const sessionObj = sessionCookie ?
             JSON.parse(sessionCookie)
             : undefined;
 
         return sessionObj;
     }
-
-    // public InvalidatePrefillCookie(
-    //     expirationDays: number = 0,
-    //     browserDocument: Document = document,
-    //     sameSiteSetting: string = 'SameSite=Strict'
-    // ): void {
-    //     const expiryDate = new Date();
-    //     expiryDate.setTime(expiryDate.getTime() + (expirationDays * 24 * 60 * 60 * 1000));
-    //     const expires = 'expires=' + expiryDate.toUTCString();
-
-    //     const cookieToInvalidate = this.getCookie(this.CookieNames.prefill, browserDocument.cookie);
-    //     console.warn('cookieToInvalidate')
-    //     console.log(cookieToInvalidate)
-
-    //     // const cookieParts = cookieToInvalidate.split(';');
-    //     const invalidatedCookie = `${this.CookieNames.prefill}=;${sameSiteSetting};${expires};path=/`;
-    //     console.warn('invalidatedCookie')
-    //     console.log(invalidatedCookie)
-
-    //     // browserDocument.cookie = name + '=' + value + ';' + sameSiteSetting + ';' + expires + ';path=/';
-    //     console.log(browserDocument.cookie)
-    //     console.log(browserDocument.cookie.replace(cookieToInvalidate, invalidatedCookie))
-    //     browserDocument.cookie = browserDocument.cookie.replace(cookieToInvalidate, invalidatedCookie);
-    //     console.log(browserDocument.cookie)
-    // }
 }

@@ -1,11 +1,16 @@
 import * as assert from 'assert';
 import * as mocha from 'mocha';
-import { CookieService } from '../../src/app/services/cookie.service';
-import { Constants } from './../../src/app/types/enums/constants';
+import { CookieService, ICookiesLibrary } from '../../src/app/services/cookie.service';
+
+const libraryMock: ICookiesLibrary = {
+    get: (key) => '{\"a\":1,\"b\":2,\"c\":3}',
+    remove: (key) => null
+};
+const sutRef = new CookieService();
 
 mocha.describe('CookieService', () => {
 
-    mocha.describe('GetCookie', () => {
+    mocha.describe(sutRef.GetCookie.name, () => {
         mocha.it('should return expected value when there\'s one cookie', () => {
             // Arrange
             const cookieName = 'Payload';
@@ -19,24 +24,24 @@ mocha.describe('CookieService', () => {
         });
     });
 
-    // mocha.describe('InvalidateCookie', () => {
-    //     mocha.it('should not throw', () => {
-    //         // Arrange
-    //         const cookieName = "Payload";
-    //         const sut = new CookieService();
-    //         // Act
-    //         // Assert
-    //         assert.doesNotThrow(
-    //             () => {
-    //                 sut.InvalidateCookie(
-    //                     cookieName,
-    //                     '',
-    //                     0,
-    //                     // @ts-ignore
-    //                     { cookie: ''}
-    //                 );
-    //             }
-    //         );
-    //     });
-    // });
+    mocha.describe(sutRef.RemoveCookie.name, () => {
+        mocha.it('should not throw', () => {
+            // Arrange
+            const cookieName = 'Payload';
+            const sut = new CookieService(libraryMock);
+            // Act
+            // Assert
+            assert.doesNotThrow(() => sut.RemoveCookie(cookieName));
+        });
+    });
+
+    mocha.describe(sutRef.GetSessionCookie.name, () => {
+        mocha.it('should not throw', () => {
+            // Arrange
+            const sut = new CookieService(libraryMock);
+            // Act
+            // Assert
+            assert.doesNotThrow(() => sut.GetSessionCookie());
+        });
+    });
 });
