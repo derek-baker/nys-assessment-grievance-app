@@ -1,22 +1,22 @@
-name: Back-End Build & Test
+name: Build & Test Back-End
 
 on:
-    pull_request:
-        branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-        steps:
-            - uses: actions/checkout@v2
-            - name: Setup .NET
-              uses: actions/setup-dotnet@v1
-              with:
-                  dotnet-version: 5.0.x
-            - name: Restore dependencies
-              run: dotnet restore ./src
-            - name: Build
-              run: dotnet build ./src --no-restore
-            - name: Test
-              run: dotnet test ./src/UnitTests/ --no-build --verbosity normal
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+      - name: Restore dependencies
+        run: dotnet restore ./src
+      - name: Build
+        run: dotnet build ./src --no-restore
+      - name: Test
+        run: dotnet test ./src/UnitTests/ --no-build --verbosity normal
