@@ -47,7 +47,11 @@ namespace UnitTests
                 .Setup(m => m.GetTime())
                 .Returns(now);
 
-            var sut = new AuthService(_usersMock.Object, _sessionsMock.Object, _timeMock.Object);
+            var sut = new AuthService(
+                _usersMock.Object, 
+                _sessionsMock.Object, 
+                _timeMock.Object,
+                new Contracts.Settings());
 
             // Act
             var (IsValidSession, UserName) = await sut.ValidateSession(session);
@@ -84,7 +88,11 @@ namespace UnitTests
                 .Setup(m => m.GetTime())
                 .Returns(now);
 
-            var sut = new AuthService(_usersMock.Object, _sessionsMock.Object, _timeMock.Object);
+            var sut = new AuthService(
+                _usersMock.Object, 
+                _sessionsMock.Object, 
+                _timeMock.Object,
+                new Contracts.Settings());
 
             // Act
             var (IsValidSession, UserName) = await sut.ValidateSession(session);
@@ -121,7 +129,11 @@ namespace UnitTests
                 .Setup(m => m.GetTime())
                 .Returns(now);
 
-            var sut = new AuthService(_usersMock.Object, _sessionsMock.Object, _timeMock.Object);
+            var sut = new AuthService(
+                _usersMock.Object, 
+                _sessionsMock.Object, 
+                _timeMock.Object,
+                new Contracts.Settings());
 
             // Act
             var actual = await sut.ValidateSession(JsonSerializer.Serialize(session));
@@ -158,7 +170,11 @@ namespace UnitTests
                 .Setup(m => m.GetTime())
                 .Returns(now);
 
-            var sut = new AuthService(_usersMock.Object, _sessionsMock.Object, _timeMock.Object);
+            var sut = new AuthService(
+                _usersMock.Object, 
+                _sessionsMock.Object, 
+                _timeMock.Object,
+                new Contracts.Settings());
 
             // Act
             var actual = await sut.ValidateSession(JsonSerializer.Serialize(session));
@@ -187,10 +203,11 @@ namespace UnitTests
             var sut = new AuthService(
                 _usersMock.Object, 
                 _sessionsMock.Object, 
-                _timeMock.Object);
+                _timeMock.Object,
+                new Contracts.Settings());
 
             // Act
-            var (IsSuccess, Code) = await sut.GenerateSecurityCode(userEmail);
+            var (IsSuccess, Code, IsBuiltIn) = await sut.GenerateSecurityCode(userEmail);
 
             // Assert
             IsSuccess.Should().BeTrue();
@@ -210,10 +227,11 @@ namespace UnitTests
             var sut = new AuthService(
                 _usersMock.Object,
                 _sessionsMock.Object,
-                _timeMock.Object);
+                _timeMock.Object,
+                new Contracts.Settings());
 
             // Act
-            var (IsSuccess, Code) = await sut.GenerateSecurityCode("notLegit@notLegit.com");
+            var (IsSuccess, Code, IsBuiltIn) = await sut.GenerateSecurityCode("notLegit@notLegit.com");
 
             // Assert
             IsSuccess.Should().BeFalse();
@@ -241,7 +259,8 @@ namespace UnitTests
             var sut = new AuthService(
                 _usersMock.Object,
                 _sessionsMock.Object,
-                _timeMock.Object);
+                _timeMock.Object,
+                new Contracts.Settings());
 
             // Act
             var actual = sut.ValidateSecurityCode(code, user);
@@ -269,7 +288,8 @@ namespace UnitTests
             var sut = new AuthService(
                 _usersMock.Object,
                 _sessionsMock.Object,
-                _timeMock.Object);
+                _timeMock.Object,
+                new Contracts.Settings());
 
             // Act
             var actual = sut.ValidateSecurityCode(code, user);
