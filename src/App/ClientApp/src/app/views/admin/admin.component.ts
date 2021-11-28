@@ -19,6 +19,7 @@ import { HttpPublicService } from 'src/app/services/http.service.public';
 import { CookieService } from 'src/app/services/cookie.service';
 import { ISession } from 'src/app/types/ISession';
 import { AdminGridColumnDefinitions, AdminGridDefaultColumnDef } from './admin-grid-schema';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
     selector: 'app-admin',
@@ -107,7 +108,8 @@ export class AdminComponent implements OnInit {
         private readonly browserSniffer: BrowserSnifferService,
         private readonly fileDownloadService: FileDownloadService,
         private readonly router: Router,
-        private readonly cookieService: CookieService
+        private readonly cookieService: CookieService,
+        private readonly spinner: NgxSpinnerService
     ) {}
 
     public LogOut(location = window.location) {
@@ -246,7 +248,8 @@ export class AdminComponent implements OnInit {
     }
 
     public PopulateGridWithData() {
-        this.IsFetchingData = true;
+        // this.IsFetchingData = true;
+        this.spinner.show();
 
         this.httpService.GetSubmissionData()
             .subscribe(
@@ -261,19 +264,22 @@ export class AdminComponent implements OnInit {
                     this.GrievanceStatuses = data;
 
                     this.emailDispositionComponent.SetSubmissionsPerEmail(data);
-                    this.IsFetchingData = false;
+                    // this.IsFetchingData = false;
+                    this.spinner.hide();
                 },
                 (error) => {
                     window.alert('An error occurred while loading data. Please refresh this page.');
                     console.error(error);
-                    this.IsFetchingData = false;
+                    // this.IsFetchingData = false;
+                    this.spinner.hide();
                 }
             );
     }
 
     /** WARNING: Method assumes multi-row selections are not enabled */
     public refreshGridData(dataUpdaterFunc: (rowToUpdate: any) => void) {
-        this.IsFetchingData = true;
+        // this.IsFetchingData = true;
+        this.spinner.show();
 
         this.httpService.GetSubmissionData().subscribe(
             (result: Array<IAssessmentGrievance>) => {
@@ -288,14 +294,17 @@ export class AdminComponent implements OnInit {
 
                 this.emailDispositionComponent.SetSubmissionsPerEmail(data);
                 this.emailDispositionComponent.SetCompletionsPerEmail = data;
+                this.spinner.hide();
             },
             (error) => {
                 window.alert('An error occurred while loading data. Please refresh this page.');
                 console.error(error);
-            },
-            () => {
-                this.IsFetchingData = false;
+                this.spinner.hide();
             }
+            // () => {
+
+            //     // this.IsFetchingData = false;
+            // }
         );
     }
 
@@ -315,9 +324,9 @@ export class AdminComponent implements OnInit {
         const userName = this.UserName?.trim().toLowerCase();
 
         const isUserNameInvalid = !userName
-            || userName.length === 0
-            || !userName.includes('@')
-            || !userName.includes('.');
+            || userName.length === 0;
+            // || !userName.includes('@')
+            // || !userName.includes('.');
 
         if (isUserNameInvalid) {
             alertFunc('Please input a valid email');

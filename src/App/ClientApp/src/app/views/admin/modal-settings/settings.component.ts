@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { HttpAdminService } from 'src/app/services/http.service.admin';
 import { HttpPublicService } from 'src/app/services/http.service.public';
 import { UserSettings } from 'src/app/types/UserSettings';
@@ -14,7 +15,8 @@ export class AdminSettingsComponent implements OnInit {
 
     constructor(
         private readonly httpPublic: HttpPublicService,
-        private readonly httpAdmin: HttpAdminService
+        private readonly httpAdmin: HttpAdminService,
+        private readonly spinner: NgxSpinnerService
     ) { }
 
     public ngOnInit(): void {
@@ -36,11 +38,15 @@ export class AdminSettingsComponent implements OnInit {
     }
 
     public SaveSettings() {
+        this.spinner.show();
+
         this.httpAdmin.SetUserSettings(this.Settings).subscribe(
             () => {
+                this.spinner.hide();
                 window.alert('Settings saved successfully');
             },
             (error) => {
+                this.spinner.hide();
                 window.alert('An error occurred');
                 console.error(error);
             }

@@ -2,6 +2,7 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/cor
 import { HttpAdminService } from 'src/app/services/http.service.admin';
 import { User } from 'src/app/types/User';
 import { FormGroup } from '@angular/forms';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
     selector: 'app-modal-edit-users',
@@ -14,7 +15,6 @@ export class ModalEditUsersComponent implements OnInit, OnChanges {
     public IsOpen = false;
     public IsCreateUserWidgetOpen = false;
     public IsCreateUserSuccessMessageShown = false;
-    public IsCreatingUserAtApi = false;
 
     public SelectedUserId: string;
     public IsOperatingOnUser = false;
@@ -24,7 +24,10 @@ export class ModalEditUsersComponent implements OnInit, OnChanges {
     public Username: string;
     public readonly Form: FormGroup;
 
-    constructor(private readonly httpAdmin: HttpAdminService) {}
+    constructor(
+        private readonly httpAdmin: HttpAdminService,
+        private readonly spinner: NgxSpinnerService
+    ) {}
 
     public ngOnInit(): void {
 
@@ -45,7 +48,8 @@ export class ModalEditUsersComponent implements OnInit, OnChanges {
     }
 
     public CreateUser() {
-        this.IsCreatingUserAtApi = true;
+        this.spinner.show();
+
         this.httpAdmin.CreateUser({userName: this.Username}).subscribe(
             () => {
                 this.httpAdmin.GetUsers().subscribe(
@@ -59,11 +63,11 @@ export class ModalEditUsersComponent implements OnInit, OnChanges {
                             10000);
                     }
                 );
-                this.IsCreatingUserAtApi = false;
+                this.spinner.hide();
             },
             (err) => {
+                this.spinner.hide();
                 console.error(err);
-                this.IsCreatingUserAtApi = false;
                 window.alert('An error occurred.');
             }
         );
