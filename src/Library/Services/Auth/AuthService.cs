@@ -17,15 +17,18 @@ namespace Library.Services.Auth
         private readonly IUserRepository _users;
         private readonly ISessionRepository _sessions;
         private readonly ITimeService _time;
+        private readonly Contracts.Settings _settings;
 
         public AuthService(
             IUserRepository users, 
             ISessionRepository sessions,
-            ITimeService time)
+            ITimeService time,
+            Contracts.Settings settings)
         {
             _users = users;
             _sessions = sessions;
             _time = time;
+            _settings = settings;
         }
 
         public async Task<(AuthenticationResult Result, User User)> AuthenticateAndAuthorizeUser(
@@ -74,25 +77,32 @@ namespace Library.Services.Auth
             return !IsInvalidSession(sessionFromDb);
         }
 
-        public async Task<(bool IsSuccess, int? Code)> GenerateSecurityCode(string userEmail)
+        public async Task<(bool IsSuccess, int? Code, bool IsUserBuiltIn)> GenerateSecurityCode(string userEmail)
         {
             var user = await _users.GetUser(userEmail);
-            if (user is null) return (IsSuccess: false, Code: null);
-
-            var code = GetSecurityCode(user, GetTime());
-            return (IsSuccess: true, Code: code);
+            if (user is null) return (IsSuccess: false, Code: null, IsUserBuiltIn: false);
+            int? code = !user.IsBuiltIn ? (int?)GetSecurityCode(user, GetTime()) : null;
+            return (IsSuccess: true, Code: code, IsUserBuiltIn: user.IsBuiltIn);
         }
 
         public bool ValidateSecurityCode(int code, User user)
         {
-            var time = GetTime();
-            foreach (var minute in Enumerable.Range(0, 5))
+            if (!user.IsBuiltIn)
             {
-                var delta = -1 * minute;
-                var candidateCode = GetSecurityCode(user, time.AddMinutes(delta));
-                if (candidateCode == code) return true;
+                var time = GetTime();
+                foreach (var minute in Enumerable.Range(0, 5))
+                {
+                    var delta = -1 * minute;
+                    var candidateCode = GetSecurityCode(user, time.AddMinutes(delta));
+                    if (candidateCode == code) return true;
+                }
+                return false;
             }
-            return false;
+            else if (user.IsBuiltIn)
+            {
+                return code == _settings.Admin.DefaultSecurityCode;
+            }
+            else { return false; }
         }
 
         private static AuthenticationResult buildNoAuthResult(string user)

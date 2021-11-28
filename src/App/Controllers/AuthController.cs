@@ -56,9 +56,9 @@ namespace App.Controllers
         [HttpPost("SendSecurityCode")]
         public async Task<IActionResult> SendSecurityCode([FromQuery] string userEmail)
         {
-            var (IsSuccess, Code) = await _auth.GenerateSecurityCode(userEmail);
+            var (IsSuccess, Code, IsBuiltIn) = await _auth.GenerateSecurityCode(userEmail);
             
-            if (IsSuccess)
+            if (IsSuccess && !IsBuiltIn)
                 await _email.SendSecurityCodeEmail(userEmail, (int)Code);
 
             return Ok();

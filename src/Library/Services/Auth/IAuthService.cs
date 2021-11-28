@@ -12,7 +12,7 @@ namespace Library.Services.Auth
         
         Task<bool> ValidateSession(string cookieData);
 
-        Task<(bool IsSuccess, int? Code)> GenerateSecurityCode(string userEmail);
+        Task<(bool IsSuccess, int? Code, bool IsUserBuiltIn)> GenerateSecurityCode(string userEmail);
 
         bool ValidateSecurityCode(int code, User user);
     }
