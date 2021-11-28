@@ -7,7 +7,8 @@ namespace Library.Services.Clients.Database.Repositories
 {
     public interface IUserRepository
     {
-        Task<string> CreateUser(string username, string password = null);
+        Task<string> CreateUser(string username);
+        Task<string> CreateBuiltInUser(string username, string password);
         Task DeleteUser(Guid userId);
         Task<User> GetUser(string username);
         Task<User> GetUserById(Guid userId);

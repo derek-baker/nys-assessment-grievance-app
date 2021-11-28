@@ -25,13 +25,7 @@
                             <small class="text-muted">Username must be an email must be an email</small>
                         </div>
 
-                        <button *ngIf="IsCreatingUserAtApi === false" (click)="CreateUser()" class="btn btn-success">Create</button>
-                        <button *ngIf="IsCreatingUserAtApi === true" class="btn btn-success">
-                            <div class="spinner-border" role="status">
-                                <span class="sr-only">Creating...</span>
-                            </div>
-                        </button>
-
+                        <button (click)="CreateUser()" class="btn btn-success">Create</button>
                         <button (click)="CancelCreate()" class="btn btn-warning ml-2">Cancel</button>
                     </div>
                     <br><br>

@@ -4,6 +4,7 @@ import { HttpPublicService } from 'src/app/services/http.service.public';
 import { AttorneyPrefillDataHeader } from 'src/app/types/IAttorneyPrefillData';
 import { parse } from 'papaparse';
 import { HttpAdminService } from 'src/app/services/http.service.admin';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
     selector: 'app-modal-set-representatives',
@@ -12,15 +13,14 @@ import { HttpAdminService } from 'src/app/services/http.service.admin';
 })
 export class ModalSetRepresentativesComponent implements OnInit {
 
-    public IsMakingNetworkRequest: boolean = false;
-
     private uploadedReps: Array<any>;
     private readonly expectedRepDataLength = 13;
 
     constructor(
         private readonly httpPublic: HttpPublicService,
         private readonly httpAdmin: HttpAdminService,
-        private readonly fileDownloadService: FileDownloadService
+        private readonly fileDownloadService: FileDownloadService,
+        private readonly spinner: NgxSpinnerService
     ) { }
 
     public ngOnInit(): void {
@@ -38,7 +38,6 @@ export class ModalSetRepresentativesComponent implements OnInit {
                 window.alert(`Your file appears malformed. Please download the current file using the 'Get Current Reps' button.`);
                 return;
             }
-
             if (result.data.length < 2) {
                 window.alert('Your file contains no rep data. Please upload a file containing rep data.');
                 return;
@@ -50,17 +49,20 @@ export class ModalSetRepresentativesComponent implements OnInit {
     }
 
     public GetCurrentReps() {
+        this.spinner.show();
+
         this.httpPublic.GetRepresentatives().subscribe(
             (data) => {
+                this.spinner.hide();
                 this.fileDownloadService.DownloadCsv(
                     this.fileDownloadService.BuildCsv(data, new AttorneyPrefillDataHeader()),
                     'CurrentReps.csv'
                 );
             },
             (error) => {
+                this.spinner.hide();
                 window.alert('An error occurred.');
                 console.error(error);
-                this.IsMakingNetworkRequest = false;
             }
         );
     }
@@ -70,6 +72,7 @@ export class ModalSetRepresentativesComponent implements OnInit {
             window.alert('Please upload a CSV containing your rep data.');
             return;
         }
+        this.spinner.show();
 
         const nonEmptyArrays = this.uploadedReps.filter((r) => r.length === this.expectedRepDataLength);
         const propNames = nonEmptyArrays[0];
@@ -86,7 +89,7 @@ export class ModalSetRepresentativesComponent implements OnInit {
 
         this.httpAdmin.SetRepresentatives(repObjects).subscribe(
             () => {
-                this.IsMakingNetworkRequest = false;
+                this.spinner.hide();
 
                 document.getElementById('EditRepsInput')
                     // @ts-ignore
@@ -95,9 +98,9 @@ export class ModalSetRepresentativesComponent implements OnInit {
                 window.alert('Uploaded reps were saved.');
             },
             (error) => {
+                this.spinner.hide();
                 window.alert('An error occurred.');
                 console.error(error);
-                this.IsMakingNetworkRequest = false;
             }
         );
     }

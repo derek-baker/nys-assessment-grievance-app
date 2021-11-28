@@ -1,3 +1,5 @@
+<ngx-spinner type="ball-clip-rotate"></ngx-spinner>
+
 <app-modal-edit-grievance (RefreshGridEvent)="RefreshRowEventHandler($event)" [GrievanceWrapper]="SelectedGrievanceWrapper">
 </app-modal-edit-grievance>
 
@@ -201,7 +203,7 @@
         <span class="sr-only">Loading...</span>
     </div>
 
-    <form *ngIf="IsValidatingSession === false" (submit)="Authenticate()">
+    <form *ngIf="IsValidatingSession === false" onsubmit="return false">
         <div class="form-group">
             <label for="username">Username:</label>
             <input [(ngModel)]="UserName" id="username" class="form-control" name="username" type="text" placeholder="Enter your email">
@@ -221,7 +223,7 @@
                 <small class="text-muted">A security code was sent to your email. Please paste the code above.</small>
             </div>
 
-            <button *ngIf="IsAuthenticatingUser === false" class="btn btn-success float-right shadow mt-3">
+            <button *ngIf="IsAuthenticatingUser === false" (click)="Authenticate()" class="btn btn-success float-right shadow mt-3">
                 Log In
             </button>
 

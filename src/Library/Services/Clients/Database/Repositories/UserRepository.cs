@@ -29,6 +29,7 @@ namespace Library.Services.Clients.Database.Repositories
                     .Projection
                         .Include(UserDocument.Fields.UserId)
                         .Include(UserDocument.Fields.UserName)
+                        .Include(UserDocument.Fields.IsBuiltIn)
                         .Include(UserDocument.Fields.PasswordHash)
                         .Include(UserDocument.Fields.Salt)
                         .Include(UserDocument.Fields.HasNeverLoggedIn);
@@ -94,10 +95,7 @@ namespace Library.Services.Clients.Database.Repositories
             return users;
         }
 
-        /// <summary>
-        /// When creating normal users, password should be null.  
-        /// </summary>
-        public async Task<string> CreateUser(string username, string password = null)
+        public async Task<string> CreateUser(string username)
         {
             var generatedPassword = GeneratePassword();
             var salt = HashService.GenerateSalt();
@@ -105,14 +103,42 @@ namespace Library.Services.Clients.Database.Repositories
             {
                 UserId = Guid.NewGuid(),
                 HasNeverLoggedIn = true,
+                IsBuiltIn = false,
                 UserName = username,
                 Salt = HashService.ConvertSaltToString(salt),
-                PasswordHash = HashService.HashData<string>(password is null ? generatedPassword : password, salt)
+                PasswordHash = HashService.HashData<string>(generatedPassword, salt)
             };
             var document = new BsonDocument
             {
                 { UserDocument.Fields.UserId, user.UserId.ToString() },
                 { UserDocument.Fields.HasNeverLoggedIn, user.HasNeverLoggedIn },
+                { UserDocument.Fields.IsBuiltIn, user.IsBuiltIn },
+                { UserDocument.Fields.UserName, user.UserName },
+                { UserDocument.Fields.PasswordHash, user.PasswordHash },
+                { UserDocument.Fields.Salt, user.Salt },
+            };
+            await _db.InsertDocument(_collection, document);
+            return generatedPassword;
+        }
+
+        public async Task<string> CreateBuiltInUser(string username, string password)
+        {
+            var generatedPassword = GeneratePassword();
+            var salt = HashService.GenerateSalt();
+            var user = new User
+            {
+                UserId = Guid.NewGuid(),
+                HasNeverLoggedIn = true,
+                IsBuiltIn = true,
+                UserName = username,
+                Salt = HashService.ConvertSaltToString(salt),
+                PasswordHash = HashService.HashData<string>(password, salt)
+            };
+            var document = new BsonDocument
+            {
+                { UserDocument.Fields.UserId, user.UserId.ToString() },
+                { UserDocument.Fields.HasNeverLoggedIn, user.HasNeverLoggedIn },
+                { UserDocument.Fields.IsBuiltIn, user.IsBuiltIn },
                 { UserDocument.Fields.UserName, user.UserName },
                 { UserDocument.Fields.PasswordHash, user.PasswordHash },
                 { UserDocument.Fields.Salt, user.Salt },

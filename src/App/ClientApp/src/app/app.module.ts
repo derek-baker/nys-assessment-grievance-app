@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AgGridModule } from 'ag-grid-angular';
 import { CurrencyPipe } from '@angular/common';
 
@@ -48,8 +47,9 @@ import { StagedFilesComponent } from './components/FileInputStagedFilesDisplay/s
 import { SpinnerComponent } from './components/Spinner/spinner.component';
 
 import { CookiesLibrary } from './services/cookie.service';
-import Cookies from 'js-cookie';
 import { BlobBuilder } from './services/file-download-service';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
     declarations: [
@@ -108,6 +108,7 @@ import { BlobBuilder } from './services/file-download-service';
                 { path: 'warning', component: IeBlockerComponent }
             ]
         ),
+        NgxSpinnerModule,
         BrowserAnimationsModule
     ],
     providers: [

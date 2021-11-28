@@ -38,6 +38,9 @@ namespace App.Controllers
         [ActionName("createUser")]
         public async Task<IActionResult> CreateUser(UserCreateInput input)
         {
+            if (!input.UserName.Contains("@") || !input.UserName.Contains("."))
+                return BadRequest("The user's email appears to be invalid");
+
             var generatedPassword = await _users.CreateUser(input.UserName);
             
             // TODO: prevent users from being created with the same username

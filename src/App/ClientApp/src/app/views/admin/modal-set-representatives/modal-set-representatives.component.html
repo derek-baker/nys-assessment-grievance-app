@@ -22,10 +22,7 @@
 
                             <input id="EditRepsInput" type="file" (change)="GetFile($event)" accept=".csv">
 
-                            <button *ngIf="!IsMakingNetworkRequest" (click)="SaveUploadedReps()" class="btn btn-success btn-sm float-right">Save Uploaded Reps</button>
-                            <button *ngIf="IsMakingNetworkRequest === true" class="btn btn-danger w-100 sharp-corners">
-                                <div class="spinner-border" role="status"><span class="sr-only">Saving...</span></div>
-                            </button>
+                            <button (click)="SaveUploadedReps()" class="btn btn-success btn-sm float-right">Save Uploaded Reps</button>
                         </div>
 
                         <div class="alert alert-success shadow">

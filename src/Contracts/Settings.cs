@@ -49,5 +49,6 @@
     public class Admin {
         public string DefaultUser { get; set; }
         public string DefaultPassword { get; set; }
+        public int DefaultSecurityCode { get; set; }
     }
 }

@@ -9,5 +9,6 @@
         public const string CloudProjectId = "CloudProjectId";
         public const string AppDefaultUserName = "AppDefaultUserName";
         public const string AppDefaultUserPassword = "AppDefaultUserPassword";
+        public const string AppDefaultUserSecurityCode = "AppDefaultUserSecurityCode";
     }
 }

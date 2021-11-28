@@ -1,4 +1,6 @@
-﻿namespace Library.Services.Clients.Database
+﻿using Contracts;
+
+namespace Library.Services.Clients.Database
 {
     public class DocumentDatabaseSettings
     {
@@ -11,7 +13,7 @@
         public string UsersCollectionName { get; }
         public string SessionsCollectionName { get; }
 
-        public DocumentDatabaseSettings(Contracts.Settings appSettings)
+        public DocumentDatabaseSettings(Settings appSettings)
         {
             var user = appSettings.Database.User;
             var pw = appSettings.Database.UserPassword;

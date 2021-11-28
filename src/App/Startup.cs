@@ -35,6 +35,8 @@ namespace App
 
             settings.Admin.DefaultUser = secrets.GetSecret(SecretKeys.AppDefaultUserName);
             settings.Admin.DefaultPassword = secrets.GetSecret(SecretKeys.AppDefaultUserPassword);
+            var isCodeParsed = int.TryParse(secrets.GetSecret(SecretKeys.AppDefaultUserSecurityCode), out int code);
+            settings.Admin.DefaultSecurityCode = isCodeParsed ? code : -1;
 
             _settings = settings;
         }
@@ -97,7 +99,7 @@ namespace App
 
             var defaultAdminUser = users.GetUser(_settings.Admin.DefaultUser).Result;
             if (defaultAdminUser != null) return;
-            users.CreateUser(
+            users.CreateBuiltInUser(
                 username: _settings.Admin.DefaultUser, 
                 password: _settings.Admin.DefaultPassword
             ).Wait();

@@ -43,6 +43,7 @@ namespace App.Config
             services.AddSingleton(services => new DocumentDatabaseSettings(settings));
             services.AddSingleton(services => new StorageSettings(settings));
             services.AddSingleton(services => new EmailSettings(settings));
+            services.AddSingleton(services => settings);
         }
     }
 }
