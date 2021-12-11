@@ -32,7 +32,7 @@ namespace App.Controllers
                 cookieOptions
             );
 
-            Uri encodedUrl = new Uri(Request.GetEncodedUrl());
+            var encodedUrl = new Uri(Request.GetEncodedUrl());
             string host = HostService.GetAppUrlFromAmbientInfo(encodedUrl);
 
             return Redirect($"{host}/{clientCallbackRoute}");

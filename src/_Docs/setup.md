@@ -23,7 +23,7 @@
 			- Keys > Create Key > JSON > Download key
 			- Locally, create an operating system env var that points to the key downloaded in the previous step. If you're on Windows, the command might look like this:
 				``` powershell
-				[System.Environment]::SetEnvironmentVariable('GOOGLE_APPLICATION_CREDENTIALS','C:\<Path>\<To>\<ServiceAccountKey>\<KEY_FILE_NAME>.json',[System.EnvironmentVariableTarget]::User)
+				[System.Environment]::SetEnvironmentVariable('GOOGLE_APPLICATION_CREDENTIALS','<Drive>:\<Path>\<To>\<ServiceAccountKey>\<KEY_FILE_NAME>.json', [System.EnvironmentVariableTarget]::User)
 				```
 			
 
