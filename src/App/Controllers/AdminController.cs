@@ -460,7 +460,7 @@ namespace App.Controllers
             var grievanceIds = _storageClient.FindSubmissionsLackingRp524(
                _storageSettings.BucketNameGrievances,
                (await _userSettings.GetUserSettings())?.Year.ToString(),
-               MagicStringsService.NysRp525StorageObjectPrefix,
+               MagicStringsService.NysRp524StorageObjectPrefix,
                "pdf",
                submissionGuids
             );

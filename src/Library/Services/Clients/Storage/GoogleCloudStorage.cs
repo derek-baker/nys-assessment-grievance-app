@@ -92,16 +92,16 @@ namespace Library.Storage
                 .Where(o =>
                     o.Name.Contains(year)
                     &&
-                    o.Name.Contains(filePrefix)
+                    o.Name.ToLower().Contains(filePrefix.ToLower())
                     &&
-                    o.Name.Contains(fileExtension)
+                    o.Name.ToLower().Contains(fileExtension)
                 )
                 .Select(o => o.Name);
 
             var grievancesMissingRp524 = submissionGuids
-                .Where(guid => 
-                    rp524ObjectNames.Any(name => !name.Contains(guid))
-                );                
+                .Where(guid =>
+                    rp524ObjectNames.All(name => !name.Contains(guid))
+                );
 
             return grievancesMissingRp524;
         }
