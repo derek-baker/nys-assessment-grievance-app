@@ -10,11 +10,11 @@ COPY . ./
 
 # Install production dependencies.
 # Copy and restore as distinct layers.
-COPY *.sln ./
-RUN dotnet restore ./App.sln
+# COPY *.sln ./
+RUN dotnet restore ./App/App.csproj
 
 # Build a release artifact (inside the container)
-RUN dotnet publish -c Release -o out
+RUN dotnet publish ./App/App.csproj -c Release -o out
 
 # Use Microsoft's official runtime .NET image.
 # https://hub.docker.com/_/microsoft-dotnet-core-aspnet/

@@ -5,7 +5,7 @@
 
 ## To start the user-facing app
 `cd {dir_containing_sln_file}`
-`dotnet build .\App.sln && dotnet run --project .\App\App.csproj`
+`dotnet build .\App\App.csproj && dotnet run --project .\App\App.csproj`
 
 
 ## To build docker locally
