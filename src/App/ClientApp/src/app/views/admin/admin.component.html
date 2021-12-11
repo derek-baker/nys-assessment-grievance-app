@@ -226,7 +226,6 @@
             <button *ngIf="IsAuthenticatingUser === false" (click)="Authenticate()" class="btn btn-success float-right shadow mt-3">
                 Log In
             </button>
-
             <button
                 *ngIf="IsAuthenticatingUser === true"
                 class="btn btn-success float-right shadow mt-3"
@@ -239,7 +238,7 @@
     </form>
 
     <button
-        *ngIf="IsSecurityCodeSent === false"
+        *ngIf="IsValidatingSession === false && IsSecurityCodeSent === false"
         (click)="SendSecurityCode()"
         class="btn btn-primary float-right"
         type="button">
