@@ -1,3 +1,5 @@
+### You can follow the steps below when setting up a test environment:
+
 - Google Cloud Platform (GCP)
 	- Create GCP project
 		- You can DuckDuckGo this one, right?
