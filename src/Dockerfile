@@ -10,7 +10,7 @@ COPY . ./
 
 # Install production dependencies.
 # Copy and restore as distinct layers.
-# COPY *.sln ./
+
 RUN dotnet restore ./App/App.csproj
 
 # Build a release artifact (inside the container)

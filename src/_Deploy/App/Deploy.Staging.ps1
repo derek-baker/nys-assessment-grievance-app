@@ -1,10 +1,8 @@
+# NOTE: Script assumes that gcloud CLI tool is installed and on PATH
 # gcloud config list
 # gcloud auth login
 # gcloud config set core/project assessment-grievance-app
 
-
-# TODO: This should build a .CSPROJ instead of a .SLN
-# NOTE: Script assumes that gcloud CLI tool is installed and on PATH
 param(
     [string] $projectId = "assessment-grievance-app",
     [string] $serviceName = 'assessment-grievance-service', # <== This is the tag in the GCP Container registry
