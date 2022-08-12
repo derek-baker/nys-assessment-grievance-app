@@ -2,7 +2,7 @@
 
 <br>
 
-**What is this?** This is an app that allows for digitization of a real property assessment grievance process managed by a municipal government in New York State. For more info, please see [this link](https://derek-baker.github.io/).
+**What is this?** This is an app that allows for digitization of a real property assessment grievance process managed by a municipal government in New York State.
 
 <br>
 
