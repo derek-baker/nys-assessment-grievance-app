@@ -47,7 +47,6 @@ export class AdminComponent implements OnInit {
         'You are not authorized to perform this action. \n' +
         'Please request assistance from a user with the necessary authorizations.';
 
-    /** Ag-Grid jacks into this via a directive to get its data. */
     public GrievanceStatuses: Array<IAssessmentGrievance> = [];
 
     public UserName = '';
